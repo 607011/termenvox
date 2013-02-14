@@ -61,7 +61,6 @@ private:
 
     qreal mVolume;
     qreal mFrequency;
-    QPoint mMarker;
 };
 
 #endif // __THEREMINWIDGET_H_

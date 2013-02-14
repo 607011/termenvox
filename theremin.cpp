@@ -27,9 +27,7 @@ Theremin::Theremin(void)
     Stk::setSampleRate(44100.0);
     Stk::setRawwavePath( "../termenvox/STK/rawwaves/" );
     mInstruments[Violin] = new stk::Bowed;
-    mInstruments[Brass] = new stk::Brass;
     mInstruments[Clarinet] = new stk::Clarinet;
-    mInstruments[Whistle] = new stk::Whistle;
     mInstruments[Flute] = new stk::Flute(80);
     mInstruments[PercFlute] = new stk::PercFlut;
     mInstruments[Wurley] = new stk::Wurley;
@@ -78,17 +76,9 @@ void Theremin::play(void)
     case Violin:
         reinterpret_cast<stk::Bowed*>(mInstruments[Violin])->startBowing(1.0, 40000);
         break;
-    case Brass:
-        reinterpret_cast<stk::Brass*>(mInstruments[Brass])->noteOn(mFrequency, 1.0);
-        reinterpret_cast<stk::Brass*>(mInstruments[Brass])->startBlowing(1.0, 40000);
-        break;
     case Clarinet:
         reinterpret_cast<stk::Clarinet*>(mInstruments[Clarinet])->noteOn(mFrequency, 1.0);
         reinterpret_cast<stk::Clarinet*>(mInstruments[Clarinet])->startBlowing(1.0, 40000);
-        break;
-    case Whistle:
-        reinterpret_cast<stk::Whistle*>(mInstruments[Whistle])->noteOn(mFrequency, 1.0);
-        reinterpret_cast<stk::Whistle*>(mInstruments[Whistle])->startBlowing(1.0, 40000);
         break;
     case Flute:
         mInstruments[Flute]->noteOn(mFrequency, 1.0);
@@ -124,14 +114,8 @@ void Theremin::stop(void)
     case Violin:
         reinterpret_cast<stk::Bowed*>(mInstruments[Violin])->stopBowing(40000);
         break;
-    case Brass:
-        reinterpret_cast<stk::Brass*>(mInstruments[Brass])->stopBlowing(40000);
-        break;
     case Clarinet:
         reinterpret_cast<stk::Clarinet*>(mInstruments[Clarinet])->stopBlowing(40000);
-        break;
-    case Whistle:
-        reinterpret_cast<stk::Whistle*>(mInstruments[Whistle])->stopBlowing(40000);
         break;
     case Flute:
         reinterpret_cast<stk::Flute*>(mInstruments[Flute])->stopBlowing(40000);
@@ -169,11 +153,8 @@ StkFloat Theremin::tick(void)
 void Theremin::setFrequency(double hertz)
 {
     mFrequency = hertz;
-    if (mInstrumentId != Silence) {
+    if (mInstrumentId != Silence)
         mInstruments[mInstrumentId]->setFrequency(mFrequency);
-        if (mInstrumentId == Brass)
-            reinterpret_cast<stk::Brass*>(mInstruments[Brass])->setLip(mFrequency);
-    }
 }
 
 

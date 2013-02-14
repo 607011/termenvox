@@ -6,9 +6,7 @@
 #include "RtAudio.h"
 #include "Instrmnt.h"
 #include "Bowed.h"
-#include "Brass.h"
 #include "Clarinet.h"
-#include "Whistle.h"
 #include "Flute.h"
 #include "PercFlut.h"
 #include "Wurley.h"
@@ -26,9 +24,7 @@ public:
     enum Instrument {
         Silence = -1,
         Violin,
-        Brass,
         Clarinet,
-        Whistle,
         Flute,
         PercFlute,
         Wurley,

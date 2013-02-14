@@ -14,7 +14,6 @@ ThereminWidget::ThereminWidget(QWidget* parent)
     , mMaxF(4000.0)
     , mVolume(1.0)
     , mFrequency(440.0)
-    , mMarker(QPoint(0, 0))
 {
     setMouseTracking(true);
     setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
@@ -42,6 +41,8 @@ qreal ThereminWidget::frequency(int x) const
         return exp(mLogMinF + (qreal(x) / width()) * mLogdF);
     case Quadratic:
         return square(mSqrtMinF + (qreal(x) / width()) * mSqrtdF);
+    default:
+        break;
     }
     return 0;
 }
@@ -71,7 +72,7 @@ void ThereminWidget::setScaling(ThereminWidget::Scaling scaling)
 
 void ThereminWidget::paintEvent(QPaintEvent*)
 {
-    static const qreal fTicks[] = { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 15000, 20000, -1 };
+    static const qreal fTicks[] = { 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 15000, 20000, -1 };
     QPainter p(this);
     QLinearGradient grad(QPointF(0, 0), QPointF(0, height()));
     grad.setColorAt(0.01, QColor(14, 88, 33));
@@ -106,8 +107,6 @@ void ThereminWidget::paintEvent(QPaintEvent*)
     p.drawText(QPointF(5, 15), tr("%1 Hz").arg(mFrequency, 0, 'g', 5));
     p.drawText(QPointF(5, 30), tr("%1%").arg(mVolume*100, 0, 'g', 3));
     p.setPen(Qt::red);
-    if (!mMarker.isNull())
-        p.drawEllipse(mMarker, 3, 3);
 }
 
 
@@ -123,8 +122,6 @@ void ThereminWidget::mousePressEvent(QMouseEvent* e)
     case Qt::LeftButton:
         mTheremin.play();
         break;
-    case Qt::RightButton:
-        break;
     default:
         break;
     }
@@ -137,8 +134,6 @@ void ThereminWidget::mouseReleaseEvent(QMouseEvent* e)
     switch (e->button()) {
     case Qt::LeftButton:
         mTheremin.stop();
-        break;
-    case Qt::RightButton:
         break;
     default:
         break;

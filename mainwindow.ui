@@ -58,7 +58,73 @@
            <property name="spacing">
             <number>3</number>
            </property>
+           <item row="0" column="1">
+            <widget class="QLabel" name="minFLabel">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>32</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>32</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">font-size: 200%</string>
+             </property>
+             <property name="text">
+              <string>99999</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
            <item row="0" column="2">
+            <spacer name="horizontalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="0" column="0">
+            <widget class="QDial" name="minFDial">
+             <property name="minimumSize">
+              <size>
+               <width>32</width>
+               <height>32</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>32</width>
+               <height>32</height>
+              </size>
+             </property>
+             <property name="maximum">
+              <number>200</number>
+             </property>
+             <property name="value">
+              <number>20</number>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="3">
             <widget class="QDial" name="maxFDial">
              <property name="minimumSize">
               <size>
@@ -86,40 +152,36 @@
              </property>
             </widget>
            </item>
-           <item row="0" column="0">
-            <widget class="QDial" name="minFDial">
+           <item row="0" column="4">
+            <widget class="QLabel" name="maxFLabel">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="minimumSize">
               <size>
                <width>32</width>
-               <height>32</height>
+               <height>0</height>
               </size>
              </property>
              <property name="maximumSize">
               <size>
                <width>32</width>
-               <height>32</height>
+               <height>16777215</height>
               </size>
              </property>
-             <property name="maximum">
-              <number>200</number>
+             <property name="styleSheet">
+              <string notr="true">font-size: 200%</string>
              </property>
-             <property name="value">
-              <number>20</number>
+             <property name="text">
+              <string>99999</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
              </property>
             </widget>
-           </item>
-           <item row="0" column="1">
-            <spacer name="horizontalSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
            </item>
           </layout>
          </widget>
@@ -176,6 +238,19 @@
            <property name="spacing">
             <number>3</number>
            </property>
+           <item row="0" column="2">
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
            <item row="0" column="0">
             <widget class="QDial" name="volumeDial">
              <property name="minimumSize">
@@ -214,36 +289,14 @@
             </widget>
            </item>
            <item row="0" column="1">
-            <widget class="QLCDNumber" name="volumeLCDNumber">
-             <property name="frameShape">
-              <enum>QFrame::NoFrame</enum>
+            <widget class="QLabel" name="volumeLabel">
+             <property name="styleSheet">
+              <string notr="true">font-size: 200%</string>
              </property>
-             <property name="frameShadow">
-              <enum>QFrame::Plain</enum>
-             </property>
-             <property name="smallDecimalPoint">
-              <bool>false</bool>
-             </property>
-             <property name="digitCount">
-              <number>3</number>
-             </property>
-             <property name="value" stdset="0">
-              <double>0.000000000000000</double>
+             <property name="text">
+              <string>999</string>
              </property>
             </widget>
-           </item>
-           <item row="0" column="2">
-            <spacer name="horizontalSpacer">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
            </item>
           </layout>
          </widget>
@@ -263,17 +316,7 @@
           </item>
           <item>
            <property name="text">
-            <string>Brass</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
             <string>Clarinet</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Whistle</string>
            </property>
           </item>
           <item>

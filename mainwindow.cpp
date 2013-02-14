@@ -72,7 +72,7 @@ void MainWindow::instrumentChanged(int idx)
 void MainWindow::volumeChanged(int volume)
 {
     mThereminWidget->theremin().setGlobalVolume(qreal(volume) / (ui->volumeDial->maximum() - ui->volumeDial->minimum()));
-    ui->volumeLCDNumber->display(volume/10);
+    ui->volumeLabel->setText(QString("%1").arg(volume/10));
 }
 
 
@@ -84,11 +84,13 @@ void MainWindow::scalingChanged(int scaling)
 
 void MainWindow::minFrequencyChanged(int freq)
 {
+    ui->minFLabel->setText(QString("%1").arg(freq));
     mThereminWidget->setFrequencyRange(freq, ui->maxFDial->value());
 }
 
 
 void MainWindow::maxFrequencyChanged(int freq)
 {
+    ui->maxFLabel->setText(QString("%1").arg(freq));
     mThereminWidget->setFrequencyRange(ui->minFDial->value(), freq);
 }
