@@ -14,6 +14,7 @@ ThereminWidget::ThereminWidget(QWidget* parent)
     , mMarker(QPoint(0, 0))
 {
     setMouseTracking(true);
+    setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 }
 
 

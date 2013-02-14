@@ -10,6 +10,12 @@
     <height>291</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
   <property name="windowTitle">
    <string>Termenvox</string>
   </property>
@@ -103,6 +109,12 @@
            <size>
             <width>40</width>
             <height>40</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>180</width>
+            <height>16777215</height>
            </size>
           </property>
           <property name="title">

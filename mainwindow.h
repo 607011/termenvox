@@ -4,6 +4,7 @@
 #define __MAINWINDOW_H_
 
 #include <QMainWindow>
+#include "main.h"
 #include "thereminwidget.h"
 
 namespace Ui {
@@ -18,9 +19,17 @@ public:
     explicit MainWindow(QWidget* parent = NULL);
     ~MainWindow();
 
+protected:
+    void closeEvent(QCloseEvent*);
+
 private slots:
     void instrumentChanged(int);
     void volumeChanged(int);
+
+private:
+    void saveAppSettings(void);
+    void restoreAppSettings(void);
+
 
 private:
     Ui::MainWindow* ui;

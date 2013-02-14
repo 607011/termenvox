@@ -17,7 +17,8 @@ SOURCES += main.cpp \
 HEADERS += \
     mainwindow.h \
     thereminwidget.h \
-    theremin.h
+    theremin.h \
+    main.h
 
 FORMS += mainwindow.ui
 
@@ -30,3 +31,6 @@ LIBS += winmm.lib dsound.lib Wsock32.lib Ole32.lib Advapi32.lib
 
 win32:CONFIG(release, debug|release): LIBS += "$$PWD/STK/lib/STK.lib"
 else:win32:CONFIG(debug, debug|release): LIBS += "$$PWD/STK/lib/STKd.lib"
+
+OTHER_FILES += \
+    NOTES.txt
