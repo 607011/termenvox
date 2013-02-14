@@ -44,7 +44,6 @@ private:
 
     qreal mVolume;
     qreal mFrequency;
-    qreal mPole;
     QPoint mMarker;
 };
 

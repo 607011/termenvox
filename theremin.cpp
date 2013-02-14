@@ -20,14 +20,17 @@ int _tick(void* outputBuffer, void* inputBuffer, unsigned int nBufferFrames, dou
 
 Theremin::Theremin(void)
     : mVolume(0.5)
-    , mFilterEnabled(true)
-    , mPole(0.9)
+    , mInstrumentId(Violin)
 {
     Stk::setSampleRate(44100.0);
-    mBaseSine.setFrequency(300000);
-    mBaseSine.addPhase(0);
-    mFilter.setPole(mPole);
     RtAudio::StreamParameters parameters;
+    switch (mInstrumentId) {
+    case Violin:
+        mInstrument.setVibrato(0.0);
+        break;
+    default:
+        break;
+    }
     parameters.deviceId = mDAC.getDefaultOutputDevice();
     parameters.nChannels = 1;
     RtAudioFormat format = (sizeof(StkFloat) == 8)? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
@@ -58,45 +61,42 @@ Theremin::~Theremin()
 }
 
 
+void Theremin::play(void)
+{
+    switch (mInstrumentId) {
+    case Violin:
+        mInstrument.startBowing(0.5, 40000);
+        break;
+    default:
+        break;
+    }
+}
+
+void Theremin::stop(void)
+{
+    switch (mInstrumentId) {
+    case Violin:
+        mInstrument.stopBowing(40000);
+        break;
+    default:
+        break;
+    }
+}
+
+
 stk::StkFloat Theremin::tick(void)
 {
-    return (mFilterEnabled)
-            ? mFilter.tick(mVolume * mSine.tick() * mBaseSine.tick())
-            : mVolume * mSine.tick() * mBaseSine.tick();
+    return mVolume * mInstrument.tick();
 }
 
 
 void Theremin::setFrequency(double hertz)
 {
-    mSine.setFrequency(hertz);
-}
-
-
-void Theremin::setBaseFrequency(double hertz)
-{
-    mBaseSine.setFrequency(hertz);
-}
-
-
-void Theremin::setFilterGain(double amplitude)
-{
-    mFilter.setGain(1e-3*amplitude);
+    mInstrument.setFrequency(hertz);
 }
 
 
 void Theremin::setVolume(double volume)
 {
     mVolume = volume;
-}
-
-
-void Theremin::setFilterEnabled(bool enabled)
-{
-    mFilterEnabled = enabled;
-}
-
-
-void Theremin::setPole(double z)
-{
-    mFilter.setPole(z);
 }

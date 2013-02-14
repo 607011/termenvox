@@ -4,9 +4,8 @@
 #define __THEREMIN_H_
 
 #include "RtAudio.h"
+#include "Bowed.h"
 #include "SineWave.h"
-#include "OnePole.h"
-
 
 class Theremin
 {
@@ -14,21 +13,20 @@ public:
     Theremin(void);
     ~Theremin();
     void setFrequency(double hertz);
-    void setBaseFrequency(double hertz);
-    void setFilterGain(double amplitude);
     void setVolume(double);
-    void setPole(double z);
-    void setFilterEnabled(bool);
     stk::StkFloat tick(void);
-    bool filterEnabled(void) const { return mFilterEnabled; }
+
+    void play(void);
+    void stop(void);
+
+    enum Instrument {
+        Violin
+    };
 
 private:
     double mVolume;
-    bool mFilterEnabled;
-    double mPole;
-    stk::SineWave mBaseSine;
-    stk::SineWave mSine;
-    stk::OnePole mFilter;
+    Instrument mInstrumentId;
+    stk::Bowed mInstrument;
     RtAudio mDAC;
 };
 

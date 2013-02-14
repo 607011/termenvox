@@ -5,12 +5,11 @@
 #include <QPainter>
 #include <qmath.h>
 
-ThereminWidget::ThereminWidget(QWidget *parent)
+ThereminWidget::ThereminWidget(QWidget* parent)
     : QWidget(parent)
     , mLogarithmicScale(true)
     , mVolume(1.0)
     , mFrequency(440.0)
-    , mPole(0.9)
     , mMarker(QPoint(0, 0))
 {
     setMouseTracking(true);
@@ -62,8 +61,6 @@ void ThereminWidget::paintEvent(QPaintEvent*)
     p.setPen(Qt::lightGray);
     p.drawText(QPointF(5, 15), tr("%1 Hz").arg(mFrequency, 0, 'g', 5));
     p.drawText(QPointF(5, 30), tr("%1%").arg(mVolume*100, 0, 'g', 3));
-    p.drawText(QPointF(5, 45), tr("Pole: %1").arg(mPole));
-    p.drawText(QPointF(5, 60), tr("Filter %1").arg(mTheremin.filterEnabled()? tr("on") : tr("off")));
     p.setPen(Qt::red);
     if (!mMarker.isNull())
         p.drawEllipse(mMarker, 3, 3);
@@ -72,8 +69,6 @@ void ThereminWidget::paintEvent(QPaintEvent*)
 
 void ThereminWidget::wheelEvent(QWheelEvent* e)
 {
-    mPole += 1e-3 * e->delta();
-    mTheremin.setPole(mPole);
     update();
 }
 
@@ -81,13 +76,12 @@ void ThereminWidget::wheelEvent(QWheelEvent* e)
 void ThereminWidget::mousePressEvent(QMouseEvent* e)
 {
     switch (e->button()) {
-    case Qt::RightButton:
-        mTheremin.setFilterEnabled(false);
-        break;
     case Qt::LeftButton:
-        mMarker = e->pos();
-        mTheremin.setBaseFrequency(frequency(mMarker.x()));
-        mTheremin.setFilterGain(volume(mMarker.y()));
+        mTheremin.play();
+        break;
+    case Qt::RightButton:
+        break;
+    default:
         break;
     }
     update();
@@ -97,8 +91,12 @@ void ThereminWidget::mousePressEvent(QMouseEvent* e)
 void ThereminWidget::mouseReleaseEvent(QMouseEvent* e)
 {
     switch (e->button()) {
+    case Qt::LeftButton:
+        mTheremin.stop();
+        break;
     case Qt::RightButton:
-        mTheremin.setFilterEnabled(true);
+        break;
+    default:
         break;
     }
     update();
