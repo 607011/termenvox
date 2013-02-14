@@ -4,29 +4,58 @@
 #define __THEREMIN_H_
 
 #include "RtAudio.h"
+#include "Instrmnt.h"
 #include "Bowed.h"
-#include "SineWave.h"
+#include "Brass.h"
+#include "Clarinet.h"
+#include "Whistle.h"
+#include "Flute.h"
+#include "PercFlut.h"
+#include "Wurley.h"
+#include "HevyMetl.h"
+#include "BeeThree.h"
+#include "Rhodey.h"
+#include "FMVoices.h"
 
 class Theremin
 {
 public:
     Theremin(void);
     ~Theremin();
+
+    enum Instrument {
+        Silence = -1,
+        Violin,
+        Brass,
+        Clarinet,
+        Whistle,
+        Flute,
+        PercFlute,
+        Wurley,
+        HeavyMetalFM,
+        BeeThree,
+        Rhodey,
+        FMVoices,
+        LastInstrument
+    };
+
     void setFrequency(double hertz);
     void setVolume(double);
+    void setGlobalVolume(double);
+    void chooseInstrument(Instrument instrumentId);
     stk::StkFloat tick(void);
 
     void play(void);
     void stop(void);
 
-    enum Instrument {
-        Violin
-    };
+
 
 private:
     double mVolume;
+    double mGlobalVolume;
+    double mFrequency;
+    stk::Instrmnt* mInstruments[LastInstrument];
     Instrument mInstrumentId;
-    stk::Bowed mInstrument;
     RtAudio mDAC;
 };
 

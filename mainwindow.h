@@ -4,6 +4,7 @@
 #define __MAINWINDOW_H_
 
 #include <QMainWindow>
+#include "thereminwidget.h"
 
 namespace Ui {
 class MainWindow;
@@ -17,8 +18,13 @@ public:
     explicit MainWindow(QWidget* parent = NULL);
     ~MainWindow();
 
+private slots:
+    void instrumentChanged(int);
+    void volumeChanged(int);
+
 private:
-    Ui::MainWindow *ui;
+    Ui::MainWindow* ui;
+    ThereminWidget* mThereminWidget;
 };
 
 #endif // __MAINWINDOW_H_

@@ -14,8 +14,10 @@ class ThereminWidget : public QWidget
     Q_OBJECT
 public:
     explicit ThereminWidget(QWidget* parent = NULL);
-    QSize sizeHint(void) const { return QSize(640, 480); }
-    QSize minimumSizeHint(void) const { return QSize(320, 240); }
+    QSize sizeHint(void) const { return QSize(640, 200); }
+    QSize minimumSizeHint(void) const { return QSize(320, 100); }
+
+    inline Theremin& theremin(void) { return mTheremin; }
 
 protected:
     void paintEvent(QPaintEvent*);
@@ -30,7 +32,7 @@ public slots:
 
 private:
     qreal frequency(int x) const;
-    qreal volume(int y) const;
+    qreal volumeToHeight(int y) const;
     bool mLogarithmicScale;
 
     static const qreal maxF;

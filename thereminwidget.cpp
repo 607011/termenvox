@@ -2,6 +2,7 @@
 
 #include "thereminwidget.h"
 #include <QtCore/QDebug>
+#include <QLinearGradient>
 #include <QPainter>
 #include <qmath.h>
 
@@ -24,7 +25,7 @@ const qreal ThereminWidget::dF = maxF - minF;
 const qreal ThereminWidget::logdF = logMaxF - logMinF;
 
 
-qreal ThereminWidget::volume(int y) const
+qreal ThereminWidget::volumeToHeight(int y) const
 {
    return 1e-2 * y * height();
 }
@@ -42,7 +43,11 @@ void ThereminWidget::paintEvent(QPaintEvent*)
 {
     static const qreal fTicks[] = { 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 15000, 20000, -1 };
     QPainter p(this);
-    p.fillRect(rect(), Qt::black);
+    QLinearGradient grad(QPointF(0, 0), QPointF(0, height()));
+    grad.setColorAt(0.01, QColor(14, 88, 33));
+    grad.setColorAt(0.99, QColor(1, 20, 2));
+    grad.setSpread(QGradient::PadSpread);
+    p.fillRect(rect(), QBrush(grad));
     p.setBrush(Qt::transparent);
     p.setPen(QColor(14, 210, 33, 166));
     int i = 0;
@@ -55,7 +60,7 @@ void ThereminWidget::paintEvent(QPaintEvent*)
         p.drawText(x+2, height()-20, 40, 15, Qt::AlignLeft| Qt::AlignVCenter, QString("%1").arg(f));
     }
     for (i = 0; i < 100; i += 10) {
-        int y = volume(i);
+        int y = volumeToHeight(i);
         p.drawLine(0, y, width(), y);
     }
     p.setPen(Qt::lightGray);
@@ -107,7 +112,7 @@ void ThereminWidget::mouseMoveEvent(QMouseEvent* e)
 {
     mFrequency = frequency(e->x());
     mTheremin.setFrequency(mFrequency);
-    mVolume = qreal(e->y()) / height();
+    mVolume = qreal(height() - e->y()) / height();
     mTheremin.setVolume(mVolume);
     update();
 }
