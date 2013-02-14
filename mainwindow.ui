@@ -122,6 +122,12 @@
              <property name="value">
               <number>20</number>
              </property>
+             <property name="notchTarget">
+              <double>10.000000000000000</double>
+             </property>
+             <property name="notchesVisible">
+              <bool>true</bool>
+             </property>
             </widget>
            </item>
            <item row="0" column="3">
@@ -149,6 +155,12 @@
              </property>
              <property name="sliderPosition">
               <number>4000</number>
+             </property>
+             <property name="notchTarget">
+              <double>100.000000000000000</double>
+             </property>
+             <property name="notchesVisible">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
