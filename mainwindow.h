@@ -25,6 +25,9 @@ protected:
 private slots:
     void instrumentChanged(int);
     void volumeChanged(int);
+    void scalingChanged(int);
+    void minFrequencyChanged(int);
+    void maxFrequencyChanged(int);
 
 private:
     void saveAppSettings(void);

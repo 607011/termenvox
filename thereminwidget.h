@@ -19,7 +19,16 @@ public:
 
     inline Theremin& theremin(void) { return mTheremin; }
 
-protected:
+    enum Scaling {
+        Linear,
+        Logarithmic,
+        Quadratic
+    };
+
+    void setFrequencyRange(qreal, qreal);
+    void setScaling(Scaling);
+
+    protected:
     void paintEvent(QPaintEvent*);
     void mouseMoveEvent(QMouseEvent*);
     void mousePressEvent(QMouseEvent*);
@@ -33,14 +42,20 @@ public slots:
 private:
     qreal frequency(int x) const;
     qreal volumeToHeight(int y) const;
-    bool mLogarithmicScale;
 
-    static const qreal maxF;
-    static const qreal logMaxF;
-    static const qreal minF;
-    static const qreal logMinF;
-    static const qreal dF;
-    static const qreal logdF;
+private:
+    Scaling mScaling;
+
+    qreal mMinF;
+    qreal mMaxF;
+
+    qreal mLogMaxF;
+    qreal mSqrtMaxF;
+    qreal mLogMinF;
+    qreal mSqrtMinF;
+    qreal mdF;
+    qreal mLogdF;
+    qreal mSqrtdF;
 
     Theremin mTheremin;
 

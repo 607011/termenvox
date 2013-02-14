@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>684</width>
-    <height>291</height>
+    <width>687</width>
+    <height>366</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -25,80 +25,120 @@
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <layout class="QGridLayout" name="gridLayout">
-        <item row="3" column="0">
-         <spacer name="verticalSpacer">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
+        <item row="2" column="0">
+         <widget class="QGroupBox" name="groupBox_2">
+          <property name="minimumSize">
            <size>
-            <width>20</width>
+            <width>0</width>
             <height>40</height>
            </size>
           </property>
-         </spacer>
-        </item>
-        <item row="0" column="0">
-         <widget class="QComboBox" name="instrumentComboBox">
           <property name="maximumSize">
            <size>
-            <width>170</width>
+            <width>180</width>
             <height>16777215</height>
            </size>
           </property>
+          <property name="title">
+           <string>Scale</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_4">
+           <property name="leftMargin">
+            <number>3</number>
+           </property>
+           <property name="topMargin">
+            <number>3</number>
+           </property>
+           <property name="rightMargin">
+            <number>3</number>
+           </property>
+           <property name="bottomMargin">
+            <number>3</number>
+           </property>
+           <property name="spacing">
+            <number>3</number>
+           </property>
+           <item row="0" column="2">
+            <widget class="QDial" name="maxFDial">
+             <property name="minimumSize">
+              <size>
+               <width>32</width>
+               <height>32</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>32</width>
+               <height>32</height>
+              </size>
+             </property>
+             <property name="minimum">
+              <number>200</number>
+             </property>
+             <property name="maximum">
+              <number>8000</number>
+             </property>
+             <property name="value">
+              <number>4000</number>
+             </property>
+             <property name="sliderPosition">
+              <number>4000</number>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QDial" name="minFDial">
+             <property name="minimumSize">
+              <size>
+               <width>32</width>
+               <height>32</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>32</width>
+               <height>32</height>
+              </size>
+             </property>
+             <property name="maximum">
+              <number>200</number>
+             </property>
+             <property name="value">
+              <number>20</number>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <spacer name="horizontalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QComboBox" name="scaleComboBox">
           <item>
            <property name="text">
-            <string>Violin</string>
+            <string>Linear</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>Brass</string>
+            <string>Logarithmic</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>Clarinet</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Whistle</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Flute</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Percussive Flute (TX81Z #4)</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Wurley (TX81Z #5)</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>HeavyMetalFM (TX81Z #3)</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>BeeThree (TX81Z #8)</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Rhodey (TX81Z #5?)</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>FmVoices (TX81Z #6)</string>
+            <string>Quadratic</string>
            </property>
           </item>
          </widget>
@@ -208,6 +248,84 @@
           </layout>
          </widget>
         </item>
+        <item row="0" column="0">
+         <widget class="QComboBox" name="instrumentComboBox">
+          <property name="maximumSize">
+           <size>
+            <width>170</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <item>
+           <property name="text">
+            <string>Violin</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Brass</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Clarinet</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Whistle</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Flute</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Percussive Flute (TX81Z #4)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Wurley (TX81Z #5)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>HeavyMetalFM (TX81Z #3)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>BeeThree (TX81Z #8)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Rhodey (TX81Z #5?)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>FmVoices (TX81Z #6)</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
        </layout>
       </item>
      </layout>
@@ -219,7 +337,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>684</width>
+     <width>687</width>
      <height>21</height>
     </rect>
    </property>
