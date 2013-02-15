@@ -7,9 +7,11 @@
 #include "main.h"
 #include "thereminwidget.h"
 
+
 namespace Ui {
 class MainWindow;
 }
+
 
 class MainWindow : public QMainWindow
 {
@@ -30,6 +32,13 @@ private slots:
     void maxFrequencyChanged(int);
     void minFrequencyEntered(const QString&);
     void maxFrequencyEntered(const QString&);
+    void lowPassFreqChanged(int);
+    void highPassFreqChanged(int);
+    void highPassB0Changed(int);
+    void highPassB1Changed(int);
+    void lowPassEntered(const QString&);
+    void highPassEntered(const QString&);
+    void echoChanged(int);
     void about(void);
     void aboutQt(void);
 

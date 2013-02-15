@@ -13,6 +13,7 @@ ThereminWidget::ThereminWidget(QWidget* parent)
     , mShowHzScale(true)
     , mShowLoudnessScale(true)
     , mShowToneInfo(true)
+    , mHold(false)
     , mScaling(Logarithmic)
     , mMinF(0.0)
     , mMaxF(4000.0)
@@ -60,7 +61,7 @@ template <typename T>
 T square(T x) { return x*x; }
 
 
-qreal ThereminWidget::frequency(qreal x) const
+qreal ThereminWidget::frequency(int x) const
 {
     qreal f;
     switch (mScaling)
@@ -98,9 +99,9 @@ int ThereminWidget::frequencyToWidth(qreal f) const
 }
 
 
-qreal ThereminWidget::volumeToHeight(int y) const
+int ThereminWidget::volumeToHeight(qreal volume) const
 {
-    return 1e-2 * y * height();
+    return height() - volume * height();
 }
 
 
@@ -139,7 +140,7 @@ void ThereminWidget::paintEvent(QPaintEvent*)
     }
     if (mShowLoudnessScale) {
         p.setPen(QColor(14, 210, 33, 166));
-        for (int i = 0; i < 100; i += 10) {
+        for (qreal i = 0; i < 1; i += 0.1) {
             const int y = volumeToHeight(i);
             p.drawLine(0, y, width(), y);
         }
@@ -148,6 +149,10 @@ void ThereminWidget::paintEvent(QPaintEvent*)
         p.setPen(Qt::lightGray);
         p.drawText(QPointF(5, 15), tr("%1 Hz").arg(mFrequency, 0, 'g', 5));
         p.drawText(QPointF(5, 30), tr("%1%").arg(mVolume*100, 0, 'g', 3));
+    }
+    if (mHold) {
+        p.setPen(Qt::red);
+        p.drawEllipse(QPointF(frequencyToWidth(mFrequency), volumeToHeight(mVolume)), 3, 3);
     }
 }
 
@@ -163,6 +168,17 @@ void ThereminWidget::mousePressEvent(QMouseEvent* e)
     switch (e->button()) {
     case Qt::LeftButton:
         mTheremin.play();
+        mHold = false;
+        update();
+        break;
+    case Qt::RightButton:
+        mHold = true;
+        mFrequency = frequency(e->x());
+        mVolume = qreal(height() - e->y()) / height();
+        mTheremin.setFrequency(mFrequency);
+        mTheremin.setVolume(mVolume);
+        mTheremin.play();
+        update();
         break;
     default:
         break;
@@ -184,9 +200,11 @@ void ThereminWidget::mouseReleaseEvent(QMouseEvent* e)
 
 void ThereminWidget::mouseMoveEvent(QMouseEvent* e)
 {
-    mFrequency = frequency(e->x());
-    mVolume = qreal(height() - e->y()) / height();
-    mTheremin.setFrequency(mFrequency);
-    mTheremin.setVolume(mVolume);
-    update();
+    if (!mHold) {
+        mFrequency = frequency(e->x());
+        mVolume = qreal(height() - e->y()) / height();
+        mTheremin.setFrequency(mFrequency);
+        mTheremin.setVolume(mVolume);
+        update();
+    }
 }

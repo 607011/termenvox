@@ -8,6 +8,7 @@
 #include <QPaintEvent>
 #include <QMouseEvent>
 #include <QVector>
+#include <QPointF>
 #include "theremin.h"
 
 
@@ -50,8 +51,8 @@ public slots:
     void setShowLoudnessScale(bool enabled) { mShowLoudnessScale = enabled; update(); }
 
 private:
-    qreal frequency(qreal x) const;
-    qreal volumeToHeight(int y) const;
+    qreal frequency(int x) const;
+    int volumeToHeight(qreal y) const;
     int frequencyToWidth(qreal f) const;
 
 private:
@@ -59,6 +60,7 @@ private:
     bool mShowToneScale;
     bool mShowLoudnessScale;
     bool mShowToneInfo;
+    bool mHold;
 
     Scaling mScaling;
 

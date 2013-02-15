@@ -2,18 +2,28 @@
 
 #include "theremin.h"
 
+#include <QtCore/QDebug>
+
 using namespace stk;
 
 
-int _tick(void* outputBuffer, void* inputBuffer, unsigned int nBufferFrames, double streamTime, RtAudioStreamStatus status, void* pData)
+int tickCallback(void* outputBuffer, void* inputBuffer, unsigned int nBufferFrames, double streamTime, RtAudioStreamStatus status, void* pData)
 {
     (void)inputBuffer;
     (void)streamTime;
     (void)status;
     Theremin* instrument = reinterpret_cast<Theremin*>(pData);
-    StkFloat* samples = reinterpret_cast<StkFloat*>(outputBuffer);
-    for (unsigned int i = 0; i < nBufferFrames; ++i)
-        *samples++ = instrument->tick();
+    StkFloat* oSamples = reinterpret_cast<StkFloat*>(outputBuffer);
+    for (unsigned int i = 0; i < nBufferFrames; ++i) {
+        StkFloat output = instrument->tick();
+        if (instrument->echoEffect())
+            output = instrument->echo().tick(output);
+        if (instrument->lowPassFilter())
+            output = instrument->lowPass().tick(output);
+        if (instrument->highPassFilter())
+            output = instrument->highPass().tick(output);
+        *oSamples++ = output;
+    }
     return 0;
 }
 
@@ -22,6 +32,9 @@ Theremin::Theremin(void)
     : mVolume(0.5)
     , mGlobalVolume(1.0)
     , mFrequency(440.0)
+    , mEchoEffect(false)
+    , mLowPassFilter(false)
+    , mHighPassFilter(false)
     , mInstrumentId(Silence)
 {
     Stk::setSampleRate(44100.0);
@@ -35,13 +48,13 @@ Theremin::Theremin(void)
     mInstruments[BeeThree] = new stk::BeeThree;
     mInstruments[Rhodey] = new stk::Rhodey;
     mInstruments[FMVoices] = new stk::FMVoices;
-    RtAudio::StreamParameters parameters;
-    parameters.deviceId = mDAC.getDefaultOutputDevice();
-    parameters.nChannels = 1;
+    RtAudio::StreamParameters oparameters;
+    oparameters.deviceId = mDAC.getDefaultOutputDevice();
+    oparameters.nChannels = 1;
     RtAudioFormat format = (sizeof(StkFloat) == 8)? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
     unsigned int bufferFrames = RT_BUFFER_SIZE;
     try {
-        mDAC.openStream(&parameters, NULL, format, (unsigned int)Stk::sampleRate(), &bufferFrames, &_tick, (void*)this);
+        mDAC.openStream(&oparameters, NULL, format, (unsigned int)Stk::sampleRate(), &bufferFrames, &tickCallback, (void*)this);
     }
     catch (RtError& error) {
         error.printMessage();
@@ -150,7 +163,7 @@ StkFloat Theremin::tick(void)
 }
 
 
-void Theremin::setFrequency(double hertz)
+void Theremin::setFrequency(stk::StkFloat hertz)
 {
     mFrequency = hertz;
     if (mInstrumentId != Silence)
@@ -158,15 +171,48 @@ void Theremin::setFrequency(double hertz)
 }
 
 
-void Theremin::setVolume(double volume)
+void Theremin::setVolume(stk::StkFloat volume)
 {
     mVolume = volume;
 }
 
 
-void Theremin::setGlobalVolume(double volume)
+void Theremin::setGlobalVolume(stk::StkFloat volume)
 {
     mGlobalVolume = volume;
+}
+
+
+void Theremin::setLowPassFrequency(stk::StkFloat freq)
+{
+    mLowPassFilter = (freq > 0);
+    mLowPass.setZero(freq/4000.);
+}
+
+
+void Theremin::setHighPassFrequency(stk::StkFloat freq)
+{
+    mHighPassFilter = (freq > 0);
+    mHighPass.setPole(-freq/4000.);
+}
+
+
+void Theremin::setHighPassB0(stk::StkFloat freq)
+{
+    mHighPass.setB0(freq/4000.);
+}
+
+
+void Theremin::setHighPassB1(stk::StkFloat freq)
+{
+    mHighPass.setA1(freq/4000.);
+}
+
+
+void Theremin::setEcho(int delay)
+{
+    mEchoEffect = (delay > 0);
+    mEcho.setDelay(delay);
 }
 
 

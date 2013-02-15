@@ -8,6 +8,7 @@
 #include "ui_mainwindow.h"
 #include "theremin.h"
 
+
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -28,12 +29,20 @@ MainWindow::MainWindow(QWidget* parent)
     QObject::connect(ui->maxFDial, SIGNAL(valueChanged(int)), SLOT(maxFrequencyChanged(int)));
     QObject::connect(ui->minFLineEdit, SIGNAL(textChanged(QString)), SLOT(minFrequencyEntered(QString)));
     QObject::connect(ui->maxFLineEdit, SIGNAL(textChanged(QString)), SLOT(maxFrequencyEntered(QString)));
+    QObject::connect(ui->lowPassDial, SIGNAL(valueChanged(int)), SLOT(lowPassFreqChanged(int)));
+    QObject::connect(ui->highPassDial, SIGNAL(valueChanged(int)), SLOT(highPassFreqChanged(int)));
+    QObject::connect(ui->highPassB0Dial, SIGNAL(valueChanged(int)), SLOT(highPassB0Changed(int)));
+    QObject::connect(ui->highPassB1Dial, SIGNAL(valueChanged(int)), SLOT(highPassB1Changed(int)));
+    QObject::connect(ui->lowPassLineEdit, SIGNAL(textChanged(QString)), SLOT(lowPassEntered(QString)));
+    QObject::connect(ui->highPassLineEdit, SIGNAL(textChanged(QString)), SLOT(highPassEntered(QString)));
+    QObject::connect(ui->echoDial, SIGNAL(valueChanged(int)), SLOT(echoChanged(int)));
     QObject::connect(ui->actionHzScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowHzScale(bool)));
     QObject::connect(ui->actionToneScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowToneScale(bool)));
     QObject::connect(ui->actionVolumeScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowLoudnessScale(bool)));
     QObject::connect(ui->actionExit, SIGNAL(triggered()), SLOT(close()));
     QObject::connect(ui->actionAbout, SIGNAL(triggered()), SLOT(about()));
     QObject::connect(ui->actionAboutQt, SIGNAL(triggered()), SLOT(aboutQt()));
+
     restoreAppSettings();
 }
 
@@ -63,6 +72,9 @@ void MainWindow::saveAppSettings(void)
     settings.setValue("MainWindow/volumeScale", ui->actionVolumeScale->isChecked());
     settings.setValue("MainWindow/minF", ui->minFDial->value());
     settings.setValue("MainWindow/maxF", ui->maxFDial->value());
+    settings.setValue("MainWindow/lowPass", ui->lowPassDial->value());
+    settings.setValue("MainWindow/highPass", ui->highPassDial->value());
+    settings.setValue("MainWindow/echo", ui->echoDial->value());
 }
 
 
@@ -82,6 +94,11 @@ void MainWindow::restoreAppSettings(void)
     mThereminWidget->setShowLoudnessScale(ui->actionVolumeScale->isChecked());
     ui->minFDial->setValue(settings.value("MainWindow/minF", 10).toInt());
     ui->maxFDial->setValue(settings.value("MainWindow/maxF", 4000).toInt());
+    ui->lowPassDial->setValue(settings.value("MainWindow/lowPass", -1).toInt());
+    lowPassFreqChanged(ui->lowPassDial->value());
+    ui->highPassDial->setValue(settings.value("MainWindow/highPass", -1).toInt());
+    highPassFreqChanged(ui->highPassDial->value());
+    ui->echoDial->setValue(settings.value("MainWindow/echo", -1).toInt());
 }
 
 
@@ -107,16 +124,14 @@ void MainWindow::scalingChanged(int scaling)
 
 void MainWindow::minFrequencyChanged(int freq)
 {
-    if (sender())
-        ui->minFLineEdit->setText(QString("%1").arg(freq));
+    ui->minFLineEdit->setText(QString("%1").arg(freq));
     mThereminWidget->setFrequencyRange(freq, ui->maxFDial->value());
 }
 
 
 void MainWindow::maxFrequencyChanged(int freq)
 {
-    if (sender())
-        ui->maxFLineEdit->setText(QString("%1").arg(freq));
+    ui->maxFLineEdit->setText(QString("%1").arg(freq));
     mThereminWidget->setFrequencyRange(ui->minFDial->value(), freq);
 }
 
@@ -130,6 +145,50 @@ void MainWindow::minFrequencyEntered(const QString& text)
 void MainWindow::maxFrequencyEntered(const QString& text)
 {
     ui->maxFDial->setValue(text.toInt());
+}
+
+
+void MainWindow::lowPassFreqChanged(int freq)
+{
+    ui->lowPassLineEdit->setText((freq > 0)? QString("%1").arg(freq) : tr("off"));
+    mThereminWidget->theremin().setLowPassFrequency(freq);
+}
+
+
+void MainWindow::highPassFreqChanged(int freq)
+{
+    ui->highPassLineEdit->setText((freq > 0)? QString("%1").arg(freq) : tr("off"));
+    mThereminWidget->theremin().setHighPassFrequency(freq);
+}
+
+
+void MainWindow::highPassB0Changed(int freq)
+{
+    mThereminWidget->theremin().setHighPassB0(freq);
+}
+
+
+void MainWindow::highPassB1Changed(int freq)
+{
+    mThereminWidget->theremin().setHighPassB1(freq);
+}
+
+
+void MainWindow::lowPassEntered(const QString& text)
+{
+    ui->lowPassDial->setValue(text.toInt());
+}
+
+
+void MainWindow::highPassEntered(const QString& text)
+{
+    ui->highPassDial->setValue(text.toInt());
+}
+
+
+void MainWindow::echoChanged(int delay)
+{
+    mThereminWidget->theremin().setEcho(delay);
 }
 
 
