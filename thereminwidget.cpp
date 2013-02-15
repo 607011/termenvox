@@ -9,6 +9,8 @@
 
 ThereminWidget::ThereminWidget(QWidget* parent)
     : QWidget(parent)
+    , mShowToneScale(true)
+    , mShowHzScale(true)
     , mScaling(Logarithmic)
     , mMinF(0.0)
     , mMaxF(4000.0)
@@ -18,6 +20,19 @@ ThereminWidget::ThereminWidget(QWidget* parent)
     setMouseTracking(true);
     setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     setFrequencyRange(mMinF, mMaxF);
+
+    static const qreal PitchRatio = qPow(2, 1./12); // 1.0594630943592952645618252949463;
+    static const QString Chromatic[12] = { "C", "Cis", "D", "Dis/Es", "E", "F", "Fis/Ges", "G", "Gis/As", "A", "Ais/B", "B" };
+    int n = 0;
+    for (qreal f = 16.5; f < 20000.0; f *= 2) {
+        qreal pitch = f;
+        for (int i = 0; i < 12; ++i) {
+            Pitch p = { pitch, QString("%1%2").arg(Chromatic[i]).arg(n) };
+            mPitches.append(p);
+            pitch *= PitchRatio;
+        }
+        ++n;
+    }
 }
 
 
@@ -33,18 +48,39 @@ T square(T x) { return x*x; }
 
 qreal ThereminWidget::frequency(int x) const
 {
+    qreal f;
     switch (mScaling)
     {
     case Linear:
-        return mMinF + qreal(x) / width() * mdF;
+        f = mMinF + qreal(x) / width() * mdF;
+        break;
     case Logarithmic:
-        return exp(mLogMinF + (qreal(x) / width()) * mLogdF);
+        f = exp(mLogMinF + (qreal(x) / width()) * mLogdF);
+        break;
     case Quadratic:
-        return square(mSqrtMinF + (qreal(x) / width()) * mSqrtdF);
-    default:
+        f = square(mSqrtMinF + (qreal(x) / width()) * mSqrtdF);
         break;
     }
-    return 0;
+    return f;
+}
+
+
+int ThereminWidget::frequencyToWidth(qreal f) const
+{
+    int x;
+    switch (mScaling)
+    {
+    case Linear:
+        x = int(width() / mdF * (f - mMinF));
+        break;
+    case Logarithmic:
+        x = int(width() / mLogdF * (log(f) - mLogMinF));
+        break;
+    case Quadratic:
+        x = int(width() / mSqrtdF * (sqrt(f) - mSqrtMinF));
+        break;
+    }
+    return x;
 }
 
 
@@ -74,31 +110,36 @@ void ThereminWidget::paintEvent(QPaintEvent*)
 {
     static const qreal fTicks[] = { 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 15000, 20000, -1 };
     QPainter p(this);
+    // p.setRenderHint(QPainter::Antialiasing);
     QLinearGradient grad(QPointF(0, 0), QPointF(0, height()));
     grad.setColorAt(0.01, QColor(14, 88, 33));
     grad.setColorAt(0.99, QColor(1, 20, 2));
     grad.setSpread(QGradient::PadSpread);
     p.fillRect(rect(), QBrush(grad));
     p.setBrush(Qt::transparent);
-    p.setPen(QColor(14, 210, 33, 166));
-    qreal f;
-    for (int i = 0; (f = fTicks[i]) >= 0 && f <= mMaxF; ++i) {
-        int x;
-        switch (mScaling)
-        {
-        case Linear:
-            x = int(width() / mdF * (f - mMinF));
-            break;
-        case Logarithmic:
-            x = int(width() / mLogdF * (log(f) - mLogMinF));
-            break;
-        case Quadratic:
-            x = int(width() / mSqrtdF * (sqrt(f) - mSqrtMinF));
-            break;
+    if (mShowToneScale) {
+        p.setPen(QColor(190, 190, 190, 128));
+        for (QVector<Pitch>::const_iterator i = mPitches.constBegin(); i != mPitches.constEnd(); ++i) {
+            if (i->f >= mMinF && i->f <= mMaxF) {
+                int x = frequencyToWidth(i->f);
+                p.drawLine(x, 0, x, height());
+                p.save();
+                p.translate(x + 2, 2);
+                p.rotate(90);
+                p.drawText(0, 0, 40, 15, Qt::AlignLeft, QString("%1").arg(i->name));
+                p.restore();
+            }
+        }}
+    if (mShowHzScale) {
+        p.setPen(QColor(14, 210, 33, 166));
+        qreal f;
+        for (int i = 0; (f = fTicks[i]) >= 0 && f <= mMaxF; ++i) {
+            int x = frequencyToWidth(f);
+            p.drawLine(x, 0, x, height());
+            p.drawText(x+2, height()-20, 40, 15, Qt::AlignLeft | Qt::AlignVCenter, QString("%1").arg(f));
         }
-        p.drawLine(x, 0, x, height());
-        p.drawText(x+2, height()-20, 40, 15, Qt::AlignLeft| Qt::AlignVCenter, QString("%1").arg(f));
     }
+    p.setPen(QColor(14, 210, 33, 166));
     for (int i = 0; i < 100; i += 10) {
         int y = volumeToHeight(i);
         p.drawLine(0, y, width(), y);
@@ -125,7 +166,6 @@ void ThereminWidget::mousePressEvent(QMouseEvent* e)
     default:
         break;
     }
-    update();
 }
 
 
@@ -138,15 +178,14 @@ void ThereminWidget::mouseReleaseEvent(QMouseEvent* e)
     default:
         break;
     }
-    update();
 }
 
 
 void ThereminWidget::mouseMoveEvent(QMouseEvent* e)
 {
     mFrequency = frequency(e->x());
-    mTheremin.setFrequency(mFrequency);
     mVolume = qreal(height() - e->y()) / height();
+    mTheremin.setFrequency(mFrequency);
     mTheremin.setVolume(mVolume);
     update();
 }
