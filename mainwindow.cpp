@@ -31,10 +31,6 @@ MainWindow::MainWindow(QWidget* parent)
     QObject::connect(ui->maxFLineEdit, SIGNAL(textChanged(QString)), SLOT(maxFrequencyEntered(QString)));
     QObject::connect(ui->lowPassDial, SIGNAL(valueChanged(int)), SLOT(lowPassFreqChanged(int)));
     QObject::connect(ui->highPassDial, SIGNAL(valueChanged(int)), SLOT(highPassFreqChanged(int)));
-    QObject::connect(ui->highPassB0Dial, SIGNAL(valueChanged(int)), SLOT(highPassB0Changed(int)));
-    QObject::connect(ui->highPassB1Dial, SIGNAL(valueChanged(int)), SLOT(highPassB1Changed(int)));
-    QObject::connect(ui->lowPassLineEdit, SIGNAL(textChanged(QString)), SLOT(lowPassEntered(QString)));
-    QObject::connect(ui->highPassLineEdit, SIGNAL(textChanged(QString)), SLOT(highPassEntered(QString)));
     QObject::connect(ui->echoDial, SIGNAL(valueChanged(int)), SLOT(echoChanged(int)));
     QObject::connect(ui->actionHzScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowHzScale(bool)));
     QObject::connect(ui->actionToneScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowToneScale(bool)));
@@ -148,41 +144,15 @@ void MainWindow::maxFrequencyEntered(const QString& text)
 }
 
 
-void MainWindow::lowPassFreqChanged(int freq)
+void MainWindow::lowPassFreqChanged(int pole)
 {
-    ui->lowPassLineEdit->setText((freq > 0)? QString("%1").arg(freq) : tr("off"));
-    mThereminWidget->theremin().setLowPassFrequency(freq);
+    mThereminWidget->theremin().setLowPassFrequency(qreal(pole) / ui->lowPassDial->maximum());
 }
 
 
-void MainWindow::highPassFreqChanged(int freq)
+void MainWindow::highPassFreqChanged(int pole)
 {
-    ui->highPassLineEdit->setText((freq > 0)? QString("%1").arg(freq) : tr("off"));
-    mThereminWidget->theremin().setHighPassFrequency(freq);
-}
-
-
-void MainWindow::highPassB0Changed(int freq)
-{
-    mThereminWidget->theremin().setHighPassB0(freq);
-}
-
-
-void MainWindow::highPassB1Changed(int freq)
-{
-    mThereminWidget->theremin().setHighPassB1(freq);
-}
-
-
-void MainWindow::lowPassEntered(const QString& text)
-{
-    ui->lowPassDial->setValue(text.toInt());
-}
-
-
-void MainWindow::highPassEntered(const QString& text)
-{
-    ui->highPassDial->setValue(text.toInt());
+    mThereminWidget->theremin().setHighPassFrequency(qreal(pole) / ui->highPassDial->maximum());
 }
 
 

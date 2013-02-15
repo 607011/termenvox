@@ -34,10 +34,6 @@ private slots:
     void maxFrequencyEntered(const QString&);
     void lowPassFreqChanged(int);
     void highPassFreqChanged(int);
-    void highPassB0Changed(int);
-    void highPassB1Changed(int);
-    void lowPassEntered(const QString&);
-    void highPassEntered(const QString&);
     void echoChanged(int);
     void about(void);
     void aboutQt(void);

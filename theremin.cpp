@@ -183,29 +183,17 @@ void Theremin::setGlobalVolume(stk::StkFloat volume)
 }
 
 
-void Theremin::setLowPassFrequency(stk::StkFloat freq)
+void Theremin::setLowPassFrequency(stk::StkFloat pole)
 {
-    mLowPassFilter = (freq > 0);
-    mLowPass.setZero(freq/4000.);
+    mLowPassFilter = (pole > 0);
+    mLowPass.setPole(pole);
 }
 
 
-void Theremin::setHighPassFrequency(stk::StkFloat freq)
+void Theremin::setHighPassFrequency(stk::StkFloat pole)
 {
-    mHighPassFilter = (freq > 0);
-    mHighPass.setPole(-freq/4000.);
-}
-
-
-void Theremin::setHighPassB0(stk::StkFloat freq)
-{
-    mHighPass.setB0(freq/4000.);
-}
-
-
-void Theremin::setHighPassB1(stk::StkFloat freq)
-{
-    mHighPass.setA1(freq/4000.);
+    mHighPassFilter = (pole > 0);
+    mHighPass.setPole(-pole);
 }
 
 
