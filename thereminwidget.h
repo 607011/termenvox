@@ -4,16 +4,11 @@
 #define __THEREMINWIDGET_H_
 
 #include <QWidget>
+#include <QBrush>
 #include <QPaintEvent>
 #include <QMouseEvent>
 #include <QVector>
 #include "theremin.h"
-
-
-struct Pitch {
-    qreal f;
-    QString name;
-};
 
 
 class ThereminWidget : public QWidget
@@ -35,7 +30,12 @@ public:
     void setFrequencyRange(qreal, qreal);
     void setScaling(Scaling);
 
-    protected:
+    struct Pitch {
+        qreal f;
+        QString name;
+    };
+
+protected:
     void paintEvent(QPaintEvent*);
     void mouseMoveEvent(QMouseEvent*);
     void mousePressEvent(QMouseEvent*);
@@ -47,25 +47,23 @@ signals:
 public slots:
     void setShowHzScale(bool enabled) { mShowHzScale = enabled; update(); }
     void setShowToneScale(bool enabled) { mShowToneScale = enabled; update(); }
+    void setShowLoudnessScale(bool enabled) { mShowLoudnessScale = enabled; update(); }
 
 private:
-    qreal frequency(int x) const;
+    qreal frequency(qreal x) const;
     qreal volumeToHeight(int y) const;
     int frequencyToWidth(qreal f) const;
 
 private:
     bool mShowHzScale;
     bool mShowToneScale;
+    bool mShowLoudnessScale;
+    bool mShowToneInfo;
 
     Scaling mScaling;
 
     qreal mMinF;
     qreal mMaxF;
-
-    qreal mLogMaxF;
-    qreal mSqrtMaxF;
-    qreal mLogMinF;
-    qreal mSqrtMinF;
     qreal mdF;
     qreal mLogdF;
     qreal mSqrtdF;

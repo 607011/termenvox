@@ -59,33 +59,9 @@
             <number>3</number>
            </property>
            <item row="0" column="1">
-            <widget class="QLabel" name="minFLabel">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>32</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>32</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">font-size: 200%</string>
-             </property>
-             <property name="text">
-              <string>99999</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            <widget class="QLineEdit" name="minFLineEdit">
+             <property name="maxLength">
+              <number>5</number>
              </property>
             </widget>
            </item>
@@ -165,33 +141,9 @@
             </widget>
            </item>
            <item row="0" column="4">
-            <widget class="QLabel" name="maxFLabel">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>32</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>32</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">font-size: 200%</string>
-             </property>
-             <property name="text">
-              <string>99999</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            <widget class="QLineEdit" name="maxFLineEdit">
+             <property name="maxLength">
+              <number>5</number>
              </property>
             </widget>
            </item>
@@ -402,6 +354,7 @@
     </property>
     <addaction name="actionHzScale"/>
     <addaction name="actionToneScale"/>
+    <addaction name="actionLoudnessScale"/>
    </widget>
    <widget class="QMenu" name="menuFile">
     <property name="title">
@@ -409,8 +362,16 @@
     </property>
     <addaction name="actionExit"/>
    </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionAbout"/>
+    <addaction name="actionAboutQt"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
+   <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -448,8 +409,38 @@
     <string>Exit</string>
    </property>
   </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="actionAboutQt">
+   <property name="text">
+    <string>About Qt</string>
+   </property>
+  </action>
+  <action name="actionLoudnessScale">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Loudness scale</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>instrumentComboBox</tabstop>
+  <tabstop>volumeDial</tabstop>
+  <tabstop>minFDial</tabstop>
+  <tabstop>minFLineEdit</tabstop>
+  <tabstop>maxFDial</tabstop>
+  <tabstop>maxFLineEdit</tabstop>
+  <tabstop>scaleComboBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

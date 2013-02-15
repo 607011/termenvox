@@ -11,6 +11,8 @@ ThereminWidget::ThereminWidget(QWidget* parent)
     : QWidget(parent)
     , mShowToneScale(true)
     , mShowHzScale(true)
+    , mShowLoudnessScale(true)
+    , mShowToneInfo(true)
     , mScaling(Logarithmic)
     , mMinF(0.0)
     , mMaxF(4000.0)
@@ -22,12 +24,12 @@ ThereminWidget::ThereminWidget(QWidget* parent)
     setFrequencyRange(mMinF, mMaxF);
 
     static const qreal PitchRatio = qPow(2, 1./12); // 1.0594630943592952645618252949463;
-    static const QString Chromatic[12] = { "C", "Cis", "D", "Dis/Es", "E", "F", "Fis/Ges", "G", "Gis/As", "A", "Ais/B", "B" };
+    static const QString MusicalScale[12] = { "C", "Cis", "D", "Dis/Es", "E", "F", "Fis/Ges", "G", "Gis/As", "A", "Ais/B", "B" };
     int n = 0;
     for (qreal f = 16.5; f < 20000.0; f *= 2) {
         qreal pitch = f;
         for (int i = 0; i < 12; ++i) {
-            Pitch p = { pitch, QString("%1%2").arg(Chromatic[i]).arg(n) };
+            ThereminWidget::Pitch p = { pitch, QString("%1%2").arg(MusicalScale[i]).arg(n) };
             mPitches.append(p);
             pitch *= PitchRatio;
         }
@@ -36,9 +38,21 @@ ThereminWidget::ThereminWidget(QWidget* parent)
 }
 
 
-qreal ThereminWidget::volumeToHeight(int y) const
+void ThereminWidget::setScaling(ThereminWidget::Scaling scaling)
 {
-    return 1e-2 * y * height();
+    mScaling = scaling;
+    update();
+}
+
+
+void ThereminWidget::setFrequencyRange(qreal minF, qreal maxF)
+{
+    mMinF = minF;
+    mMaxF = maxF;
+    mdF = mMaxF - mMinF;
+    mLogdF = qFuzzyIsNull(mdF)? 1.0 : qLn(mdF);
+    mSqrtdF = qSqrt(mdF);
+    update();
 }
 
 
@@ -46,19 +60,19 @@ template <typename T>
 T square(T x) { return x*x; }
 
 
-qreal ThereminWidget::frequency(int x) const
+qreal ThereminWidget::frequency(qreal x) const
 {
     qreal f;
     switch (mScaling)
     {
     case Linear:
-        f = mMinF + qreal(x) / width() * mdF;
+        f = mMinF + x * mdF / width();
         break;
     case Logarithmic:
-        f = exp(mLogMinF + (qreal(x) / width()) * mLogdF);
+        f = mMinF + exp(x * mLogdF / width());
         break;
     case Quadratic:
-        f = square(mSqrtMinF + (qreal(x) / width()) * mSqrtdF);
+        f = mMinF + square(x * mSqrtdF / width());
         break;
     }
     return f;
@@ -71,38 +85,22 @@ int ThereminWidget::frequencyToWidth(qreal f) const
     switch (mScaling)
     {
     case Linear:
-        x = int(width() / mdF * (f - mMinF));
+        x = int(width() * (f - mMinF) / mdF);
         break;
     case Logarithmic:
-        x = int(width() / mLogdF * (log(f) - mLogMinF));
+        x = int(width() * log(f - mMinF) / mLogdF);
         break;
     case Quadratic:
-        x = int(width() / mSqrtdF * (sqrt(f) - mSqrtMinF));
+        x = int(width() * sqrt(f - mMinF) / mSqrtdF);
         break;
     }
     return x;
 }
 
 
-void ThereminWidget::setFrequencyRange(qreal minF, qreal maxF)
+qreal ThereminWidget::volumeToHeight(int y) const
 {
-    mMinF = minF;
-    mMaxF = maxF;
-    mdF = mMaxF - mMinF;
-    mLogMinF = qFuzzyIsNull(mMinF)? 0.0 : qLn(mMinF);
-    mLogMaxF = qFuzzyIsNull(mMaxF)? 0.0 : qLn(mMaxF);
-    mLogdF = qFuzzyIsNull(mdF)? 0.0 : qLn(mdF);
-    mSqrtMinF = qSqrt(mMinF);
-    mSqrtMaxF = qSqrt(mMaxF);
-    mSqrtdF = qSqrt(mdF);
-    update();
-}
-
-
-void ThereminWidget::setScaling(ThereminWidget::Scaling scaling)
-{
-    mScaling = scaling;
-    update();
+    return 1e-2 * y * height();
 }
 
 
@@ -121,7 +119,7 @@ void ThereminWidget::paintEvent(QPaintEvent*)
         p.setPen(QColor(190, 190, 190, 128));
         for (QVector<Pitch>::const_iterator i = mPitches.constBegin(); i != mPitches.constEnd(); ++i) {
             if (i->f >= mMinF && i->f <= mMaxF) {
-                int x = frequencyToWidth(i->f);
+                const int x = frequencyToWidth(i->f);
                 p.drawLine(x, 0, x, height());
                 p.save();
                 p.translate(x + 2, 2);
@@ -134,26 +132,29 @@ void ThereminWidget::paintEvent(QPaintEvent*)
         p.setPen(QColor(14, 210, 33, 166));
         qreal f;
         for (int i = 0; (f = fTicks[i]) >= 0 && f <= mMaxF; ++i) {
-            int x = frequencyToWidth(f);
+            const int x = frequencyToWidth(f);
             p.drawLine(x, 0, x, height());
             p.drawText(x+2, height()-20, 40, 15, Qt::AlignLeft | Qt::AlignVCenter, QString("%1").arg(f));
         }
     }
-    p.setPen(QColor(14, 210, 33, 166));
-    for (int i = 0; i < 100; i += 10) {
-        int y = volumeToHeight(i);
-        p.drawLine(0, y, width(), y);
+    if (mShowLoudnessScale) {
+        p.setPen(QColor(14, 210, 33, 166));
+        for (int i = 0; i < 100; i += 10) {
+            const int y = volumeToHeight(i);
+            p.drawLine(0, y, width(), y);
+        }
     }
-    p.setPen(Qt::lightGray);
-    p.drawText(QPointF(5, 15), tr("%1 Hz").arg(mFrequency, 0, 'g', 5));
-    p.drawText(QPointF(5, 30), tr("%1%").arg(mVolume*100, 0, 'g', 3));
-    p.setPen(Qt::red);
+    if (mShowToneInfo) {
+        p.setPen(Qt::lightGray);
+        p.drawText(QPointF(5, 15), tr("%1 Hz").arg(mFrequency, 0, 'g', 5));
+        p.drawText(QPointF(5, 30), tr("%1%").arg(mVolume*100, 0, 'g', 3));
+    }
 }
 
 
 void ThereminWidget::wheelEvent(QWheelEvent* e)
 {
-    update();
+    // ...
 }
 
 

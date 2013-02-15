@@ -28,6 +28,10 @@ private slots:
     void scalingChanged(int);
     void minFrequencyChanged(int);
     void maxFrequencyChanged(int);
+    void minFrequencyEntered(const QString&);
+    void maxFrequencyEntered(const QString&);
+    void about(void);
+    void aboutQt(void);
 
 private:
     void saveAppSettings(void);

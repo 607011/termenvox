@@ -1,7 +1,8 @@
 // Copyright (c) 2013 Oliver Lau <ola@ct.de>, Heise Zeitschriften Verlag. All rights reserved.
 
 #include <QSettings>
-
+#include <QMessageBox>
+#include <QIntValidator>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "theremin.h"
@@ -16,14 +17,22 @@ MainWindow::MainWindow(QWidget* parent)
     ui->setupUi(this);
     ui->horizontalLayout->addWidget(mThereminWidget);
 
+    ui->minFLineEdit->setValidator(new QIntValidator(ui->minFDial->minimum(), ui->minFDial->maximum()));
+    ui->maxFLineEdit->setValidator(new QIntValidator(ui->maxFDial->minimum(), ui->maxFDial->maximum()));
+
     QObject::connect(ui->instrumentComboBox, SIGNAL(currentIndexChanged(int)), SLOT(instrumentChanged(int)));
     QObject::connect(ui->volumeDial, SIGNAL(valueChanged(int)), SLOT(volumeChanged(int)));
     QObject::connect(ui->scaleComboBox, SIGNAL(currentIndexChanged(int)), SLOT(scalingChanged(int)));
     QObject::connect(ui->minFDial, SIGNAL(valueChanged(int)), SLOT(minFrequencyChanged(int)));
     QObject::connect(ui->maxFDial, SIGNAL(valueChanged(int)), SLOT(maxFrequencyChanged(int)));
+    QObject::connect(ui->minFLineEdit, SIGNAL(textChanged(QString)), SLOT(minFrequencyEntered(QString)));
+    QObject::connect(ui->maxFLineEdit, SIGNAL(textChanged(QString)), SLOT(maxFrequencyEntered(QString)));
     QObject::connect(ui->actionHzScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowHzScale(bool)));
     QObject::connect(ui->actionToneScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowToneScale(bool)));
+    QObject::connect(ui->actionLoudnessScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowLoudnessScale(bool)));
     QObject::connect(ui->actionExit, SIGNAL(triggered()), SLOT(close()));
+    QObject::connect(ui->actionAbout, SIGNAL(triggered()), SLOT(about()));
+    QObject::connect(ui->actionAboutQt, SIGNAL(triggered()), SLOT(aboutQt()));
     restoreAppSettings();
 }
 
@@ -50,6 +59,7 @@ void MainWindow::saveAppSettings(void)
     settings.setValue("MainWindow/scaling", ui->scaleComboBox->currentIndex());
     settings.setValue("MainWindow/hzScale", ui->actionHzScale->isChecked());
     settings.setValue("MainWindow/toneScale", ui->actionToneScale->isChecked());
+    settings.setValue("MainWindow/loudnessScale", ui->actionLoudnessScale->isChecked());
     settings.setValue("MainWindow/minF", ui->minFDial->value());
     settings.setValue("MainWindow/maxF", ui->maxFDial->value());
 }
@@ -67,6 +77,8 @@ void MainWindow::restoreAppSettings(void)
     mThereminWidget->setShowHzScale(ui->actionHzScale->isChecked());
     ui->actionToneScale->setChecked(settings.value("MainWindow/toneScale", true).toBool());
     mThereminWidget->setShowToneScale(ui->actionToneScale->isChecked());
+    ui->actionLoudnessScale->setChecked(settings.value("MainWindow/loudnessScale", true).toBool());
+    mThereminWidget->setShowLoudnessScale(ui->actionLoudnessScale->isChecked());
     ui->minFDial->setValue(settings.value("MainWindow/minF", 10).toInt());
     ui->maxFDial->setValue(settings.value("MainWindow/maxF", 4000).toInt());
 }
@@ -93,13 +105,54 @@ void MainWindow::scalingChanged(int scaling)
 
 void MainWindow::minFrequencyChanged(int freq)
 {
-    ui->minFLabel->setText(QString("%1").arg(freq));
+    if (sender())
+        ui->minFLineEdit->setText(QString("%1").arg(freq));
     mThereminWidget->setFrequencyRange(freq, ui->maxFDial->value());
 }
 
 
 void MainWindow::maxFrequencyChanged(int freq)
 {
-    ui->maxFLabel->setText(QString("%1").arg(freq));
+    if (sender())
+        ui->maxFLineEdit->setText(QString("%1").arg(freq));
     mThereminWidget->setFrequencyRange(ui->minFDial->value(), freq);
+}
+
+
+void MainWindow::minFrequencyEntered(const QString& text)
+{
+    ui->minFDial->setValue(text.toInt());
+}
+
+
+void MainWindow::maxFrequencyEntered(const QString& text)
+{
+    ui->maxFDial->setValue(text.toInt());
+}
+
+
+void MainWindow::about(void)
+{
+    QMessageBox::about(this, tr("About %1 %2%3").arg(AppName).arg(AppVersionNoDebug).arg(AppMinorVersion),
+                       tr("<p><b>%1</b> simulates the electrical instrument invented by Lev Termen. "
+                          "See <a href=\"%2\" title=\"%1 project homepage\">%2</a> for more info.</p>"
+                          "<p>Copyright &copy; 2013 %3 &lt;%4&gt;, Heise Zeitschriften Verlag.</p>"
+                          "<p>This program is free software: you can redistribute it and/or modify "
+                          "it under the terms of the GNU General Public License as published by "
+                          "the Free Software Foundation, either version 3 of the License, or "
+                          "(at your option) any later version.</p>"
+                          "<p>This program is distributed in the hope that it will be useful, "
+                          "but WITHOUT ANY WARRANTY; without even the implied warranty of "
+                          "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the "
+                          "GNU General Public License for more details.</p>"
+                          "You should have received a copy of the GNU General Public License "
+                          "along with this program. "
+                          "If not, see <a href=\"http://www.gnu.org/licenses/gpl-3.0\">http://www.gnu.org/licenses</a>.</p>")
+                       .arg(AppName).arg(AppUrl).arg(AppAuthor).arg(AppAuthorMail));
+}
+
+
+void MainWindow::aboutQt(void)
+{
+    QMessageBox::aboutQt(this);
 }
