@@ -1,5 +1,6 @@
 // Copyright (c) 2013 Oliver Lau <ola@ct.de>, Heise Zeitschriften Verlag. All rights reserved.
 
+#include <QtCore/QDebug>
 #include <QSettings>
 #include <QMessageBox>
 #include <QIntValidator>
@@ -29,7 +30,7 @@ MainWindow::MainWindow(QWidget* parent)
     QObject::connect(ui->maxFLineEdit, SIGNAL(textChanged(QString)), SLOT(maxFrequencyEntered(QString)));
     QObject::connect(ui->actionHzScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowHzScale(bool)));
     QObject::connect(ui->actionToneScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowToneScale(bool)));
-    QObject::connect(ui->actionLoudnessScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowLoudnessScale(bool)));
+    QObject::connect(ui->actionVolumeScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowLoudnessScale(bool)));
     QObject::connect(ui->actionExit, SIGNAL(triggered()), SLOT(close()));
     QObject::connect(ui->actionAbout, SIGNAL(triggered()), SLOT(about()));
     QObject::connect(ui->actionAboutQt, SIGNAL(triggered()), SLOT(aboutQt()));
@@ -59,7 +60,7 @@ void MainWindow::saveAppSettings(void)
     settings.setValue("MainWindow/scaling", ui->scaleComboBox->currentIndex());
     settings.setValue("MainWindow/hzScale", ui->actionHzScale->isChecked());
     settings.setValue("MainWindow/toneScale", ui->actionToneScale->isChecked());
-    settings.setValue("MainWindow/loudnessScale", ui->actionLoudnessScale->isChecked());
+    settings.setValue("MainWindow/volumeScale", ui->actionVolumeScale->isChecked());
     settings.setValue("MainWindow/minF", ui->minFDial->value());
     settings.setValue("MainWindow/maxF", ui->maxFDial->value());
 }
@@ -77,8 +78,8 @@ void MainWindow::restoreAppSettings(void)
     mThereminWidget->setShowHzScale(ui->actionHzScale->isChecked());
     ui->actionToneScale->setChecked(settings.value("MainWindow/toneScale", true).toBool());
     mThereminWidget->setShowToneScale(ui->actionToneScale->isChecked());
-    ui->actionLoudnessScale->setChecked(settings.value("MainWindow/loudnessScale", true).toBool());
-    mThereminWidget->setShowLoudnessScale(ui->actionLoudnessScale->isChecked());
+    ui->actionVolumeScale->setChecked(settings.value("MainWindow/volumeScale", true).toBool());
+    mThereminWidget->setShowLoudnessScale(ui->actionVolumeScale->isChecked());
     ui->minFDial->setValue(settings.value("MainWindow/minF", 10).toInt());
     ui->maxFDial->setValue(settings.value("MainWindow/maxF", 4000).toInt());
 }
@@ -92,8 +93,9 @@ void MainWindow::instrumentChanged(int idx)
 
 void MainWindow::volumeChanged(int volume)
 {
-    mThereminWidget->theremin().setGlobalVolume(qreal(volume) / (ui->volumeDial->maximum() - ui->volumeDial->minimum()));
-    ui->volumeLabel->setText(QString("%1").arg(volume/10));
+    qreal v = qreal(volume) / (ui->volumeDial->maximum() - ui->volumeDial->minimum());
+    mThereminWidget->theremin().setGlobalVolume(v);
+    ui->volumeLabel->setText(QString("%1").arg(11 * v, 0, 'g', 2));
 }
 
 

@@ -2,6 +2,9 @@
 Links
 =====
 
+Clara Rockmore: Nocturne in C# minor
+http://www.youtube.com/watch?v=g663B3pqYdo
+
 Trekkie plays Star Trek theme on Theremin
 http://www.youtube.com/watch?v=V0zQHNmz0gU
 
@@ -13,3 +16,11 @@ http://www.youtube.com/watch?v=cd4jvtAr8JM
 http://www.youtube.com/watch?v=I0VUKwP0Sko
 http://www.youtube.com/watch?v=MJEbIMOfAMg
 http://www.youtube.com/watch?v=79PYEhQ5Njk
+
+
+
+
+Wiimote
+=======
+http://www.codeproject.com/articles/56630/writing-a-sensor-driver-for-the-wiimote-on-windows
+
