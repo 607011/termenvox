@@ -18,6 +18,8 @@ int tickCallback(void* outputBuffer, void* inputBuffer, unsigned int nBufferFram
         StkFloat output = instrument->tick();
         if (instrument->echoEffect())
             output = instrument->echo().tick(output);
+        if (instrument->chorusEffect())
+            output = instrument->chorus().tick(output);
         if (instrument->lowPassFilter())
             output = instrument->lowPass().tick(output);
         if (instrument->highPassFilter())
@@ -33,6 +35,7 @@ Theremin::Theremin(void)
     , mGlobalVolume(1.0)
     , mFrequency(440.0)
     , mEchoEffect(false)
+    , mChorusEffect(false)
     , mLowPassFilter(false)
     , mHighPassFilter(false)
     , mInstrumentId(Silence)
@@ -201,6 +204,19 @@ void Theremin::setEcho(int delay)
 {
     mEchoEffect = (delay > 0);
     mEcho.setDelay(delay);
+}
+
+
+void Theremin::setChorusDepth(stk::StkFloat depth)
+{
+    mChorusEffect = (depth > 0);
+    mChorus.setModDepth(depth);
+}
+
+
+void Theremin::setChorusFrequency(stk::StkFloat freq)
+{
+    mChorus.setModFrequency(freq);
 }
 
 

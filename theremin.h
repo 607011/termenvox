@@ -15,6 +15,7 @@
 #include "Rhodey.h"
 #include "FMVoices.h"
 #include "Echo.h"
+#include "Chorus.h"
 #include "OneZero.h"
 #include "OnePole.h"
 
@@ -43,14 +44,18 @@ public:
     void setLowPassFrequency(stk::StkFloat);
     void setHighPassFrequency(stk::StkFloat);
     void setEcho(int);
+    void setChorusDepth(stk::StkFloat);
+    void setChorusFrequency(stk::StkFloat);
     void setVolume(stk::StkFloat);
     void setGlobalVolume(stk::StkFloat);
     void chooseInstrument(Instrument instrumentId);
     stk::StkFloat tick(void);
     stk::Echo& echo(void) { return mEcho; }
+    stk::Chorus& chorus(void) { return mChorus; }
     stk::OnePole& lowPass(void) { return mLowPass; }
     stk::OnePole& highPass(void) { return mHighPass; }
     bool echoEffect(void) const { return mEchoEffect; }
+    bool chorusEffect(void) const { return mChorusEffect; }
     bool lowPassFilter(void) { return mLowPassFilter; }
     bool highPassFilter(void) { return mHighPassFilter; }
 
@@ -63,11 +68,13 @@ private:
     stk::StkFloat mGlobalVolume;
     stk::StkFloat mFrequency;
     bool mEchoEffect;
+    bool mChorusEffect;
     bool mLowPassFilter;
     bool mHighPassFilter;
     stk::Instrmnt* mInstruments[LastInstrument];
     Instrument mInstrumentId;
     stk::Echo mEcho;
+    stk::Chorus mChorus;
     stk::OnePole mLowPass;
     stk::OnePole mHighPass;
     RtAudio mDAC;

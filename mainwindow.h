@@ -35,6 +35,8 @@ private slots:
     void lowPassFreqChanged(int);
     void highPassFreqChanged(int);
     void echoChanged(int);
+    void chorusDepthChanged(int);
+    void chorusFreqChanged(int freq);
     void about(void);
     void aboutQt(void);
 

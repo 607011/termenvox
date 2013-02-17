@@ -31,6 +31,8 @@ MainWindow::MainWindow(QWidget* parent)
     QObject::connect(ui->maxFLineEdit, SIGNAL(textChanged(QString)), SLOT(maxFrequencyEntered(QString)));
     QObject::connect(ui->lowPassDial, SIGNAL(valueChanged(int)), SLOT(lowPassFreqChanged(int)));
     QObject::connect(ui->highPassDial, SIGNAL(valueChanged(int)), SLOT(highPassFreqChanged(int)));
+    QObject::connect(ui->chorusDepthDial, SIGNAL(valueChanged(int)), SLOT(chorusDepthChanged(int)));
+    QObject::connect(ui->chorusFreqDial, SIGNAL(valueChanged(int)), SLOT(chorusFreqChanged(int)));
     QObject::connect(ui->echoDial, SIGNAL(valueChanged(int)), SLOT(echoChanged(int)));
     QObject::connect(ui->actionHzScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowHzScale(bool)));
     QObject::connect(ui->actionToneScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowToneScale(bool)));
@@ -71,6 +73,8 @@ void MainWindow::saveAppSettings(void)
     settings.setValue("MainWindow/lowPass", ui->lowPassDial->value());
     settings.setValue("MainWindow/highPass", ui->highPassDial->value());
     settings.setValue("MainWindow/echo", ui->echoDial->value());
+    settings.setValue("MainWindow/chorusDepth", ui->chorusDepthDial->value());
+    settings.setValue("MainWindow/chorusFreq", ui->chorusFreqDial->value());
 }
 
 
@@ -95,6 +99,8 @@ void MainWindow::restoreAppSettings(void)
     ui->highPassDial->setValue(settings.value("MainWindow/highPass", -1).toInt());
     highPassFreqChanged(ui->highPassDial->value());
     ui->echoDial->setValue(settings.value("MainWindow/echo", -1).toInt());
+    ui->chorusDepthDial->setValue(settings.value("MainWindow/chorusDepth", 0).toInt());
+    ui->chorusFreqDial->setValue(settings.value("MainWindow/chorusFreq", 0).toInt());
 }
 
 
@@ -108,7 +114,6 @@ void MainWindow::volumeChanged(int volume)
 {
     qreal v = qreal(volume) / (ui->volumeDial->maximum() - ui->volumeDial->minimum());
     mThereminWidget->theremin().setGlobalVolume(v);
-    ui->volumeLabel->setText(QString("%1").arg(11 * v, 0, 'g', 2));
 }
 
 
@@ -160,6 +165,19 @@ void MainWindow::echoChanged(int delay)
 {
     mThereminWidget->theremin().setEcho(delay);
 }
+
+
+void MainWindow::chorusDepthChanged(int depth)
+{
+    mThereminWidget->theremin().setChorusDepth(qreal(depth) / ui->chorusDepthDial->maximum());
+}
+
+
+void MainWindow::chorusFreqChanged(int freq)
+{
+    mThereminWidget->theremin().setChorusFrequency(freq);
+}
+
 
 
 void MainWindow::about(void)
