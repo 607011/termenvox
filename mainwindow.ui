@@ -150,56 +150,6 @@
                </property>
               </widget>
              </item>
-             <item row="3" column="0">
-              <layout class="QHBoxLayout" name="horizontalLayout_5">
-               <property name="leftMargin">
-                <number>0</number>
-               </property>
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="rightMargin">
-                <number>0</number>
-               </property>
-               <property name="bottomMargin">
-                <number>0</number>
-               </property>
-               <item>
-                <widget class="QDial" name="lowPassDial">
-                 <property name="minimumSize">
-                  <size>
-                   <width>32</width>
-                   <height>32</height>
-                  </size>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>32</width>
-                   <height>32</height>
-                  </size>
-                 </property>
-                 <property name="minimum">
-                  <number>-1</number>
-                 </property>
-                 <property name="maximum">
-                  <number>4000</number>
-                 </property>
-                 <property name="singleStep">
-                  <number>10</number>
-                 </property>
-                 <property name="pageStep">
-                  <number>100</number>
-                 </property>
-                 <property name="notchTarget">
-                  <double>10.000000000000000</double>
-                 </property>
-                 <property name="notchesVisible">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
              <item row="0" column="0">
               <widget class="QLabel" name="label">
                <property name="text">
@@ -209,47 +159,6 @@
                 <set>Qt::AlignCenter</set>
                </property>
               </widget>
-             </item>
-             <item row="1" column="0">
-              <layout class="QHBoxLayout" name="horizontalLayout_3">
-               <item>
-                <widget class="QDial" name="volumeDial">
-                 <property name="minimumSize">
-                  <size>
-                   <width>32</width>
-                   <height>32</height>
-                  </size>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>32</width>
-                   <height>32</height>
-                  </size>
-                 </property>
-                 <property name="toolTip">
-                  <string>Volume</string>
-                 </property>
-                 <property name="maximum">
-                  <number>110</number>
-                 </property>
-                 <property name="value">
-                  <number>0</number>
-                 </property>
-                 <property name="sliderPosition">
-                  <number>0</number>
-                 </property>
-                 <property name="invertedAppearance">
-                  <bool>false</bool>
-                 </property>
-                 <property name="notchTarget">
-                  <double>10.000000000000000</double>
-                 </property>
-                 <property name="notchesVisible">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-              </layout>
              </item>
              <item row="2" column="1">
               <widget class="QLabel" name="label_4">
@@ -274,6 +183,9 @@
                  <width>32</width>
                  <height>32</height>
                 </size>
+               </property>
+               <property name="toolTip">
+                <string>High Pass Filter</string>
                </property>
                <property name="minimum">
                 <number>-1</number>
@@ -322,6 +234,9 @@
                <property name="toolTip">
                 <string>Volume</string>
                </property>
+               <property name="statusTip">
+                <string>Echo</string>
+               </property>
                <property name="minimum">
                 <number>0</number>
                </property>
@@ -359,6 +274,9 @@
                  <height>32</height>
                 </size>
                </property>
+               <property name="toolTip">
+                <string>Chorus depth</string>
+               </property>
                <property name="minimum">
                 <number>0</number>
                </property>
@@ -392,6 +310,9 @@
                  <width>32</width>
                  <height>32</height>
                 </size>
+               </property>
+               <property name="toolTip">
+                <string>Chorus frequency</string>
                </property>
                <property name="minimum">
                 <number>0</number>
@@ -436,6 +357,80 @@
                </property>
               </spacer>
              </item>
+             <item row="3" column="0">
+              <widget class="QDial" name="lowPassDial">
+               <property name="minimumSize">
+                <size>
+                 <width>32</width>
+                 <height>32</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>32</width>
+                 <height>32</height>
+                </size>
+               </property>
+               <property name="toolTip">
+                <string>Low Pass Filter</string>
+               </property>
+               <property name="minimum">
+                <number>-1</number>
+               </property>
+               <property name="maximum">
+                <number>4000</number>
+               </property>
+               <property name="singleStep">
+                <number>10</number>
+               </property>
+               <property name="pageStep">
+                <number>100</number>
+               </property>
+               <property name="notchTarget">
+                <double>10.000000000000000</double>
+               </property>
+               <property name="notchesVisible">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QDial" name="volumeDial">
+               <property name="minimumSize">
+                <size>
+                 <width>32</width>
+                 <height>32</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>32</width>
+                 <height>32</height>
+                </size>
+               </property>
+               <property name="toolTip">
+                <string>Volume</string>
+               </property>
+               <property name="maximum">
+                <number>110</number>
+               </property>
+               <property name="value">
+                <number>0</number>
+               </property>
+               <property name="sliderPosition">
+                <number>0</number>
+               </property>
+               <property name="invertedAppearance">
+                <bool>false</bool>
+               </property>
+               <property name="notchTarget">
+                <double>10.000000000000000</double>
+               </property>
+               <property name="notchesVisible">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
             </layout>
            </item>
           </layout>
@@ -478,6 +473,9 @@
                  <height>32</height>
                 </size>
                </property>
+               <property name="toolTip">
+                <string>Lowest frequency</string>
+               </property>
                <property name="maximum">
                 <number>200</number>
                </property>
@@ -518,6 +516,9 @@
                  <width>32</width>
                  <height>32</height>
                 </size>
+               </property>
+               <property name="toolTip">
+                <string>Highest frequency</string>
                </property>
                <property name="minimum">
                 <number>200</number>
@@ -689,8 +690,6 @@
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
   <tabstop>instrumentComboBox</tabstop>
-  <tabstop>volumeDial</tabstop>
-  <tabstop>lowPassDial</tabstop>
   <tabstop>minFDial</tabstop>
   <tabstop>minFLineEdit</tabstop>
   <tabstop>maxFDial</tabstop>

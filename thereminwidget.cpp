@@ -3,6 +3,7 @@
 #include "thereminwidget.h"
 #include <QtCore/QDebug>
 #include <QLinearGradient>
+#include <QMessageBox>
 #include <QPainter>
 #include <qmath.h>
 #include <qglobal.h>
@@ -23,6 +24,9 @@ ThereminWidget::ThereminWidget(QWidget* parent)
     setMouseTracking(true);
     setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     setFrequencyRange(mMinF, mMaxF);
+
+    if (mTheremin.lastErrorType() != RtError::UNSPECIFIED)
+        QMessageBox::critical(this, tr("STK Error"), tr("Error while initializing Theremin: %1").arg(mTheremin.lastErrorMessage()));
 
     static const qreal PitchRatio = qPow(2, 1./12); // 1.0594630943592952645618252949463;
     static const QString MusicalScale[12] = { "C", "Cis", "D", "Dis/Es", "E", "F", "Fis/Ges", "G", "Gis/As", "A", "Ais/B", "B" };

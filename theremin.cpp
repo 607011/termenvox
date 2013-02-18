@@ -25,6 +25,7 @@ int tickCallback(void* outputBuffer, void* inputBuffer, unsigned int nBufferFram
         if (instrument->highPassFilter())
             output = instrument->highPass().tick(output);
         *oSamples++ = output;
+        *oSamples++ = output;
     }
     return 0;
 }
@@ -39,6 +40,7 @@ Theremin::Theremin(void)
     , mLowPassFilter(false)
     , mHighPassFilter(false)
     , mInstrumentId(Silence)
+    , mError("")
 {
     Stk::setSampleRate(44100.0);
     Stk::setRawwavePath( "../termenvox/STK/rawwaves/" );
@@ -53,20 +55,22 @@ Theremin::Theremin(void)
     mInstruments[FMVoices] = new stk::FMVoices;
     RtAudio::StreamParameters oparameters;
     oparameters.deviceId = mDAC.getDefaultOutputDevice();
-    oparameters.nChannels = 1;
+    oparameters.nChannels = 2;
     RtAudioFormat format = (sizeof(StkFloat) == 8)? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
     unsigned int bufferFrames = RT_BUFFER_SIZE;
     try {
         mDAC.openStream(&oparameters, NULL, format, (unsigned int)Stk::sampleRate(), &bufferFrames, &tickCallback, (void*)this);
     }
     catch (RtError& error) {
-        error.printMessage();
+        mError = error;
+        return;
     }
     try {
         mDAC.startStream();
     }
     catch (RtError& error) {
-        error.printMessage();
+        mError = error;
+        return;
     }
 }
 
@@ -77,9 +81,7 @@ Theremin::~Theremin()
     try {
         mDAC.closeStream();
     }
-    catch (RtError& error) {
-        error.printMessage();
-    }
+    catch (RtError&) { /* ... */ }
     for (int i = 0; i < LastInstrument; ++i)
         if (mInstruments[i] != NULL)
             delete mInstruments[i];
@@ -163,6 +165,12 @@ void Theremin::stop(void)
 StkFloat Theremin::tick(void)
 {
     return (mInstrumentId != Silence)? mGlobalVolume * mVolume * mInstruments[mInstrumentId]->tick() : 0;
+}
+
+
+stk::StkFloat Theremin::lastOut(void) const
+{
+    return (mInstrumentId != Silence)? mGlobalVolume * mVolume * mInstruments[mInstrumentId]->lastOut() : 0;
 }
 
 
