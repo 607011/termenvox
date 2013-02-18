@@ -19,16 +19,16 @@ ThereminWidget::ThereminWidget(QWidget* parent)
     , mMinF(0.0)
     , mMaxF(4000.0)
     , mVolume(1.0)
-    , mFrequency(440.0)
+    , mFrequency(443.0)
 {
     setMouseTracking(true);
     setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     setFrequencyRange(mMinF, mMaxF);
 
     if (mTheremin.lastErrorType() != RtError::UNSPECIFIED)
-        QMessageBox::critical(this, tr("STK Error"), tr("Error while initializing Theremin: %1").arg(mTheremin.lastErrorMessage()));
+        QMessageBox::critical(this, tr("STK Error"), tr("Error while initializing Theremin: %1. Can't play any sound.").arg(mTheremin.lastErrorMessage()));
 
-    static const qreal PitchRatio = qPow(2, 1./12); // 1.0594630943592952645618252949463;
+    static const qreal PitchRatio = 1.0594630943592952645618252949463417007792043174941856; // qPow(2, 1./12);
     static const QString MusicalScale[12] = { "C", "Cis", "D", "Dis/Es", "E", "F", "Fis/Ges", "G", "Gis/As", "A", "Ais/B", "B" };
     int n = 0;
     for (qreal f = 16.5; f < 20000.0; f *= 2) {
@@ -56,16 +56,15 @@ void ThereminWidget::setFrequencyRange(qreal minF, qreal maxF)
     mMaxF = maxF;
     mdF = mMaxF - mMinF;
     mLogdF = qFuzzyIsNull(mdF)? 1.0 : qLn(mdF);
-    mSqrtdF = qSqrt(mdF);
     update();
 }
 
 
 template <typename T>
-T square(T x) { return x*x; }
+T sqr(T x) { return x*x; }
 
 
-qreal ThereminWidget::frequency(int x) const
+qreal ThereminWidget::widthToFrequency(int x) const
 {
     qreal f;
     switch (mScaling)
@@ -77,7 +76,7 @@ qreal ThereminWidget::frequency(int x) const
         f = mMinF + exp(x * mLogdF / width());
         break;
     case Quadratic:
-        f = mMinF + square(x * mSqrtdF / width());
+        f = mMinF + sqr(qreal(x) / width()) * mdF;
         break;
     }
     return f;
@@ -96,7 +95,7 @@ int ThereminWidget::frequencyToWidth(qreal f) const
         x = int(width() * log(f - mMinF) / mLogdF);
         break;
     case Quadratic:
-        x = int(width() * sqrt(f - mMinF) / mSqrtdF);
+        x = int(width() * sqrt((f - mMinF) / mdF));
         break;
     }
     return x;
@@ -177,7 +176,7 @@ void ThereminWidget::mousePressEvent(QMouseEvent* e)
         break;
     case Qt::RightButton:
         mHold = true;
-        mFrequency = frequency(e->x());
+        mFrequency = widthToFrequency(e->x());
         mVolume = qreal(height() - e->y()) / height();
         mTheremin.setFrequency(mFrequency);
         mTheremin.setVolume(mVolume);
@@ -205,7 +204,7 @@ void ThereminWidget::mouseReleaseEvent(QMouseEvent* e)
 void ThereminWidget::mouseMoveEvent(QMouseEvent* e)
 {
     if (!mHold) {
-        mFrequency = frequency(e->x());
+        mFrequency = widthToFrequency(e->x());
         mVolume = qreal(height() - e->y()) / height();
         mTheremin.setFrequency(mFrequency);
         mTheremin.setVolume(mVolume);

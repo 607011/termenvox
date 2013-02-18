@@ -51,7 +51,7 @@ public slots:
     void setShowLoudnessScale(bool enabled) { mShowLoudnessScale = enabled; update(); }
 
 private:
-    qreal frequency(int x) const;
+    qreal widthToFrequency(int x) const;
     int volumeToHeight(qreal y) const;
     int frequencyToWidth(qreal f) const;
 
@@ -68,7 +68,6 @@ private:
     qreal mMaxF;
     qreal mdF;
     qreal mLogdF;
-    qreal mSqrtdF;
 
     Theremin mTheremin;
 
