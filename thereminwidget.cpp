@@ -78,6 +78,12 @@ qreal ThereminWidget::widthToFrequency(int x) const
     case Quadratic:
         f = mMinF + sqr(qreal(x) / width()) * mdF;
         break;
+    case Cubic:
+        f = mMinF + qPow(qreal(x) / width(), 3) * mdF;
+        break;
+    case Biquadratic:
+        f = mMinF + qPow(qreal(x) / width(), 4) * mdF;
+        break;
     }
     return f;
 }
@@ -97,6 +103,12 @@ int ThereminWidget::frequencyToWidth(qreal f) const
     case Quadratic:
         x = int(width() * sqrt((f - mMinF) / mdF));
         break;
+    case Cubic:
+        x = int(width() * qPow((f - mMinF) / mdF, 1./3));
+        break;
+    case Biquadratic:
+        x = int(width() * qPow((f - mMinF) / mdF, 1./4));
+        break;
     }
     return x;
 }
@@ -104,7 +116,13 @@ int ThereminWidget::frequencyToWidth(qreal f) const
 
 int ThereminWidget::volumeToHeight(qreal volume) const
 {
-    return height() - volume * height();
+    return height() - int(volume * height());
+}
+
+
+qreal ThereminWidget::heightToVolume(int h) const
+{
+    return qreal(height() - h) / height();
 }
 
 
@@ -177,7 +195,7 @@ void ThereminWidget::mousePressEvent(QMouseEvent* e)
     case Qt::RightButton:
         mHold = true;
         mFrequency = widthToFrequency(e->x());
-        mVolume = qreal(height() - e->y()) / height();
+        mVolume = heightToVolume(e->y());
         mTheremin.setFrequency(mFrequency);
         mTheremin.setVolume(mVolume);
         mTheremin.play();

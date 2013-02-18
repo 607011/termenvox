@@ -25,7 +25,9 @@ public:
     enum Scaling {
         Linear,
         Logarithmic,
-        Quadratic
+        Quadratic,
+        Cubic,
+        Biquadratic
     };
 
     void setFrequencyRange(qreal, qreal);
@@ -52,8 +54,9 @@ public slots:
 
 private:
     qreal widthToFrequency(int x) const;
-    int volumeToHeight(qreal y) const;
     int frequencyToWidth(qreal f) const;
+    qreal heightToVolume(int h) const;
+    int volumeToHeight(qreal y) const;
 
 private:
     bool mShowHzScale;
