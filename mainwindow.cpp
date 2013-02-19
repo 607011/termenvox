@@ -72,11 +72,13 @@ void MainWindow::saveAppSettings(void)
     settings.setValue("MainWindow/volumeScale", ui->actionVolumeScale->isChecked());
     settings.setValue("MainWindow/minF", ui->minFDial->value());
     settings.setValue("MainWindow/maxF", ui->maxFDial->value());
-    settings.setValue("MainWindow/lowPass", ui->lowPassDial->value());
-    settings.setValue("MainWindow/highPass", ui->highPassDial->value());
-    settings.setValue("MainWindow/echo", ui->echoDial->value());
-    settings.setValue("MainWindow/chorusDepth", ui->chorusDepthDial->value());
-    settings.setValue("MainWindow/chorusFreq", ui->chorusFreqDial->value());
+    settings.setValue("Filters/LowPass", ui->lowPassDial->value());
+    settings.setValue("Filters/HighPass", ui->highPassDial->value());
+    settings.setValue("Effects/Echo", ui->echoDial->value());
+    settings.setValue("Effects/Chorus/depth", ui->chorusDepthDial->value());
+    settings.setValue("Effects/Chorus/frequency", ui->chorusFreqDial->value());
+    settings.setValue("Effects/FreeVerb/damping", ui->freeVerbDampingDial->value());
+    settings.setValue("Effects/FreeVerb/roomsize", ui->freeVerbRoomSizeDial->value());
 }
 
 
@@ -96,13 +98,19 @@ void MainWindow::restoreAppSettings(void)
     mThereminWidget->setShowLoudnessScale(ui->actionVolumeScale->isChecked());
     ui->minFDial->setValue(settings.value("MainWindow/minF", 10).toInt());
     ui->maxFDial->setValue(settings.value("MainWindow/maxF", 4000).toInt());
-    ui->lowPassDial->setValue(settings.value("MainWindow/lowPass", -1).toInt());
+    ui->lowPassDial->setValue(settings.value("Filters/LowPass", -1).toInt());
     lowPassFreqChanged(ui->lowPassDial->value());
-    ui->highPassDial->setValue(settings.value("MainWindow/highPass", -1).toInt());
+    ui->highPassDial->setValue(settings.value("Filters/HighPass", -1).toInt());
     highPassFreqChanged(ui->highPassDial->value());
-    ui->echoDial->setValue(settings.value("MainWindow/echo", -1).toInt());
-    ui->chorusDepthDial->setValue(settings.value("MainWindow/chorusDepth", 0).toInt());
-    ui->chorusFreqDial->setValue(settings.value("MainWindow/chorusFreq", 0).toInt());
+    ui->echoDial->setValue(settings.value("Effects/Echo", -1).toInt());
+    ui->chorusDepthDial->setValue(settings.value("Effects/Chorus/depth", 0).toInt());
+    chorusDepthChanged(ui->chorusDepthDial->value());
+    ui->chorusFreqDial->setValue(settings.value("Effects/Chorus/frequency", 0).toInt());
+    chorusFreqChanged(ui->chorusFreqDial->value());
+    ui->freeVerbDampingDial->setValue(settings.value("Effects/FreeVerb/damping", 0).toInt());
+    freeVerbDampingChanged(ui->freeVerbDampingDial->value());
+    ui->freeVerbRoomSizeDial->setValue(settings.value("Effects/FreeVerb/roomsize", 0).toInt());
+    freeVerbRoomSizeChanged(ui->freeVerbRoomSizeDial->value());
 }
 
 

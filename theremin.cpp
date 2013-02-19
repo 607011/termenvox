@@ -55,7 +55,11 @@ Theremin::Theremin(void)
     , mError("")
 {
     Stk::setSampleRate(44100.0);
+#ifdef QT_NO_DEBUG
+    Stk::setRawwavePath( "./rawwaves/" );
+#else
     Stk::setRawwavePath( "../termenvox/STK/rawwaves/" );
+#endif
     mInstruments[Violin] = new stk::Bowed;
     mInstruments[Clarinet] = new stk::Clarinet;
     mInstruments[Flute] = new stk::Flute(80);
