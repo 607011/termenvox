@@ -20,10 +20,14 @@ int tickCallback(void* outputBuffer, void* inputBuffer, unsigned int nBufferFram
             output = instrument->echo().tick(output);
         if (instrument->chorusEffect())
             output = instrument->chorus().tick(output);
+        if (instrument->freeVerbEffect())
+            output = instrument->freeVerb().tick(output);
         if (instrument->lowPassFilter())
             output = instrument->lowPass().tick(output);
         if (instrument->highPassFilter())
             output = instrument->highPass().tick(output);
+        if (instrument->iirFilter())
+            output = instrument->iir().tick(output);
         *oSamples++ = output;
         *oSamples++ = output;
     }
@@ -37,8 +41,16 @@ Theremin::Theremin(void)
     , mFrequency(440.0)
     , mEchoEffect(false)
     , mChorusEffect(false)
+    , mEnvelopeEffect(false)
+    , mPRCRevEffect(false)
+    , mJCRevEffect(false)
+    , mNRevEffect(false)
+    , mFreeVerbEffect(false)
+    , mPitShiftEffect(false)
+    , mLentPitShiftEffect(false)
     , mLowPassFilter(false)
     , mHighPassFilter(false)
+    , mIirFilter(false)
     , mInstrumentId(Silence)
     , mError("")
 {
@@ -212,6 +224,19 @@ void Theremin::setEcho(int delay)
 {
     mEchoEffect = (delay > 0);
     mEcho.setDelay(delay);
+}
+
+
+void Theremin::setFreeVerbDamping(StkFloat damping)
+{
+    mFreeVerbEffect = (damping > 0);
+    mFreeVerb.setDamping(damping);
+}
+
+
+void Theremin::setFreeVerbRoomSize(StkFloat roomsize)
+{
+    mFreeVerb.setRoomSize(roomsize);
 }
 
 

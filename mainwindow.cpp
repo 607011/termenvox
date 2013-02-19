@@ -33,6 +33,8 @@ MainWindow::MainWindow(QWidget* parent)
     QObject::connect(ui->highPassDial, SIGNAL(valueChanged(int)), SLOT(highPassFreqChanged(int)));
     QObject::connect(ui->chorusDepthDial, SIGNAL(valueChanged(int)), SLOT(chorusDepthChanged(int)));
     QObject::connect(ui->chorusFreqDial, SIGNAL(valueChanged(int)), SLOT(chorusFreqChanged(int)));
+    QObject::connect(ui->freeVerbDampingDial, SIGNAL(valueChanged(int)), SLOT(freeVerbDampingChanged(int)));
+    QObject::connect(ui->freeVerbRoomSizeDial, SIGNAL(valueChanged(int)), SLOT(freeVerbRoomSizeChanged(int)));
     QObject::connect(ui->echoDial, SIGNAL(valueChanged(int)), SLOT(echoChanged(int)));
     QObject::connect(ui->actionHzScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowHzScale(bool)));
     QObject::connect(ui->actionToneScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowToneScale(bool)));
@@ -178,6 +180,17 @@ void MainWindow::chorusFreqChanged(int freq)
     mThereminWidget->theremin().setChorusFrequency(freq);
 }
 
+
+void MainWindow::freeVerbDampingChanged(int damping)
+{
+    mThereminWidget->theremin().setFreeVerbDamping(qreal(damping) / ui->freeVerbDampingDial->maximum());
+}
+
+
+void MainWindow::freeVerbRoomSizeChanged(int size)
+{
+    mThereminWidget->theremin().setFreeVerbRoomSize(qreal(size) / ui->freeVerbRoomSizeDial->maximum());
+}
 
 
 void MainWindow::about(void)

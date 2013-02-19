@@ -37,6 +37,8 @@ private slots:
     void echoChanged(int);
     void chorusDepthChanged(int);
     void chorusFreqChanged(int freq);
+    void freeVerbDampingChanged(int);
+    void freeVerbRoomSizeChanged(int);
     void about(void);
     void aboutQt(void);
 
