@@ -22,6 +22,10 @@ int tickCallback(void* outputBuffer, void* inputBuffer, unsigned int nBufferFram
             output = instrument->chorus().tick(output);
         if (instrument->freeVerbEffect())
             output = instrument->freeVerb().tick(output);
+        if (instrument->pitShiftEffect())
+            output = instrument->pitShift().tick(output);
+        if (instrument->lentPitShiftEffect())
+            output = instrument->lentPitShift().tick(output);
         if (instrument->lowPassFilter())
             output = instrument->lowPass().tick(output);
         if (instrument->highPassFilter())
@@ -244,6 +248,20 @@ void Theremin::setFreeVerbRoomSize(StkFloat roomsize)
 }
 
 
+void Theremin::setPitShift(StkFloat shift)
+{
+    mPitShiftEffect = (shift > 0);
+    mPitShift.setShift(shift);
+}
+
+
+void Theremin::setLentPitShift(StkFloat shift)
+{
+    mLentPitShiftEffect = (shift > 0);
+    mLentPitShift.setShift(shift);
+}
+
+
 void Theremin::setChorusDepth(stk::StkFloat depth)
 {
     mChorusEffect = (depth > 0);
@@ -263,14 +281,19 @@ void Theremin::chooseInstrument(Instrument instrumentId)
     switch (instrumentId)
     {
     case Violin:
-        reinterpret_cast<stk::Bowed*>(mInstruments[Violin])->setVibrato(0.0);
+    {
+        stk::Bowed* const violin = reinterpret_cast<stk::Bowed*>(mInstruments[Violin]);
+        violin->setVibrato(0.0);
         break;
+    }
     case Flute:
-        reinterpret_cast<stk::Flute*>(mInstruments[Flute])->setJetReflection(0.5);
-        reinterpret_cast<stk::Flute*>(mInstruments[Flute])->setEndReflection(-0.5);
+    {
+        stk::Flute* const flute = reinterpret_cast<stk::Flute*>(mInstruments[Flute]);
+        flute->setJetReflection(0.5);
+        flute->setEndReflection(-0.5);
         break;
+    }
     default:
         break;
     }
 }
-

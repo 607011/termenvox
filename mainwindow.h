@@ -39,6 +39,8 @@ private slots:
     void chorusFreqChanged(int freq);
     void freeVerbDampingChanged(int);
     void freeVerbRoomSizeChanged(int);
+    void pitShiftChanged(int);
+    void lentPitShiftChanged(int);
     void about(void);
     void aboutQt(void);
 

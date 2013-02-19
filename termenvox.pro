@@ -30,7 +30,7 @@ DEPENDPATH += $$PWD/STK/include
 LIBS += winmm.lib dsound.lib Wsock32.lib Ole32.lib Advapi32.lib
 
 win32:CONFIG(release, debug|release): LIBS += "$$PWD/STK/lib/STK.lib"
-else:win32:CONFIG(debug, debug|release): LIBS += "$$PWD/STK/lib/STKd.lib"
+else:win32:CONFIG(debug, debug|release): LIBS += "$$PWD/STK/lib/STK.lib"
 
 OTHER_FILES += \
     NOTES.txt

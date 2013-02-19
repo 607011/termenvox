@@ -35,6 +35,8 @@ MainWindow::MainWindow(QWidget* parent)
     QObject::connect(ui->chorusFreqDial, SIGNAL(valueChanged(int)), SLOT(chorusFreqChanged(int)));
     QObject::connect(ui->freeVerbDampingDial, SIGNAL(valueChanged(int)), SLOT(freeVerbDampingChanged(int)));
     QObject::connect(ui->freeVerbRoomSizeDial, SIGNAL(valueChanged(int)), SLOT(freeVerbRoomSizeChanged(int)));
+    QObject::connect(ui->pitShiftDial, SIGNAL(valueChanged(int)), SLOT(pitShiftChanged(int)));
+    QObject::connect(ui->lentPitShiftDial, SIGNAL(valueChanged(int)), SLOT(lentPitShiftChanged(int)));
     QObject::connect(ui->echoDial, SIGNAL(valueChanged(int)), SLOT(echoChanged(int)));
     QObject::connect(ui->actionHzScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowHzScale(bool)));
     QObject::connect(ui->actionToneScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowToneScale(bool)));
@@ -198,6 +200,18 @@ void MainWindow::freeVerbDampingChanged(int damping)
 void MainWindow::freeVerbRoomSizeChanged(int size)
 {
     mThereminWidget->theremin().setFreeVerbRoomSize(qreal(size) / ui->freeVerbRoomSizeDial->maximum());
+}
+
+
+void MainWindow::pitShiftChanged(int shift)
+{
+    mThereminWidget->theremin().setPitShift(qreal(shift) / ui->pitShiftDial->maximum());
+}
+
+
+void MainWindow::lentPitShiftChanged(int shift)
+{
+    mThereminWidget->theremin().setLentPitShift(qreal(shift) / ui->lentPitShiftDial->maximum());
 }
 
 

@@ -87,13 +87,15 @@ public:
     inline stk::JCRev& jcRev(void) { return mJCRev; }
     inline bool jcRevEffect(void) const { return mJCRevEffect; }
 
-    inline stk::LentPitShift& lentPitShift(void) { return  mLentShift; }
+    inline stk::LentPitShift& lentPitShift(void) { return  mLentPitShift; }
+    void setLentPitShift(stk::StkFloat);
     inline bool lentPitShiftEffect(void) const { return mLentPitShiftEffect; }
 
     inline stk::NRev& nRev(void) { return mNRev; }
     inline bool nRevEffect(void) const { return mNRevEffect; }
 
     inline stk::PitShift& pitShift(void) { return  mPitShift; }
+    void setPitShift(stk::StkFloat);
     inline bool pitShiftEffect(void) const { return mPitShiftEffect; }
 
     inline stk::PRCRev& prcRev(void) { return mPRCRev; }
@@ -130,7 +132,7 @@ private:
     stk::NRev mNRev;
     stk::FreeVerb mFreeVerb;
     stk::PitShift mPitShift;
-    stk::LentPitShift mLentShift;
+    stk::LentPitShift mLentPitShift;
     bool mEchoEffect;
     bool mChorusEffect;
     bool mEnvelopeEffect;
