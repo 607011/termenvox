@@ -17,6 +17,8 @@ MainWindow::MainWindow(QWidget* parent)
     QSettings::setDefaultFormat(QSettings::NativeFormat);
 
     ui->setupUi(this);
+    setWindowTitle(tr("%1 %2").arg(AppName).arg(AppVersion));
+
     ui->horizontalLayout->addWidget(mThereminWidget);
 
     ui->minFLineEdit->setValidator(new QIntValidator(ui->minFDial->minimum(), ui->minFDial->maximum()));

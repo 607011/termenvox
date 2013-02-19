@@ -1,7 +1,7 @@
 // Copyright (c) 2013 Oliver Lau <ola@ct.de>, Heise Zeitschriften Verlag. All rights reserved.
 
 #include "theremin.h"
-
+#include "Stk.h"
 #include <QtCore/QDebug>
 
 using namespace stk;
@@ -15,31 +15,54 @@ int tickCallback(void* outputBuffer, void* inputBuffer, unsigned int nBufferFram
     Theremin* instrument = reinterpret_cast<Theremin*>(pData);
     StkFloat* oSamples = reinterpret_cast<StkFloat*>(outputBuffer);
     for (unsigned int i = 0; i < nBufferFrames; ++i) {
-        StkFloat output = instrument->tick();
-        if (instrument->echoEffect())
-            output = instrument->echo().tick(output);
-        if (instrument->chorusEffect())
-            output = instrument->chorus().tick(output);
-        if (instrument->freeVerbEffect())
-            output = instrument->freeVerb().tick(output);
-        if (instrument->nRevEffect())
-            output = instrument->nRev().tick(output);
-        if (instrument->jcRevEffect())
-            output = instrument->jcRev().tick(output);
-        if (instrument->prcRevEffect())
-            output = instrument->prcRev().tick(output);
-        if (instrument->pitShiftEffect())
-            output = instrument->pitShift().tick(output);
-        if (instrument->lentPitShiftEffect())
-            output = instrument->lentPitShift().tick(output);
-        if (instrument->lowPassFilter())
-            output = instrument->lowPass().tick(output);
-        if (instrument->highPassFilter())
-            output = instrument->highPass().tick(output);
-        if (instrument->iirFilter())
-            output = instrument->iir().tick(output);
-        *oSamples++ = output;
-        *oSamples++ = output;
+        StkFloat loutput = instrument->tick();
+        StkFloat routput = instrument->lastOut();
+        // effects with mono input and mono output
+        if (instrument->echoEffect()) {
+            loutput = instrument->echo().tick(loutput);
+            routput = loutput;
+        }
+        if (instrument->pitShiftEffect()) {
+            loutput = instrument->pitShift().tick(loutput);
+            routput = loutput;
+        }
+        if (instrument->lentPitShiftEffect()) {
+            loutput = instrument->lentPitShift().tick(loutput);
+            routput = loutput;
+        }
+        // effects with mono input and stereo output
+        if (instrument->nRevEffect()) {
+            loutput = instrument->nRev().tick(loutput);
+            routput = instrument->nRev().lastOut(1);
+        }
+        if (instrument->jcRevEffect()) {
+            loutput = instrument->jcRev().tick(loutput);
+            routput = instrument->jcRev().lastOut(1);
+        }
+        if (instrument->prcRevEffect()) {
+            loutput = instrument->prcRev().tick(loutput);
+            routput = instrument->prcRev().lastOut(1);
+        }
+        if (instrument->chorusEffect()) {
+            loutput = instrument->chorus().tick(loutput);
+            routput = instrument->chorus().lastOut(1);
+        }
+        // effects with stereo input
+        if (instrument->freeVerbEffect()) {
+            loutput = instrument->freeVerb().tick(loutput, routput);
+            routput = instrument->freeVerb().lastOut(1);
+        }
+        // filters with mono(!) input and mono(!) output
+        if (instrument->lowPassFilter()) {
+            loutput = instrument->lowPass().tick(loutput);
+            routput = loutput;
+        }
+        if (instrument->highPassFilter()) {
+            loutput = instrument->highPass().tick(loutput);
+            routput = loutput;
+        }
+        *oSamples++ = loutput;
+        *oSamples++ = routput;
     }
     return 0;
 }
@@ -192,6 +215,7 @@ StkFloat Theremin::tick(void)
 {
     return (mInstrumentId != Silence)? mGlobalVolume * mVolume * mInstruments[mInstrumentId]->tick() : 0;
 }
+
 
 
 stk::StkFloat Theremin::lastOut(void) const
