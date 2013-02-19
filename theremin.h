@@ -4,6 +4,7 @@
 #define __THEREMIN_H_
 
 #include "RtAudio.h"
+#include "Mutex.h"
 // wave forms
 #include "Bowed.h"
 #include "Clarinet.h"
@@ -31,6 +32,7 @@
 #include "Chorus.h"
 #include "OnePole.h"
 
+#include <vector>
 
 class Theremin
 {
@@ -60,6 +62,9 @@ public:
     void play(void);
     void stop(void);
 
+    inline void lock(void) { mMutex.lock(); }
+    inline void unlock(void) { mMutex.unlock(); }
+
     stk::StkFloat tick(void);
     stk::StkFloat lastOut(void) const;
 
@@ -68,89 +73,90 @@ public:
 
     // effects
     inline stk::Chorus& chorus(void) { return mChorus; }
-    inline bool chorusEffect(void) const { return mChorusEffect; }
     void setChorusDepth(stk::StkFloat);
     void setChorusFrequency(stk::StkFloat);
 
     inline stk::Echo& echo(void) { return mEcho; }
-    inline bool echoEffect(void) const { return mEchoEffect; }
     void setEcho(int);
 
     inline stk::Envelope& envelope(void) { return mEnvelope; }
-    inline bool envelopeEffect(void) const { return mEnvelopeEffect; }
 
     inline stk::FreeVerb& freeVerb(void) { return  mFreeVerb; }
     void setFreeVerbDamping(stk::StkFloat);
     void setFreeVerbRoomSize(stk::StkFloat);
-    inline bool freeVerbEffect(void) const { return mFreeVerbEffect; }
 
     inline stk::JCRev& jcRev(void) { return mJCRev; }
     void setJCRevDecay(stk::StkFloat);
-    inline bool jcRevEffect(void) const { return mJCRevEffect; }
 
     inline stk::LentPitShift& lentPitShift(void) { return  mLentPitShift; }
     void setLentPitShift(stk::StkFloat);
-    inline bool lentPitShiftEffect(void) const { return mLentPitShiftEffect; }
 
     inline stk::NRev& nRev(void) { return mNRev; }
     void setNRevDecay(stk::StkFloat);
-    inline bool nRevEffect(void) const { return mNRevEffect; }
 
     inline stk::PitShift& pitShift(void) { return  mPitShift; }
     void setPitShift(stk::StkFloat);
-    inline bool pitShiftEffect(void) const { return mPitShiftEffect; }
 
     inline stk::PRCRev& prcRev(void) { return mPRCRev; }
     void setPRCRevDecay(stk::StkFloat);
-    inline bool prcRevEffect(void) const { return mPRCRevEffect; }
 
     // filters
     inline stk::OnePole& lowPass(void) { return mLowPass; }
-    inline bool lowPassFilter(void) const { return mLowPassFilter; }
     void setLowPassFrequency(stk::StkFloat);
 
     inline stk::OnePole& highPass(void) { return mHighPass; }
     void setHighPassFrequency(stk::StkFloat);
-    inline bool highPassFilter(void) const { return mHighPassFilter; }
 
-    inline stk::Iir& iir(void) { return mIir; }
-    inline bool iirFilter(void) const { return mIirFilter; }
+    enum Postprocessing {
+        ChorusEffect,
+        EchoEffect,
+        PitchShiftEffect,
+        LentPitchShiftEffect,
+        NRevEffect,
+        JCRevEffect,
+        PRCRevEffect,
+        FreeVerbEffect,
+        LowPassFilter,
+        HighPassFilter,
+        LastPostprocessor
+    };
 
+    struct Effect {
+        Theremin::Postprocessing id;
+        bool enabled;
+    };
+
+    void setEffects(std::vector<Effect>& effects)
+    {
+        lock();
+        mEffects = effects;
+        unlock();
+    }
+    const std::vector<Effect>& effects(void) const { return mEffects; }
 
 private:
     stk::StkFloat mVolume;
     stk::StkFloat mGlobalVolume;
     stk::StkFloat mFrequency;
-    bool mLowPassFilter;
-    bool mHighPassFilter;
-    bool mIirFilter;
     stk::Instrmnt* mInstruments[LastInstrument];
     Instrument mInstrumentId;
     // effects
-    stk::Echo mEcho;
     stk::Chorus mChorus;
+    stk::Echo mEcho;
     stk::Envelope mEnvelope;
-    stk::PRCRev mPRCRev;
-    stk::JCRev mJCRev;
-    stk::NRev mNRev;
     stk::FreeVerb mFreeVerb;
-    stk::PitShift mPitShift;
+    stk::JCRev mJCRev;
     stk::LentPitShift mLentPitShift;
-    bool mEchoEffect;
-    bool mChorusEffect;
-    bool mEnvelopeEffect;
-    bool mPRCRevEffect;
-    bool mJCRevEffect;
-    bool mNRevEffect;
-    bool mFreeVerbEffect;
-    bool mPitShiftEffect;
-    bool mLentPitShiftEffect;
+    stk::NRev mNRev;
+    stk::PitShift mPitShift;
+    stk::PRCRev mPRCRev;
     // filter
     stk::OnePole mLowPass;
     stk::OnePole mHighPass;
-    stk::Iir mIir;
+    stk::Mutex mMutex;
     RtAudio mDAC;
     RtError mError;
+    std::vector<Theremin::Effect> mEffects;
 };
 
 #endif // __THEREMIN_H_

@@ -4,6 +4,11 @@
 #define __MAINWINDOW_H_
 
 #include <QMainWindow>
+#include <QModelIndexList>
+#include <QListWidgetItem>
+#include <QList>
+#include <QVariant>
+
 #include "main.h"
 #include "thereminwidget.h"
 
@@ -26,6 +31,7 @@ protected:
 
 private slots:
     void instrumentChanged(int);
+    void effectsOrderChanged(void);
     void resetSettings(void);
     void volumeChanged(int);
     void scalingChanged(int);
@@ -56,6 +62,7 @@ private:
 private:
     Ui::MainWindow* ui;
     ThereminWidget* mThereminWidget;
+    QVector<QListWidgetItem*> mEffects;
 };
 
 #endif // __MAINWINDOW_H_

@@ -4,6 +4,7 @@
 #include <QSettings>
 #include <QMessageBox>
 #include <QIntValidator>
+#include <QVector>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "theremin.h"
@@ -24,6 +25,9 @@ MainWindow::MainWindow(QWidget* parent)
     ui->minFLineEdit->setValidator(new QIntValidator(ui->minFDial->minimum(), ui->minFDial->maximum()));
     ui->maxFLineEdit->setValidator(new QIntValidator(ui->maxFDial->minimum(), ui->maxFDial->maximum()));
 
+    QObject::connect(ui->effectsListWidget, SIGNAL(itemChanged(QListWidgetItem*)), SLOT(effectsOrderChanged(void)));
+    QObject::connect(ui->effectsListWidget, SIGNAL(indexesMoved(QModelIndexList)), SLOT(effectsOrderChanged(void)));
+    QObject::connect(ui->effectsListWidget, SIGNAL(itemPressed(QListWidgetItem*)), SLOT(effectsOrderChanged(void)));
     QObject::connect(ui->instrumentComboBox, SIGNAL(currentIndexChanged(int)), SLOT(instrumentChanged(int)));
     QObject::connect(ui->volumeDial, SIGNAL(valueChanged(int)), SLOT(volumeChanged(int)));
     QObject::connect(ui->scaleComboBox, SIGNAL(currentIndexChanged(int)), SLOT(scalingChanged(int)));
@@ -67,30 +71,11 @@ void MainWindow::closeEvent(QCloseEvent* e)
 }
 
 
-void MainWindow::saveAppSettings(void)
+QListWidgetItem* makeEffectListItem(const QString& name, Theremin::Postprocessing id)
 {
-    QSettings settings(Company, AppName);
-    settings.setValue("MainWindow/geometry", saveGeometry());
-    settings.setValue("MainWindow/windowState", saveState());
-    settings.setValue("MainWindow/instrument", ui->instrumentComboBox->currentIndex());
-    settings.setValue("MainWindow/volume", ui->volumeDial->value());
-    settings.setValue("MainWindow/scaling", ui->scaleComboBox->currentIndex());
-    settings.setValue("MainWindow/hzScale", ui->actionHzScale->isChecked());
-    settings.setValue("MainWindow/toneScale", ui->actionToneScale->isChecked());
-    settings.setValue("MainWindow/volumeScale", ui->actionVolumeScale->isChecked());
-    settings.setValue("MainWindow/minF", ui->minFDial->value());
-    settings.setValue("MainWindow/maxF", ui->maxFDial->value());
-    settings.setValue("Filters/LowPass", ui->lowPassDial->value());
-    settings.setValue("Filters/HighPass", ui->highPassDial->value());
-    settings.setValue("Effects/Echo", ui->echoDial->value());
-    settings.setValue("Effects/Chorus/depth", ui->chorusDepthDial->value());
-    settings.setValue("Effects/Chorus/frequency", ui->chorusFreqDial->value());
-    settings.setValue("Effects/FreeVerb/damping", ui->freeVerbDampingDial->value());
-    settings.setValue("Effects/FreeVerb/roomsize", ui->freeVerbRoomSizeDial->value());
-    settings.setValue("Effects/JCRev", ui->jcRevDecayDial->value());
-    settings.setValue("Effects/PRCRev", ui->prcRevDecayDial->value());
-    settings.setValue("Effects/PitShift", ui->pitShiftDial->value());
-    settings.setValue("Effects/LentPitShift", ui->lentPitShiftDial->value());
+    QListWidgetItem* item = new QListWidgetItem(name);
+    item->setData(Qt::UserRole, id);
+    return item;
 }
 
 
@@ -131,6 +116,79 @@ void MainWindow::restoreAppSettings(void)
     pitShiftChanged(ui->pitShiftDial->value());
     ui->lentPitShiftDial->setValue(settings.value("Effects/LentPitShift", 0).toInt());
     pitShiftChanged(ui->lentPitShiftDial->value());
+
+    ui->effectsListWidget->blockSignals(true);
+    QVector<Theremin::Postprocessing> effectId;
+    QVector<bool> effectEnabled;
+    QStringList oid = settings.value("Effects/order/id").toStringList();
+    for (QStringList::const_iterator i = oid.constBegin(); i != oid.constEnd(); ++i)
+        effectId.push_back((Theremin::Postprocessing)i->toInt());
+    QStringList oen = settings.value("Effects/order/enabled").toStringList();
+    for (QStringList::const_iterator i = oen.constBegin(); i != oen.constEnd(); ++i)
+        effectEnabled.push_back(*i == "true");
+    ui->effectsListWidget->clear();
+    mEffects << makeEffectListItem(tr("Chorus Effect"), Theremin::ChorusEffect)
+             << makeEffectListItem(tr("Echo Effect"), Theremin::EchoEffect)
+             << makeEffectListItem(tr("Pitch Shift Effect"), Theremin::PitchShiftEffect)
+             << makeEffectListItem(tr("Lent Pitch Shift Effect"), Theremin::LentPitchShiftEffect)
+             << makeEffectListItem(tr("NRev Effect"), Theremin::NRevEffect)
+             << makeEffectListItem(tr("JCRev Effect"), Theremin::JCRevEffect)
+             << makeEffectListItem(tr("PRCRev Effect"), Theremin::PRCRevEffect)
+             << makeEffectListItem(tr("FreeVerb Effect"), Theremin::FreeVerbEffect)
+             << makeEffectListItem(tr("Low Pass Filter"), Theremin::LowPassFilter)
+             << makeEffectListItem(tr("High Pass Filter"), Theremin::HighPassFilter);
+    QVector<Theremin::Postprocessing>::const_iterator itId = effectId.constBegin();
+    QVector<bool>::const_iterator itEnabled = effectEnabled.constBegin();
+    while (itId != effectId.constEnd() && itEnabled != effectEnabled.constEnd()) {
+        const int id = *itId;
+        if (0 <= id && id < Theremin::LastPostprocessor) {
+            mEffects[id]->setCheckState(*itEnabled? Qt::Checked : Qt::Unchecked);
+            ui->effectsListWidget->addItem(mEffects[id]);
+        }
+        ++itId;
+        ++itEnabled;
+    }
+    ui->effectsListWidget->blockSignals(false);
+}
+
+
+void MainWindow::saveAppSettings(void)
+{
+    QSettings settings(Company, AppName);
+    settings.setValue("MainWindow/geometry", saveGeometry());
+    settings.setValue("MainWindow/windowState", saveState());
+    settings.setValue("MainWindow/instrument", ui->instrumentComboBox->currentIndex());
+    settings.setValue("MainWindow/volume", ui->volumeDial->value());
+    settings.setValue("MainWindow/scaling", ui->scaleComboBox->currentIndex());
+    settings.setValue("MainWindow/hzScale", ui->actionHzScale->isChecked());
+    settings.setValue("MainWindow/toneScale", ui->actionToneScale->isChecked());
+    settings.setValue("MainWindow/volumeScale", ui->actionVolumeScale->isChecked());
+    settings.setValue("MainWindow/minF", ui->minFDial->value());
+    settings.setValue("MainWindow/maxF", ui->maxFDial->value());
+    settings.setValue("Filters/LowPass", ui->lowPassDial->value());
+    settings.setValue("Filters/HighPass", ui->highPassDial->value());
+    settings.setValue("Effects/Echo", ui->echoDial->value());
+    settings.setValue("Effects/Chorus/depth", ui->chorusDepthDial->value());
+    settings.setValue("Effects/Chorus/frequency", ui->chorusFreqDial->value());
+    settings.setValue("Effects/FreeVerb/damping", ui->freeVerbDampingDial->value());
+    settings.setValue("Effects/FreeVerb/roomsize", ui->freeVerbRoomSizeDial->value());
+    settings.setValue("Effects/JCRev", ui->jcRevDecayDial->value());
+    settings.setValue("Effects/PRCRev", ui->prcRevDecayDial->value());
+    settings.setValue("Effects/PitShift", ui->pitShiftDial->value());
+    settings.setValue("Effects/LentPitShift", ui->lentPitShiftDial->value());
+
+    // save effect order
+    QList<QVariant> effectId;
+    QList<QVariant> effectEnabled;
+    for (int i = 0; i < ui->effectsListWidget->count(); ++i) {
+        const QListWidgetItem* const item = ui->effectsListWidget->item(i);
+        int id = item->data(Qt::UserRole).toInt();
+        bool enabled = item->checkState() == Qt::Checked;
+        effectId.append(id);
+        effectEnabled.append(enabled);
+    }
+    settings.setValue("Effects/order/id", effectId);
+    settings.setValue("Effects/order/enabled", effectEnabled);
 }
 
 
@@ -140,10 +198,25 @@ void MainWindow::instrumentChanged(int idx)
 }
 
 
+void MainWindow::effectsOrderChanged(void)
+{
+    std::vector<Theremin::Effect> effects;
+    for (int i = 0; i < ui->effectsListWidget->count(); ++i) {
+        const QListWidgetItem* const item = ui->effectsListWidget->item(i);
+        Theremin::Effect effect = {
+            (Theremin::Postprocessing)item->data(Qt::UserRole).toInt(),
+            item->checkState() == Qt::Checked
+        };
+        effects.push_back(effect);
+    }
+    mThereminWidget->theremin().setEffects(effects);
+}
+
+
 void MainWindow::resetSettings(void)
 {
     ui->instrumentComboBox->setCurrentIndex(Theremin::BeeThree);
-    ui->volumeDial->setValue(ui->volumeDial->maximum());
+    ui->volumeDial->setValue(ui->volumeDial->maximum()/2);
     ui->lowPassDial->setValue(0);
     ui->highPassDial->setValue(0);
     ui->minFDial->setValue(10);
