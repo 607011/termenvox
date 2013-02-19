@@ -26,6 +26,7 @@ protected:
 
 private slots:
     void instrumentChanged(int);
+    void resetSettings(void);
     void volumeChanged(int);
     void scalingChanged(int);
     void minFrequencyChanged(int);

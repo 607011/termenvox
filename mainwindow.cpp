@@ -44,6 +44,7 @@ MainWindow::MainWindow(QWidget* parent)
     QObject::connect(ui->actionHzScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowHzScale(bool)));
     QObject::connect(ui->actionToneScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowToneScale(bool)));
     QObject::connect(ui->actionVolumeScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowLoudnessScale(bool)));
+    QObject::connect(ui->actionResetSettings, SIGNAL(triggered()), SLOT(resetSettings()));
     QObject::connect(ui->actionExit, SIGNAL(triggered()), SLOT(close()));
     QObject::connect(ui->actionAbout, SIGNAL(triggered()), SLOT(about()));
     QObject::connect(ui->actionAboutQt, SIGNAL(triggered()), SLOT(aboutQt()));
@@ -134,6 +135,28 @@ void MainWindow::restoreAppSettings(void)
 void MainWindow::instrumentChanged(int idx)
 {
     mThereminWidget->theremin().chooseInstrument((Theremin::Instrument)idx);
+}
+
+
+void MainWindow::resetSettings(void)
+{
+    ui->instrumentComboBox->setCurrentIndex(Theremin::BeeThree);
+    ui->volumeDial->setValue(ui->volumeDial->maximum());
+    ui->lowPassDial->setValue(0);
+    ui->highPassDial->setValue(0);
+    ui->minFDial->setValue(10);
+    ui->maxFDial->setValue(4000);
+    ui->echoDial->setValue(0);
+    ui->chorusDepthDial->setValue(0);
+    ui->chorusFreqDial->setValue(0);
+    ui->freeVerbDampingDial->setValue(0);
+    ui->freeVerbRoomSizeDial->setValue(0);
+    ui->nRevDecayDial->setValue(0);
+    ui->jcRevDecayDial->setValue(0);
+    ui->prcRevDecayDial->setValue(0);
+    ui->pitShiftDial->setValue(0);
+    ui->lentPitShiftDial->setValue(0);
+    QMessageBox::information(this, tr("Settings reset"), tr("All settings have been set to their respective default values."));
 }
 
 

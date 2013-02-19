@@ -47,7 +47,7 @@
          <x>0</x>
          <y>0</y>
          <width>180</width>
-         <height>256</height>
+         <height>151</height>
         </rect>
        </property>
        <attribute name="label">
@@ -490,8 +490,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>178</width>
-         <height>251</height>
+         <width>98</width>
+         <height>28</height>
         </rect>
        </property>
        <attribute name="label">
@@ -1148,8 +1148,15 @@
     <addaction name="actionAbout"/>
     <addaction name="actionAboutQt"/>
    </widget>
+   <widget class="QMenu" name="menuExtras">
+    <property name="title">
+     <string>Extras</string>
+    </property>
+    <addaction name="actionResetSettings"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
+   <addaction name="menuExtras"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
@@ -1207,6 +1214,11 @@
    </property>
    <property name="text">
     <string>Volume scale</string>
+   </property>
+  </action>
+  <action name="actionResetSettings">
+   <property name="text">
+    <string>Reset settings to defaults</string>
    </property>
   </action>
  </widget>
