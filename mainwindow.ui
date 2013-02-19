@@ -36,7 +36,7 @@
        <enum>QFrame::Plain</enum>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>4</number>
       </property>
       <property name="tabSpacing">
        <number>1</number>
@@ -506,7 +506,7 @@
           <height>178</height>
          </rect>
         </property>
-        <layout class="QGridLayout" name="gridLayout_7">
+        <layout class="QGridLayout" name="gridLayout_7" columnstretch="0,1">
          <item row="0" column="0">
           <widget class="QLabel" name="label_5">
            <property name="text">
@@ -753,8 +753,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>178</width>
-         <height>273</height>
+         <width>107</width>
+         <height>94</height>
         </rect>
        </property>
        <attribute name="label">
@@ -874,6 +874,34 @@
            </size>
           </property>
          </spacer>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageEffectsOrder">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>178</width>
+         <height>251</height>
+        </rect>
+       </property>
+       <attribute name="label">
+        <string>Effects order</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_6">
+        <item row="0" column="0">
+         <widget class="QListWidget" name="effectsListWidget">
+          <property name="dragEnabled">
+           <bool>true</bool>
+          </property>
+          <property name="dragDropMode">
+           <enum>QAbstractItemView::InternalMove</enum>
+          </property>
+          <property name="sortingEnabled">
+           <bool>false</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>

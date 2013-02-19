@@ -24,6 +24,9 @@ MainWindow::MainWindow(QWidget* parent)
     ui->minFLineEdit->setValidator(new QIntValidator(ui->minFDial->minimum(), ui->minFDial->maximum()));
     ui->maxFLineEdit->setValidator(new QIntValidator(ui->maxFDial->minimum(), ui->maxFDial->maximum()));
 
+    QObject::connect(ui->effectsListWidget, SIGNAL(itemChanged(QListWidgetItem*)), SLOT(effectsOrderChanged(void)));
+    QObject::connect(ui->effectsListWidget, SIGNAL(indexesMoved(QModelIndexList)), SLOT(effectsOrderChanged(void)));
+    QObject::connect(ui->effectsListWidget, SIGNAL(itemPressed(QListWidgetItem*)), SLOT(effectsOrderChanged(void*)));
     QObject::connect(ui->instrumentComboBox, SIGNAL(currentIndexChanged(int)), SLOT(instrumentChanged(int)));
     QObject::connect(ui->volumeDial, SIGNAL(valueChanged(int)), SLOT(volumeChanged(int)));
     QObject::connect(ui->scaleComboBox, SIGNAL(currentIndexChanged(int)), SLOT(scalingChanged(int)));
@@ -50,6 +53,37 @@ MainWindow::MainWindow(QWidget* parent)
     QObject::connect(ui->actionExit, SIGNAL(triggered()), SLOT(close()));
     QObject::connect(ui->actionAbout, SIGNAL(triggered()), SLOT(about()));
     QObject::connect(ui->actionAboutQt, SIGNAL(triggered()), SLOT(aboutQt()));
+
+    QListWidgetItem* chorus = new QListWidgetItem(tr("Chorus Effect"), ui->effectsListWidget);
+    chorus->setData(Qt::UserRole, Theremin::ChorusEffect);
+    chorus->setCheckState(Qt::Unchecked);
+    QListWidgetItem* echo = new QListWidgetItem(tr("Echo Effect"), ui->effectsListWidget);
+    echo->setData(Qt::UserRole, Theremin::EchoEffect);
+    echo->setCheckState(Qt::Unchecked);
+    QListWidgetItem* pitshift = new QListWidgetItem(tr("Pitch Shift Effect"), ui->effectsListWidget);
+    pitshift->setData(Qt::UserRole, Theremin::PitchShiftEffect);
+    pitshift->setCheckState(Qt::Unchecked);
+    QListWidgetItem* lentpitshift = new QListWidgetItem(tr("Lent Pitch Shift Effect"), ui->effectsListWidget);
+    lentpitshift->setData(Qt::UserRole, Theremin::LentPitchShiftEffect);
+    lentpitshift->setCheckState(Qt::Unchecked);
+    QListWidgetItem* nrev = new QListWidgetItem(tr("NRev Effect"), ui->effectsListWidget);
+    nrev->setData(Qt::UserRole, Theremin::NRevEffect);
+    nrev->setCheckState(Qt::Unchecked);
+    QListWidgetItem* jcrev = new QListWidgetItem(tr("JCRev Effect"), ui->effectsListWidget);
+    jcrev->setData(Qt::UserRole, Theremin::JCRevEffect);
+    jcrev->setCheckState(Qt::Unchecked);
+    QListWidgetItem* prcrev = new QListWidgetItem(tr("PRCRev Effect"), ui->effectsListWidget);
+    prcrev->setData(Qt::UserRole, Theremin::PRCRevEffect);
+    prcrev->setCheckState(Qt::Unchecked);
+    QListWidgetItem* freeverb = new QListWidgetItem(tr("FreeVerb Effect"), ui->effectsListWidget);
+    freeverb->setData(Qt::UserRole, Theremin::FreeVerbEffect);
+    freeverb->setCheckState(Qt::Unchecked);
+    QListWidgetItem* lowpass = new QListWidgetItem(tr("Low Pass Filter"), ui->effectsListWidget);
+    lowpass->setData(Qt::UserRole, Theremin::LowPassFilter);
+    lowpass->setCheckState(Qt::Unchecked);
+    QListWidgetItem* highpass = new QListWidgetItem(tr("High Pass Filter"), ui->effectsListWidget);
+    highpass->setData(Qt::UserRole, Theremin::HighPassFilter);
+    highpass->setCheckState(Qt::Unchecked);
 
     restoreAppSettings();
 }
@@ -137,6 +171,18 @@ void MainWindow::restoreAppSettings(void)
 void MainWindow::instrumentChanged(int idx)
 {
     mThereminWidget->theremin().chooseInstrument((Theremin::Instrument)idx);
+}
+
+
+void MainWindow::effectsOrderChanged(void)
+{
+    std::vector<Theremin::Effect> effects;
+    for (int i = 0; i < ui->effectsListWidget->count(); ++i) {
+        QListWidgetItem* item = ui->effectsListWidget->item(i);
+        Theremin::Effect effect = { (Theremin::Postprocessing)item->data(Qt::UserRole).toInt(), item->checkState() == Qt::Checked };
+        effects.push_back(effect);
+    }
+    mThereminWidget->theremin().setEffects(effects);
 }
 
 

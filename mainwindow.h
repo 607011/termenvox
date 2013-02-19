@@ -4,6 +4,9 @@
 #define __MAINWINDOW_H_
 
 #include <QMainWindow>
+#include <QModelIndexList>
+#include <QListWidgetItem>
+
 #include "main.h"
 #include "thereminwidget.h"
 
@@ -26,6 +29,7 @@ protected:
 
 private slots:
     void instrumentChanged(int);
+    void effectsOrderChanged(void);
     void resetSettings(void);
     void volumeChanged(int);
     void scalingChanged(int);
