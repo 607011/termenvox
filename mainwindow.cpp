@@ -37,6 +37,9 @@ MainWindow::MainWindow(QWidget* parent)
     QObject::connect(ui->freeVerbRoomSizeDial, SIGNAL(valueChanged(int)), SLOT(freeVerbRoomSizeChanged(int)));
     QObject::connect(ui->pitShiftDial, SIGNAL(valueChanged(int)), SLOT(pitShiftChanged(int)));
     QObject::connect(ui->lentPitShiftDial, SIGNAL(valueChanged(int)), SLOT(lentPitShiftChanged(int)));
+    QObject::connect(ui->nRevDecayDial, SIGNAL(valueChanged(int)), SLOT(nRevChanged(int)));
+    QObject::connect(ui->jcRevDecayDial, SIGNAL(valueChanged(int)), SLOT(jcRevChanged(int)));
+    QObject::connect(ui->prcRevDecayDial, SIGNAL(valueChanged(int)), SLOT(prcRevChanged(int)));
     QObject::connect(ui->echoDial, SIGNAL(valueChanged(int)), SLOT(echoChanged(int)));
     QObject::connect(ui->actionHzScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowHzScale(bool)));
     QObject::connect(ui->actionToneScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowToneScale(bool)));
@@ -218,6 +221,24 @@ void MainWindow::pitShiftChanged(int shift)
 void MainWindow::lentPitShiftChanged(int shift)
 {
     mThereminWidget->theremin().setLentPitShift(qreal(shift) / ui->lentPitShiftDial->maximum());
+}
+
+
+void MainWindow::nRevChanged(int decay)
+{
+    mThereminWidget->theremin().setNRevDecay(qreal(decay) / ui->nRevDecayDial->maximum());
+}
+
+
+void MainWindow::jcRevChanged(int decay)
+{
+    mThereminWidget->theremin().setJCRevDecay(qreal(decay) / ui->jcRevDecayDial->maximum());
+}
+
+
+void MainWindow::prcRevChanged(int decay)
+{
+    mThereminWidget->theremin().setPRCRevDecay(qreal(decay) / ui->prcRevDecayDial->maximum());
 }
 
 

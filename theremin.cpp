@@ -22,6 +22,12 @@ int tickCallback(void* outputBuffer, void* inputBuffer, unsigned int nBufferFram
             output = instrument->chorus().tick(output);
         if (instrument->freeVerbEffect())
             output = instrument->freeVerb().tick(output);
+        if (instrument->nRevEffect())
+            output = instrument->nRev().tick(output);
+        if (instrument->jcRevEffect())
+            output = instrument->jcRev().tick(output);
+        if (instrument->prcRevEffect())
+            output = instrument->prcRev().tick(output);
         if (instrument->pitShiftEffect())
             output = instrument->pitShift().tick(output);
         if (instrument->lentPitShiftEffect())
@@ -251,14 +257,35 @@ void Theremin::setFreeVerbRoomSize(StkFloat roomsize)
 void Theremin::setPitShift(StkFloat shift)
 {
     mPitShiftEffect = (shift > 0);
-    mPitShift.setShift(shift);
+    mPitShift.setShift(0.3 + 1.4 * shift);
 }
 
 
 void Theremin::setLentPitShift(StkFloat shift)
 {
     mLentPitShiftEffect = (shift > 0);
-    mLentPitShift.setShift(shift);
+    mLentPitShift.setShift(0.3 + 1.4 * shift);
+}
+
+
+void Theremin::setNRevDecay(StkFloat decay)
+{
+    mNRevEffect = (decay > 0);
+    mNRev.setT60(5.0 * decay);
+}
+
+
+void Theremin::setJCRevDecay(StkFloat decay)
+{
+    mJCRevEffect = (decay > 0);
+    mJCRev.setT60(5.0 * decay);
+}
+
+
+void Theremin::setPRCRevDecay(StkFloat decay)
+{
+    mPRCRevEffect = (decay > 0);
+    mPRCRev.setT60(5.0 * decay);
 }
 
 

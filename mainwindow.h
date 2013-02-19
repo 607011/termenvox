@@ -41,6 +41,9 @@ private slots:
     void freeVerbRoomSizeChanged(int);
     void pitShiftChanged(int);
     void lentPitShiftChanged(int);
+    void nRevChanged(int);
+    void jcRevChanged(int);
+    void prcRevChanged(int);
     void about(void);
     void aboutQt(void);
 

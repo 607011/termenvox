@@ -85,6 +85,7 @@ public:
     inline bool freeVerbEffect(void) const { return mFreeVerbEffect; }
 
     inline stk::JCRev& jcRev(void) { return mJCRev; }
+    void setJCRevDecay(stk::StkFloat);
     inline bool jcRevEffect(void) const { return mJCRevEffect; }
 
     inline stk::LentPitShift& lentPitShift(void) { return  mLentPitShift; }
@@ -92,6 +93,7 @@ public:
     inline bool lentPitShiftEffect(void) const { return mLentPitShiftEffect; }
 
     inline stk::NRev& nRev(void) { return mNRev; }
+    void setNRevDecay(stk::StkFloat);
     inline bool nRevEffect(void) const { return mNRevEffect; }
 
     inline stk::PitShift& pitShift(void) { return  mPitShift; }
@@ -99,6 +101,7 @@ public:
     inline bool pitShiftEffect(void) const { return mPitShiftEffect; }
 
     inline stk::PRCRev& prcRev(void) { return mPRCRev; }
+    void setPRCRevDecay(stk::StkFloat);
     inline bool prcRevEffect(void) const { return mPRCRevEffect; }
 
     // filters
