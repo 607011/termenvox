@@ -84,6 +84,8 @@ void MainWindow::saveAppSettings(void)
     settings.setValue("Effects/Chorus/frequency", ui->chorusFreqDial->value());
     settings.setValue("Effects/FreeVerb/damping", ui->freeVerbDampingDial->value());
     settings.setValue("Effects/FreeVerb/roomsize", ui->freeVerbRoomSizeDial->value());
+    settings.setValue("Effects/JCRev", ui->jcRevDecayDial->value());
+    settings.setValue("Effects/PRCRev", ui->prcRevDecayDial->value());
     settings.setValue("Effects/PitShift", ui->pitShiftDial->value());
     settings.setValue("Effects/LentPitShift", ui->lentPitShiftDial->value());
 }
@@ -118,6 +120,10 @@ void MainWindow::restoreAppSettings(void)
     freeVerbDampingChanged(ui->freeVerbDampingDial->value());
     ui->freeVerbRoomSizeDial->setValue(settings.value("Effects/FreeVerb/roomsize", 0).toInt());
     freeVerbRoomSizeChanged(ui->freeVerbRoomSizeDial->value());
+    ui->jcRevDecayDial->setValue(settings.value("Effects/JCRev", 0).toInt());
+    jcRevChanged(ui->jcRevDecayDial->value());
+    ui->prcRevDecayDial->setValue(settings.value("Effects/PRCRev", 0).toInt());
+    prcRevChanged(ui->prcRevDecayDial->value());
     ui->pitShiftDial->setValue(settings.value("Effects/PitShift", 0).toInt());
     pitShiftChanged(ui->pitShiftDial->value());
     ui->lentPitShiftDial->setValue(settings.value("Effects/LentPitShift", 0).toInt());

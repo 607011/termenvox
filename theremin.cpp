@@ -250,6 +250,7 @@ void Theremin::setFreeVerbDamping(StkFloat damping)
 
 void Theremin::setFreeVerbRoomSize(StkFloat roomsize)
 {
+    mFreeVerbEffect = (roomsize > 0);
     mFreeVerb.setRoomSize(roomsize);
 }
 
@@ -298,6 +299,7 @@ void Theremin::setChorusDepth(stk::StkFloat depth)
 
 void Theremin::setChorusFrequency(stk::StkFloat freq)
 {
+    mChorusEffect = (freq > 0);
     mChorus.setModFrequency(freq);
 }
 
