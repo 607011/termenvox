@@ -6,8 +6,6 @@
 #include <QMainWindow>
 #include <QModelIndexList>
 #include <QListWidgetItem>
-#include <QList>
-#include <QVariant>
 
 #include "main.h"
 #include "thereminwidget.h"
