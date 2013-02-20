@@ -10,7 +10,7 @@ const QString AppUrl = "http://termenvox.googlecode.com/";
 const QString AppAuthor = "Oliver Lau";
 const QString AppAuthorMail = "ola@ct.de";
 const QString AppVersionNoDebug = "0.1";
-const QString AppMinorVersion = ".0";
+const QString AppMinorVersion = ".1";
 #ifdef QT_NO_DEBUG
 const QString AppVersion = AppVersionNoDebug + AppMinorVersion;
 #else

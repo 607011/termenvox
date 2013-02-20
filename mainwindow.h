@@ -9,7 +9,7 @@
 #include <QVector>
 #include "main.h"
 #include "thereminwidget.h"
-
+#include "theremin.h"
 
 namespace Ui {
 class MainWindow;
@@ -61,6 +61,7 @@ private:
 private:
     Ui::MainWindow* ui;
     ThereminWidget* mThereminWidget;
+    Theremin& mTheremin;
     QVector<QListWidgetItem*> mEffects;
 };
 

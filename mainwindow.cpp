@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , mThereminWidget(new ThereminWidget)
+    , mTheremin(mThereminWidget->theremin())
 {
     QSettings::setDefaultFormat(QSettings::NativeFormat);
 
@@ -91,7 +92,7 @@ void MainWindow::onOff(bool checked)
     }
     else {
         ui->onOffPushButton->setText(tr("Off"));
-        mThereminWidget->theremin().reset();
+        mTheremin.reset();
     }
 }
 
@@ -109,6 +110,7 @@ void MainWindow::restoreAppSettings(void)
     QSettings settings(Company, AppName);
     restoreGeometry(settings.value("MainWindow/geometry").toByteArray());
     restoreState(settings.value("MainWindow/windowState").toByteArray());
+    ui->toolBox->setCurrentIndex(settings.value("MainWindow/toolbox/page", 0).toInt());
     ui->instrumentComboBox->setCurrentIndex(settings.value("MainWindow/instrument", Theremin::BeeThree).toInt());
     ui->volumeDial->setValue(settings.value("MainWindow/volume", 1000).toInt());
     ui->scaleComboBox->setCurrentIndex(settings.value("MainWindow/scaling", ThereminWidget::Logarithmic).toInt());
@@ -173,6 +175,7 @@ void MainWindow::saveAppSettings(void)
     QSettings settings(Company, AppName);
     settings.setValue("MainWindow/geometry", saveGeometry());
     settings.setValue("MainWindow/windowState", saveState());
+    settings.setValue("MainWindow/toolbox/page", ui->toolBox->currentIndex());
     settings.setValue("MainWindow/instrument", ui->instrumentComboBox->currentIndex());
     settings.setValue("MainWindow/volume", ui->volumeDial->value());
     settings.setValue("MainWindow/scaling", ui->scaleComboBox->currentIndex());
@@ -210,7 +213,7 @@ void MainWindow::saveAppSettings(void)
 
 void MainWindow::instrumentChanged(int idx)
 {
-    mThereminWidget->theremin().chooseInstrument((Theremin::Instrument)idx);
+    mTheremin.chooseInstrument((Theremin::Instrument)idx);
 }
 
 
@@ -225,7 +228,7 @@ void MainWindow::effectsOrderChanged(void)
         };
         effects.push_back(effect);
     }
-    mThereminWidget->theremin().setEffects(effects.toStdVector());
+    mTheremin.setEffects(effects.toStdVector());
 }
 
 
@@ -254,7 +257,7 @@ void MainWindow::resetSettings(void)
 void MainWindow::volumeChanged(int volume)
 {
     qreal v = qreal(volume) / (ui->volumeDial->maximum() - ui->volumeDial->minimum());
-    mThereminWidget->theremin().setGlobalVolume(v);
+    mTheremin.setGlobalVolume(v);
 }
 
 
@@ -292,73 +295,73 @@ void MainWindow::maxFrequencyEntered(const QString& text)
 
 void MainWindow::lowPassFreqChanged(int pole)
 {
-    mThereminWidget->theremin().setLowPassFrequency(qreal(pole) / ui->lowPassDial->maximum());
+    mTheremin.setLowPassFrequency(qreal(pole) / ui->lowPassDial->maximum());
 }
 
 
 void MainWindow::highPassFreqChanged(int pole)
 {
-    mThereminWidget->theremin().setHighPassFrequency(qreal(pole) / ui->highPassDial->maximum());
+    mTheremin.setHighPassFrequency(qreal(pole) / ui->highPassDial->maximum());
 }
 
 
 void MainWindow::echoChanged(int delay)
 {
-    mThereminWidget->theremin().setEcho(delay);
+    mTheremin.setEcho(delay);
 }
 
 
 void MainWindow::chorusDepthChanged(int depth)
 {
-    mThereminWidget->theremin().setChorusDepth(qreal(depth) / ui->chorusDepthDial->maximum());
+    mTheremin.setChorusDepth(qreal(depth) / ui->chorusDepthDial->maximum());
 }
 
 
 void MainWindow::chorusFreqChanged(int freq)
 {
-    mThereminWidget->theremin().setChorusFrequency(freq);
+    mTheremin.setChorusFrequency(freq);
 }
 
 
 void MainWindow::freeVerbDampingChanged(int damping)
 {
-    mThereminWidget->theremin().setFreeVerbDamping(qreal(damping) / ui->freeVerbDampingDial->maximum());
+    mTheremin.setFreeVerbDamping(qreal(damping) / ui->freeVerbDampingDial->maximum());
 }
 
 
 void MainWindow::freeVerbRoomSizeChanged(int size)
 {
-    mThereminWidget->theremin().setFreeVerbRoomSize(qreal(size) / ui->freeVerbRoomSizeDial->maximum());
+    mTheremin.setFreeVerbRoomSize(qreal(size) / ui->freeVerbRoomSizeDial->maximum());
 }
 
 
 void MainWindow::pitShiftChanged(int shift)
 {
-    mThereminWidget->theremin().setPitShift(qreal(shift) / ui->pitShiftDial->maximum());
+    mTheremin.setPitShift(qreal(shift) / ui->pitShiftDial->maximum());
 }
 
 
 void MainWindow::lentPitShiftChanged(int shift)
 {
-    mThereminWidget->theremin().setLentPitShift(qreal(shift) / ui->lentPitShiftDial->maximum());
+    mTheremin.setLentPitShift(qreal(shift) / ui->lentPitShiftDial->maximum());
 }
 
 
 void MainWindow::nRevChanged(int decay)
 {
-    mThereminWidget->theremin().setNRevDecay(qreal(decay) / ui->nRevDecayDial->maximum());
+    mTheremin.setNRevDecay(qreal(decay) / ui->nRevDecayDial->maximum());
 }
 
 
 void MainWindow::jcRevChanged(int decay)
 {
-    mThereminWidget->theremin().setJCRevDecay(qreal(decay) / ui->jcRevDecayDial->maximum());
+    mTheremin.setJCRevDecay(qreal(decay) / ui->jcRevDecayDial->maximum());
 }
 
 
 void MainWindow::prcRevChanged(int decay)
 {
-    mThereminWidget->theremin().setPRCRevDecay(qreal(decay) / ui->prcRevDecayDial->maximum());
+    mTheremin.setPRCRevDecay(qreal(decay) / ui->prcRevDecayDial->maximum());
 }
 
 
