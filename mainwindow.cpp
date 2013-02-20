@@ -10,6 +10,8 @@
 #include "theremin.h"
 
 
+QListWidgetItem* makeEffectListItem(const QString&, Theremin::Postprocessing);
+
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -55,37 +57,16 @@ MainWindow::MainWindow(QWidget* parent)
     QObject::connect(ui->actionAbout, SIGNAL(triggered()), SLOT(about()));
     QObject::connect(ui->actionAboutQt, SIGNAL(triggered()), SLOT(aboutQt()));
 
-    QListWidgetItem* chorus = new QListWidgetItem(tr("Chorus Effect"), ui->effectsListWidget);
-    chorus->setData(Qt::UserRole, Theremin::ChorusEffect);
-    chorus->setCheckState(Qt::Unchecked);
-    QListWidgetItem* echo = new QListWidgetItem(tr("Echo Effect"), ui->effectsListWidget);
-    echo->setData(Qt::UserRole, Theremin::EchoEffect);
-    echo->setCheckState(Qt::Unchecked);
-    QListWidgetItem* pitshift = new QListWidgetItem(tr("Pitch Shift Effect"), ui->effectsListWidget);
-    pitshift->setData(Qt::UserRole, Theremin::PitchShiftEffect);
-    pitshift->setCheckState(Qt::Unchecked);
-    QListWidgetItem* lentpitshift = new QListWidgetItem(tr("Lent Pitch Shift Effect"), ui->effectsListWidget);
-    lentpitshift->setData(Qt::UserRole, Theremin::LentPitchShiftEffect);
-    lentpitshift->setCheckState(Qt::Unchecked);
-    QListWidgetItem* nrev = new QListWidgetItem(tr("NRev Effect"), ui->effectsListWidget);
-    nrev->setData(Qt::UserRole, Theremin::NRevEffect);
-    nrev->setCheckState(Qt::Unchecked);
-    QListWidgetItem* jcrev = new QListWidgetItem(tr("JCRev Effect"), ui->effectsListWidget);
-    jcrev->setData(Qt::UserRole, Theremin::JCRevEffect);
-    jcrev->setCheckState(Qt::Unchecked);
-    QListWidgetItem* prcrev = new QListWidgetItem(tr("PRCRev Effect"), ui->effectsListWidget);
-    prcrev->setData(Qt::UserRole, Theremin::PRCRevEffect);
-    prcrev->setCheckState(Qt::Unchecked);
-    QListWidgetItem* freeverb = new QListWidgetItem(tr("FreeVerb Effect"), ui->effectsListWidget);
-    freeverb->setData(Qt::UserRole, Theremin::FreeVerbEffect);
-    freeverb->setCheckState(Qt::Unchecked);
-    QListWidgetItem* lowpass = new QListWidgetItem(tr("Low Pass Filter"), ui->effectsListWidget);
-    lowpass->setData(Qt::UserRole, Theremin::LowPassFilter);
-    lowpass->setCheckState(Qt::Unchecked);
-    QListWidgetItem* highpass = new QListWidgetItem(tr("High Pass Filter"), ui->effectsListWidget);
-    highpass->setData(Qt::UserRole, Theremin::HighPassFilter);
-    highpass->setCheckState(Qt::Unchecked);
-
+    mEffects << makeEffectListItem(tr("Chorus Effect"), Theremin::ChorusEffect)
+             << makeEffectListItem(tr("Echo Effect"), Theremin::EchoEffect)
+             << makeEffectListItem(tr("Pitch Shift Effect"), Theremin::PitchShiftEffect)
+             << makeEffectListItem(tr("Lent Pitch Shift Effect"), Theremin::LentPitchShiftEffect)
+             << makeEffectListItem(tr("NRev Effect"), Theremin::NRevEffect)
+             << makeEffectListItem(tr("JCRev Effect"), Theremin::JCRevEffect)
+             << makeEffectListItem(tr("PRCRev Effect"), Theremin::PRCRevEffect)
+             << makeEffectListItem(tr("FreeVerb Effect"), Theremin::FreeVerbEffect)
+             << makeEffectListItem(tr("Low Pass Filter"), Theremin::LowPassFilter)
+             << makeEffectListItem(tr("High Pass Filter"), Theremin::HighPassFilter);
     restoreAppSettings();
 }
 
@@ -157,17 +138,6 @@ void MainWindow::restoreAppSettings(void)
     QStringList oen = settings.value("Effects/order/enabled").toStringList();
     for (QStringList::const_iterator i = oen.constBegin(); i != oen.constEnd(); ++i)
         effectEnabled.push_back(*i == "true");
-    ui->effectsListWidget->clear();
-    mEffects << makeEffectListItem(tr("Chorus Effect"), Theremin::ChorusEffect)
-             << makeEffectListItem(tr("Echo Effect"), Theremin::EchoEffect)
-             << makeEffectListItem(tr("Pitch Shift Effect"), Theremin::PitchShiftEffect)
-             << makeEffectListItem(tr("Lent Pitch Shift Effect"), Theremin::LentPitchShiftEffect)
-             << makeEffectListItem(tr("NRev Effect"), Theremin::NRevEffect)
-             << makeEffectListItem(tr("JCRev Effect"), Theremin::JCRevEffect)
-             << makeEffectListItem(tr("PRCRev Effect"), Theremin::PRCRevEffect)
-             << makeEffectListItem(tr("FreeVerb Effect"), Theremin::FreeVerbEffect)
-             << makeEffectListItem(tr("Low Pass Filter"), Theremin::LowPassFilter)
-             << makeEffectListItem(tr("High Pass Filter"), Theremin::HighPassFilter);
     QVector<Theremin::Postprocessing>::const_iterator itId = effectId.constBegin();
     QVector<bool>::const_iterator itEnabled = effectEnabled.constBegin();
     while (itId != effectId.constEnd() && itEnabled != effectEnabled.constEnd()) {

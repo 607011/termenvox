@@ -63,4 +63,5 @@ private:
     QVector<QListWidgetItem*> mEffects;
 };
 
+
 #endif // __MAINWINDOW_H_
