@@ -36,7 +36,7 @@
        <enum>QFrame::Plain</enum>
       </property>
       <property name="currentIndex">
-       <number>4</number>
+       <number>0</number>
       </property>
       <property name="tabSpacing">
        <number>1</number>
@@ -47,87 +47,13 @@
          <x>0</x>
          <y>0</y>
          <width>180</width>
-         <height>151</height>
+         <height>234</height>
         </rect>
        </property>
        <attribute name="label">
         <string>Sound</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_2">
-        <item row="0" column="0">
-         <widget class="QComboBox" name="instrumentComboBox">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>180</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <item>
-           <property name="text">
-            <string>Violin</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Clarinet</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Flute</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Percussive Flute (TX81Z #4)</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Wurley (TX81Z #5)</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>HeavyMetalFM (TX81Z #3)</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>BeeThree (TX81Z #8)</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Rhodey (TX81Z #5?)</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>FmVoices (TX81Z #6)</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-        <item row="3" column="0">
-         <spacer name="verticalSpacer">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
         <item row="2" column="0">
          <layout class="QGridLayout" name="gridLayout_3">
           <property name="leftMargin">
@@ -353,6 +279,96 @@
            </widget>
           </item>
          </layout>
+        </item>
+        <item row="4" column="0">
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="0" column="0">
+         <widget class="QComboBox" name="instrumentComboBox">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>180</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <item>
+           <property name="text">
+            <string>Violin</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Clarinet</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Flute</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Percussive Flute (TX81Z #4)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Wurley (TX81Z #5)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>HeavyMetalFM (TX81Z #3)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>BeeThree (TX81Z #8)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Rhodey (TX81Z #5?)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>FmVoices (TX81Z #6)</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QPushButton" name="onOffPushButton">
+          <property name="text">
+           <string>On</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+          <property name="flat">
+           <bool>false</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -882,8 +898,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>178</width>
-         <height>251</height>
+         <width>98</width>
+         <height>91</height>
         </rect>
        </property>
        <attribute name="label">

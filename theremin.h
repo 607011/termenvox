@@ -61,6 +61,7 @@ public:
     void chooseInstrument(Instrument instrumentId);
     void play(void);
     void stop(void);
+    void reset(void);
 
     inline void lock(void) { mMutex.lock(); }
     inline void unlock(void) { mMutex.unlock(); }

@@ -28,6 +28,7 @@ protected:
     void closeEvent(QCloseEvent*);
 
 private slots:
+    void onOff(bool);
     void instrumentChanged(int);
     void effectsOrderChanged(void);
     void resetSettings(void);

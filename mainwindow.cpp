@@ -11,6 +11,7 @@
 
 QListWidgetItem* makeEffectListItem(const QString&, Theremin::Postprocessing);
 
+
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -26,9 +27,8 @@ MainWindow::MainWindow(QWidget* parent)
     ui->minFLineEdit->setValidator(new QIntValidator(ui->minFDial->minimum(), ui->minFDial->maximum()));
     ui->maxFLineEdit->setValidator(new QIntValidator(ui->maxFDial->minimum(), ui->maxFDial->maximum()));
 
-    QObject::connect(ui->effectsListWidget, SIGNAL(itemChanged(QListWidgetItem*)), SLOT(effectsOrderChanged(void)));
-    QObject::connect(ui->effectsListWidget, SIGNAL(indexesMoved(QModelIndexList)), SLOT(effectsOrderChanged(void)));
-    QObject::connect(ui->effectsListWidget, SIGNAL(itemPressed(QListWidgetItem*)), SLOT(effectsOrderChanged(void)));
+    QObject::connect(ui->effectsListWidget, SIGNAL(itemClicked(QListWidgetItem*)), SLOT(effectsOrderChanged(void)));
+    QObject::connect(ui->effectsListWidget->model(), SIGNAL(rowsMoved(const QModelIndex&, int, int, const QModelIndex&, int)), SLOT(effectsOrderChanged(void)));
     QObject::connect(ui->instrumentComboBox, SIGNAL(currentIndexChanged(int)), SLOT(instrumentChanged(int)));
     QObject::connect(ui->volumeDial, SIGNAL(valueChanged(int)), SLOT(volumeChanged(int)));
     QObject::connect(ui->scaleComboBox, SIGNAL(currentIndexChanged(int)), SLOT(scalingChanged(int)));
@@ -48,6 +48,7 @@ MainWindow::MainWindow(QWidget* parent)
     QObject::connect(ui->jcRevDecayDial, SIGNAL(valueChanged(int)), SLOT(jcRevChanged(int)));
     QObject::connect(ui->prcRevDecayDial, SIGNAL(valueChanged(int)), SLOT(prcRevChanged(int)));
     QObject::connect(ui->echoDial, SIGNAL(valueChanged(int)), SLOT(echoChanged(int)));
+    QObject::connect(ui->onOffPushButton, SIGNAL(clicked(bool)), SLOT(onOff(bool)));
     QObject::connect(ui->actionHzScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowHzScale(bool)));
     QObject::connect(ui->actionToneScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowToneScale(bool)));
     QObject::connect(ui->actionVolumeScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowLoudnessScale(bool)));
@@ -67,6 +68,7 @@ MainWindow::MainWindow(QWidget* parent)
              << makeEffectListItem(tr("Low Pass Filter"), Theremin::LowPassFilter)
              << makeEffectListItem(tr("High Pass Filter"), Theremin::HighPassFilter);
     restoreAppSettings();
+
 }
 
 
@@ -76,9 +78,21 @@ MainWindow::~MainWindow()
 }
 
 
-void MainWindow::closeEvent(QCloseEvent* e)
+void MainWindow::closeEvent(QCloseEvent*)
 {
     saveAppSettings();
+}
+
+
+void MainWindow::onOff(bool checked)
+{
+    if (checked) {
+        ui->onOffPushButton->setText(tr("On"));
+    }
+    else {
+        ui->onOffPushButton->setText(tr("Off"));
+        mThereminWidget->theremin().reset();
+    }
 }
 
 
@@ -128,7 +142,7 @@ void MainWindow::restoreAppSettings(void)
     ui->lentPitShiftDial->setValue(settings.value("Effects/LentPitShift", 0).toInt());
     pitShiftChanged(ui->lentPitShiftDial->value());
 
-    // restore effect list
+    // restore effect order
     ui->effectsListWidget->blockSignals(true);
     QVector<Theremin::Postprocessing> effectId;
     QVector<bool> effectEnabled;

@@ -79,6 +79,7 @@ Theremin::Theremin(void)
     , mGlobalVolume(1.0)
     , mFrequency(440.0)
     , mInstrumentId(Silence)
+    , mDAC(RtAudio::WINDOWS_DS)
     , mError("")
 {
     Stk::setSampleRate(44100.0);
@@ -143,7 +144,7 @@ void Theremin::play(void)
         break;
     case Flute:
         mInstruments[Flute]->noteOn(mFrequency, 1.0);
-        reinterpret_cast<stk::Flute*>(mInstruments[Flute])->startBlowing(1.0, 0);
+        reinterpret_cast<stk::Flute*>(mInstruments[Flute])->startBlowing(1.0, 0.5);
         break;
     case PercFlute:
         mInstruments[PercFlute]->noteOn(mFrequency, 1.0);
@@ -202,6 +203,22 @@ void Theremin::stop(void)
     default:
         break;
     }
+}
+
+
+void Theremin::reset()
+{
+    stop();
+    mChorus.clear();
+    mEcho.clear();
+    mPitShift.clear();
+    mLentPitShift.clear();
+    mNRev.clear();
+    mJCRev.clear();
+    mPRCRev.clear();
+    mFreeVerb.clear();
+    mLowPass.clear();
+    mHighPass.clear();
 }
 
 
