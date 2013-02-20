@@ -4,7 +4,6 @@
 #include <QSettings>
 #include <QMessageBox>
 #include <QIntValidator>
-#include <QVector>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "theremin.h"
@@ -129,6 +128,7 @@ void MainWindow::restoreAppSettings(void)
     ui->lentPitShiftDial->setValue(settings.value("Effects/LentPitShift", 0).toInt());
     pitShiftChanged(ui->lentPitShiftDial->value());
 
+    // restore effect list
     ui->effectsListWidget->blockSignals(true);
     QVector<Theremin::Postprocessing> effectId;
     QVector<bool> effectEnabled;
@@ -150,6 +150,7 @@ void MainWindow::restoreAppSettings(void)
         ++itEnabled;
     }
     ui->effectsListWidget->blockSignals(false);
+    effectsOrderChanged();
 }
 
 
@@ -201,7 +202,7 @@ void MainWindow::instrumentChanged(int idx)
 
 void MainWindow::effectsOrderChanged(void)
 {
-    std::vector<Theremin::Effect> effects;
+    QVector<Theremin::Effect> effects;
     for (int i = 0; i < ui->effectsListWidget->count(); ++i) {
         const QListWidgetItem* const item = ui->effectsListWidget->item(i);
         Theremin::Effect effect = {
@@ -210,7 +211,7 @@ void MainWindow::effectsOrderChanged(void)
         };
         effects.push_back(effect);
     }
-    mThereminWidget->theremin().setEffects(effects);
+    mThereminWidget->theremin().setEffects(effects.toStdVector());
 }
 
 
