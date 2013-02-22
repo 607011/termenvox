@@ -4,6 +4,8 @@
 #include <QSettings>
 #include <QMessageBox>
 #include <QIntValidator>
+#include <QStringList>
+#include <QModelIndex>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "theremin.h"
@@ -49,7 +51,7 @@ MainWindow::MainWindow(QWidget* parent)
     QObject::connect(ui->jcRevDecayDial, SIGNAL(valueChanged(int)), SLOT(jcRevChanged(int)));
     QObject::connect(ui->prcRevDecayDial, SIGNAL(valueChanged(int)), SLOT(prcRevChanged(int)));
     QObject::connect(ui->echoDial, SIGNAL(valueChanged(int)), SLOT(echoChanged(int)));
-    QObject::connect(ui->onOffPushButton, SIGNAL(clicked(bool)), SLOT(onOff(bool)));
+    QObject::connect(ui->onOffPushButton, SIGNAL(clicked()), SLOT(resetTheremin()));
     QObject::connect(ui->actionHzScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowHzScale(bool)));
     QObject::connect(ui->actionToneScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowToneScale(bool)));
     QObject::connect(ui->actionVolumeScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowLoudnessScale(bool)));
@@ -85,15 +87,9 @@ void MainWindow::closeEvent(QCloseEvent*)
 }
 
 
-void MainWindow::onOff(bool checked)
+void MainWindow::resetTheremin(void)
 {
-    if (checked) {
-        ui->onOffPushButton->setText(tr("On"));
-    }
-    else {
-        ui->onOffPushButton->setText(tr("Off"));
-        mTheremin.reset();
-    }
+    mTheremin.reset();
 }
 
 
@@ -144,16 +140,25 @@ void MainWindow::restoreAppSettings(void)
     ui->lentPitShiftDial->setValue(settings.value("Effects/LentPitShift", 0).toInt());
     pitShiftChanged(ui->lentPitShiftDial->value());
 
-    // restore effect order
-    ui->effectsListWidget->blockSignals(true);
+    // Restore effect order. If none given, set a default.
     QVector<Theremin::Postprocessing> effectId;
     QVector<bool> effectEnabled;
+    QList<int> id0;
+    id0 << 8 << 9 << 1 << 0 << 2 << 3 << 4 << 5 << 6 << 7;
     QStringList oid = settings.value("Effects/order/id").toStringList();
     for (QStringList::const_iterator i = oid.constBegin(); i != oid.constEnd(); ++i)
         effectId.push_back((Theremin::Postprocessing)i->toInt());
+    for (QList<int>::const_iterator i = id0.constBegin(); i != id0.constEnd(); ++i)
+        if (!effectId.contains((Theremin::Postprocessing)*i))
+            effectId.push_back((Theremin::Postprocessing)*i);
+
     QStringList oen = settings.value("Effects/order/enabled").toStringList();
+    for (int i = 0; i < effectId.size() - oen.size(); ++i)
+        oen.append("false");
     for (QStringList::const_iterator i = oen.constBegin(); i != oen.constEnd(); ++i)
         effectEnabled.push_back(*i == "true");
+
+    ui->effectsListWidget->blockSignals(true);
     QVector<Theremin::Postprocessing>::const_iterator itId = effectId.constBegin();
     QVector<bool>::const_iterator itEnabled = effectEnabled.constBegin();
     while (itId != effectId.constEnd() && itEnabled != effectEnabled.constEnd()) {
@@ -167,6 +172,7 @@ void MainWindow::restoreAppSettings(void)
     }
     ui->effectsListWidget->blockSignals(false);
     effectsOrderChanged();
+
 }
 
 

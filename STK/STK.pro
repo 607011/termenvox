@@ -1,5 +1,6 @@
+# Copyright (c) 2013 Oliver Lau <ola@ct.de>, Heise Zeitschriften Verlag. All rights reserved.
 
-QT       -= gui
+QT -= gui
 
 win32:CONFIG(release, debug|release): TARGET = STK
 else:win32:CONFIG(debug, debug|release): TARGET = STKd

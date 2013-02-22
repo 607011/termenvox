@@ -36,7 +36,7 @@
        <enum>QFrame::Plain</enum>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <property name="tabSpacing">
        <number>1</number>
@@ -47,7 +47,7 @@
          <x>0</x>
          <y>0</y>
          <width>180</width>
-         <height>180</height>
+         <height>234</height>
         </rect>
        </property>
        <attribute name="label">
@@ -357,13 +357,13 @@
         <item row="3" column="0">
          <widget class="QPushButton" name="onOffPushButton">
           <property name="text">
-           <string>On</string>
+           <string>Reset</string>
           </property>
           <property name="checkable">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
           <property name="checked">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
           <property name="flat">
            <bool>false</bool>
@@ -377,8 +377,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>113</width>
-         <height>94</height>
+         <width>178</width>
+         <height>251</height>
         </rect>
        </property>
        <attribute name="label">
@@ -789,8 +789,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>107</width>
-         <height>94</height>
+         <width>178</width>
+         <height>251</height>
         </rect>
        </property>
        <attribute name="label">
@@ -918,8 +918,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>98</width>
-         <height>91</height>
+         <width>178</width>
+         <height>251</height>
         </rect>
        </property>
        <attribute name="label">
@@ -946,8 +946,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>171</width>
-         <height>122</height>
+         <width>178</width>
+         <height>251</height>
         </rect>
        </property>
        <attribute name="label">

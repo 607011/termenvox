@@ -4,7 +4,6 @@
 #define __MAINWINDOW_H_
 
 #include <QMainWindow>
-#include <QModelIndexList>
 #include <QListWidgetItem>
 #include <QVector>
 #include "main.h"
@@ -28,7 +27,7 @@ protected:
     void closeEvent(QCloseEvent*);
 
 private slots:
-    void onOff(bool);
+    void resetTheremin(void);
     void instrumentChanged(int);
     void effectsOrderChanged(void);
     void resetSettings(void);
