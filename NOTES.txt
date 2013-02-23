@@ -27,3 +27,11 @@ Wiimote
 =======
 http://www.codeproject.com/articles/56630/writing-a-sensor-driver-for-the-wiimote-on-windows
 
+
+
+OpenCV - Hand Detection
+=======================
+http://www.andol.info/hci/895.htm
+http://www.andol.info/hci/2020.htm
+http://www.andol.info/hci/2059.htm
+

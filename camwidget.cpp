@@ -8,10 +8,9 @@
 CamWidget::CamWidget(QWidget* parent)
     : QWidget(parent)
 {
-    setMinimumSize(640, 480);
+    setMinimumSize(320, 240);
     setMaximumSize(1920, 1080);
-    setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    startCapture();
+    setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 }
 
 CamWidget::~CamWidget()
@@ -20,20 +19,44 @@ CamWidget::~CamWidget()
 }
 
 
+void CamWidget::calcDestRect()
+{
+    if (mWindowAspectRatio < mFrameAspectRatio) {
+        const int h = int(width() / mFrameAspectRatio);
+        mDestRect = QRect(0, (height()-h)/2, width(), h);
+    }
+    else {
+        const int w = int(height() * mFrameAspectRatio);
+        mDestRect = QRect((width()-w)/2, 0, w, height());
+    }
+}
+
+
 void CamWidget::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
-    if (mImage.isNull())
-        return;
-    painter.drawImage(rect(), mImage);
-    painter.setBrush(Qt::transparent);
-    painter.setPen(Qt::red);
-    painter.setRenderHint(QPainter::Antialiasing);
-    OpenCV::Fingers& fingers = mOpenCV.fingers();
-    for (OpenCV::Fingers::const_iterator i = fingers.constBegin(); i != fingers.constEnd(); ++i)
-        painter.drawEllipse(*i, 9, 9);
-    painter.setPen(Qt::green);
-    painter.drawEllipse(mOpenCV.handCenter(), mOpenCV.handRadius(), mOpenCV.handRadius());
+    if (mImage.isNull()) {
+        painter.fillRect(rect(), QBrush(QColor(50, 50, 50)));
+    }
+    else {
+        painter.drawImage(mDestRect, mImage);
+        painter.setBrush(Qt::transparent);
+        painter.setPen(Qt::red);
+        painter.setRenderHint(QPainter::Antialiasing);
+        const OpenCV::Fingers& fingers = mOpenCV.fingers();
+        for (OpenCV::Fingers::const_iterator i = fingers.constBegin(); i != fingers.constEnd(); ++i)
+            painter.drawEllipse(*i, 5, 5);
+        painter.setPen(Qt::green);
+        painter.drawEllipse(mOpenCV.handCenter(), mOpenCV.handRadius(), mOpenCV.handRadius());
+    }
+}
+
+
+void CamWidget::resizeEvent(QResizeEvent* e)
+{
+    mWindowAspectRatio = qreal(e->size().width()) / e->size().height();
+    calcDestRect();
+    update();
 }
 
 
@@ -45,10 +68,16 @@ void CamWidget::timerEvent(QTimerEvent*)
     }
 }
 
+
 void CamWidget::startCapture()
 {
     const int fps = 30;
     mOpenCV.startCapture(640, 480, fps);
+    int width, height;
+    while (!mOpenCV.getImageSize(width, height))
+        /* loop */;
+    mFrameAspectRatio = qreal(width) / height;
+    calcDestRect();
     mCameraUpdateTimerId = startTimer(1000/fps);
 }
 

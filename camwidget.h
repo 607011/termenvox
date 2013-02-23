@@ -5,6 +5,10 @@
 
 #include <QWidget>
 #include <QImage>
+#include <QRect>
+#include <QResizeEvent>
+#include <QPaintEvent>
+#include <QTimerEvent>
 
 #include "OpenCV.h"
 
@@ -14,24 +18,26 @@ class CamWidget : public QWidget
 public:
     explicit CamWidget(QWidget* parent = NULL);
     ~CamWidget();
+    void startCapture(void);
+    void stopCapture(void);
 
 protected:
     void paintEvent(QPaintEvent*);
     void timerEvent(QTimerEvent*);
+    void resizeEvent(QResizeEvent*);
     
 signals:
     
-public slots:
-
 private:
-    void startCapture(void);
-    void stopCapture(void);
-    
+    void calcDestRect();
+
 private:
     OpenCV mOpenCV;
     int mCameraUpdateTimerId;
     QImage mImage;
-
+    qreal mWindowAspectRatio;
+    qreal mFrameAspectRatio;
+    QRect mDestRect;
 };
 
 #endif // __CAMWIDGET_H_

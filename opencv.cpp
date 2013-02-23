@@ -2,26 +2,34 @@
 
 // most of the following code was ported from https://github.com/bengal/opencv-hand-detection/blob/master/hand.c
 
+#include <QtCore/QDebug>
 #include <cstdlib>
 #include "OpenCV.h"
-#include <QtCore/QDebug>
+#include "util.h"
 
 
 #define NUM_FINGERS	(5)
 #define NUM_DEFECTS	(8)
 
-template <typename T>
-static void dealloc(T& p) {
-    if (p)
-        free(p);
-    p = NULL;
-}
 
 
 OpenCV::OpenCV(void)
     : mCamera(NULL)
+    , mImage(NULL)
+    , mThresholdImage(NULL)
+    , mTempImage1(NULL)
+    , mTempImage3(NULL)
+    , mHull(NULL)
+    , mContour(NULL)
     , mFingers(NULL)
     , mDefects(NULL)
+    , mHullStorage(NULL)
+    , mContourStorage(NULL)
+    , mTempStorage(NULL)
+    , mDefectsStorage(NULL)
+    , mKernel(NULL)
+    , mNumFingers(0)
+    , mAbort(false)
 {
     // ...
 }
@@ -30,6 +38,15 @@ OpenCV::OpenCV(void)
 OpenCV::~OpenCV()
 {
     stopCapture();
+}
+
+
+void OpenCV::run(void)
+{
+    mCond.wait(&mMutex);
+    while (!mAbort) {
+
+    }
 }
 
 
@@ -60,21 +77,19 @@ bool OpenCV::startCapture(int desiredWidth, int desiredHeight, int fps, int cam)
 }
 
 
-bool OpenCV::stopCapture(void)
+void OpenCV::stopCapture(void)
 {
-    if (mCamera == NULL)
-        return false;
-    cvReleaseImage(&mThresholdImage);
-    cvReleaseImage(&mTempImage1);
-    cvReleaseImage(&mTempImage3);
-    cvReleaseMemStorage(&mContourStorage);
-    cvReleaseMemStorage(&mHullStorage);
-    cvReleaseMemStorage(&mDefectsStorage);
-    cvReleaseMemStorage(&mTempStorage);
-    cvReleaseCapture(&mCamera);
+    dealloc(mCamera, cvReleaseCapture);
+    dealloc(mThresholdImage, cvReleaseImage);
+    dealloc(mTempImage1, cvReleaseImage);
+    dealloc(mTempImage3, cvReleaseImage);
+    dealloc(mContourStorage, cvReleaseMemStorage);
+    dealloc(mHullStorage, cvReleaseMemStorage);
+    dealloc(mDefectsStorage, cvReleaseMemStorage);
+    dealloc(mTempStorage, cvReleaseMemStorage);
+    dealloc(mKernel, cvReleaseStructuringElement);
     dealloc(mFingers);
     dealloc(mDefects);
-    return true;
 }
 
 

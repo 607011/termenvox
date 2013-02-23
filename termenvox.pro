@@ -25,7 +25,8 @@ HEADERS += \
     theremin.h \
     main.h \
     camwidget.h \
-    opencv.h
+    opencv.h \
+    util.h
 
 FORMS += mainwindow.ui
 

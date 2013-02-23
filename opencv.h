@@ -3,14 +3,19 @@
 #ifndef __OPENCVSCENE_H_
 #define __OPENCVSCENE_H_
 
+#include <QThread>
 #include <QImage>
 #include <QVector>
 #include <QPoint>
+#include <QWaitCondition>
+#include <QMutex>
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
 
-class OpenCV
+class OpenCV : public QThread
 {
+    Q_OBJECT
+
 public:
     OpenCV(void);
     ~OpenCV();
@@ -19,7 +24,7 @@ public:
 
 public:
     bool startCapture(int width, int height, int fps, int cam = 0);
-    bool stopCapture(void);
+    void stopCapture(void);
     bool isCapturing() const { return (mCamera != NULL); }
     bool getImageSize(int& width, int& height) const;
     const QImage& getImage(void);
@@ -31,16 +36,23 @@ public:
         CvPoint* const cvFingers = mFingers;
         const CvPoint* const cvFingersEnd = cvFingers + mNumFingers;
         for (CvPoint* cvFingers = mFingers; cvFingers < cvFingersEnd; ++cvFingers) {
-            tips.append(QPoint(cvFingers->x, cvFingers->y));
-            ++cvFingers;
+            if (isCapturing()) {
+                tips.append(QPoint(cvFingers->x, cvFingers->y));
+                ++cvFingers;
+            }
         }
         return tips;
     }
     int numFingers(void) const { return mNumFingers; }
     int handRadius(void) const { return mHandRadius; }
 
+protected:
+    void run(void);
+
 private:
     void convertIplImageToQImage(const IplImage* iplImg, QImage& image);
+
+private:
     CvCapture* mCamera;
     QImage mFrame;
     IplImage* mImage;
@@ -60,6 +72,9 @@ private:
     int mNumFingers;
     int mHandRadius;
     int mNumDefects;
+    bool mAbort;
+    QWaitCondition mCond;
+    QMutex mMutex;
 };
 
 #endif // __OPENCVSCENE_H_

@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget* parent)
     setWindowTitle(tr("%1 %2").arg(AppName).arg(AppVersion));
 
     ui->horizontalLayoutMouse->addWidget(mThereminWidget);
-    ui->horizontalLayoutCam->addWidget(mCamWidget);
+    ui->horizontalLayoutCam->insertWidget(1, mCamWidget);
 
     ui->minFLineEdit->setValidator(new QIntValidator(ui->minFDial->minimum(), ui->minFDial->maximum()));
     ui->maxFLineEdit->setValidator(new QIntValidator(ui->maxFDial->minimum(), ui->maxFDial->maximum()));
@@ -54,6 +54,7 @@ MainWindow::MainWindow(QWidget* parent)
     QObject::connect(ui->prcRevDecayDial, SIGNAL(valueChanged(int)), SLOT(prcRevChanged(int)));
     QObject::connect(ui->echoDial, SIGNAL(valueChanged(int)), SLOT(echoChanged(int)));
     QObject::connect(ui->onOffPushButton, SIGNAL(clicked()), SLOT(resetTheremin()));
+    QObject::connect(ui->camOnOffPushButton, SIGNAL(clicked()), SLOT(startStopCapture()));
     QObject::connect(ui->actionHzScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowHzScale(bool)));
     QObject::connect(ui->actionToneScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowToneScale(bool)));
     QObject::connect(ui->actionVolumeScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowLoudnessScale(bool)));
@@ -92,6 +93,19 @@ void MainWindow::closeEvent(QCloseEvent*)
 void MainWindow::resetTheremin(void)
 {
     mTheremin.reset();
+}
+
+
+void MainWindow::startStopCapture()
+{
+    if (ui->camOnOffPushButton->text() == tr("Start")) {
+        mCamWidget->startCapture();
+        ui->camOnOffPushButton->setText(tr("Stop"));
+    }
+    else {
+        mCamWidget->stopCapture();
+        ui->camOnOffPushButton->setText(tr("Start"));
+    }
 }
 
 

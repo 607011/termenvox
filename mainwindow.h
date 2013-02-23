@@ -29,6 +29,7 @@ protected:
 
 private slots:
     void resetTheremin(void);
+    void startStopCapture(void);
     void instrumentChanged(int);
     void effectsOrderChanged(void);
     void resetSettings(void);
