@@ -9,6 +9,7 @@
 #include "main.h"
 #include "thereminwidget.h"
 #include "theremin.h"
+#include "camwidget.h"
 
 namespace Ui {
 class MainWindow;
@@ -62,6 +63,7 @@ private:
     ThereminWidget* mThereminWidget;
     Theremin& mTheremin;
     QVector<QListWidgetItem*> mEffects;
+    CamWidget* mCamWidget;
 };
 
 

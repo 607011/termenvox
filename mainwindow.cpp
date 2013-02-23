@@ -19,13 +19,15 @@ MainWindow::MainWindow(QWidget* parent)
     , ui(new Ui::MainWindow)
     , mThereminWidget(new ThereminWidget)
     , mTheremin(mThereminWidget->theremin())
+    , mCamWidget(new CamWidget)
 {
     QSettings::setDefaultFormat(QSettings::NativeFormat);
 
     ui->setupUi(this);
     setWindowTitle(tr("%1 %2").arg(AppName).arg(AppVersion));
 
-    ui->horizontalLayout->addWidget(mThereminWidget);
+    ui->horizontalLayoutMouse->addWidget(mThereminWidget);
+    ui->horizontalLayoutCam->addWidget(mCamWidget);
 
     ui->minFLineEdit->setValidator(new QIntValidator(ui->minFDial->minimum(), ui->minFDial->maximum()));
     ui->maxFLineEdit->setValidator(new QIntValidator(ui->maxFDial->minimum(), ui->maxFDial->maximum()));

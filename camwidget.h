@@ -1,0 +1,37 @@
+// Copyright (c) 2013 Oliver Lau <ola@ct.de>, Heise Zeitschriften Verlag. All rights reserved.
+
+#ifndef __CAMWIDGET_H_
+#define __CAMWIDGET_H_
+
+#include <QWidget>
+#include <QImage>
+
+#include "OpenCV.h"
+
+class CamWidget : public QWidget
+{
+    Q_OBJECT
+public:
+    explicit CamWidget(QWidget* parent = NULL);
+    ~CamWidget();
+
+protected:
+    void paintEvent(QPaintEvent*);
+    void timerEvent(QTimerEvent*);
+    
+signals:
+    
+public slots:
+
+private:
+    void startCapture(void);
+    void stopCapture(void);
+    
+private:
+    OpenCV mOpenCV;
+    int mCameraUpdateTimerId;
+    QImage mImage;
+
+};
+
+#endif // __CAMWIDGET_H_

@@ -1,0 +1,65 @@
+// Copyright (c) 2013 Oliver Lau <ola@ct.de>, Heise Zeitschriften Verlag. All rights reserved.
+
+#ifndef __OPENCVSCENE_H_
+#define __OPENCVSCENE_H_
+
+#include <QImage>
+#include <QVector>
+#include <QPoint>
+#include <opencv/cv.h>
+#include <opencv/highgui.h>
+
+class OpenCV
+{
+public:
+    OpenCV(void);
+    ~OpenCV();
+
+    typedef QVector<QPoint> Fingers;
+
+public:
+    bool startCapture(int width, int height, int fps, int cam = 0);
+    bool stopCapture(void);
+    bool isCapturing() const { return (mCamera != NULL); }
+    bool getImageSize(int& width, int& height) const;
+    const QImage& getImage(void);
+
+    QPoint handCenter(void) const { return QPoint(mHandCenter.x, mHandCenter.y); }
+    Fingers fingers(void) const
+    {
+        Fingers tips;
+        CvPoint* const cvFingers = mFingers;
+        const CvPoint* const cvFingersEnd = cvFingers + mNumFingers;
+        for (CvPoint* cvFingers = mFingers; cvFingers < cvFingersEnd; ++cvFingers) {
+            tips.append(QPoint(cvFingers->x, cvFingers->y));
+            ++cvFingers;
+        }
+        return tips;
+    }
+    int numFingers(void) const { return mNumFingers; }
+    int handRadius(void) const { return mHandRadius; }
+
+private:
+    void convertIplImageToQImage(const IplImage* iplImg, QImage& image);
+    CvCapture* mCamera;
+    QImage mFrame;
+    IplImage* mImage;
+    IplImage* mThresholdImage;
+    IplImage* mTempImage1;
+    IplImage* mTempImage3;
+    CvSeq* mContour;
+    CvSeq* mHull;
+    CvPoint mHandCenter;
+    CvPoint* mFingers;
+    CvPoint* mDefects;
+    CvMemStorage* mHullStorage;
+    CvMemStorage* mContourStorage;
+    CvMemStorage* mTempStorage;
+    CvMemStorage* mDefectsStorage;
+    IplConvKernel* mKernel;
+    int mNumFingers;
+    int mHandRadius;
+    int mNumDefects;
+};
+
+#endif // __OPENCVSCENE_H_

@@ -137,6 +137,8 @@ void ThereminWidget::paintEvent(QPaintEvent*)
     grad.setSpread(QGradient::PadSpread);
     p.fillRect(rect(), QBrush(grad));
     p.setBrush(Qt::transparent);
+    p.setPen(Qt::black);
+    p.drawRect(0, 0, width()-1, height()-1);
     if (mShowToneScale) {
         p.setPen(QColor(190, 190, 190, 128));
         for (QVector<Pitch>::const_iterator i = mPitches.constBegin(); i != mPitches.constEnd(); ++i) {
@@ -144,7 +146,7 @@ void ThereminWidget::paintEvent(QPaintEvent*)
                 const int x = frequencyToWidth(i->f);
                 p.drawLine(x, 0, x, height());
                 p.save();
-                p.translate(x + 2, 2);
+                p.translate(x + 4, 2);
                 p.rotate(90);
                 p.drawText(0, 0, 40, 15, Qt::AlignLeft, QString("%1").arg(i->name));
                 p.restore();

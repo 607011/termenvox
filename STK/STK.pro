@@ -2,8 +2,12 @@
 
 QT -= gui
 
-win32:CONFIG(release, debug|release): TARGET = STK
-else:win32:CONFIG(debug, debug|release): TARGET = STKd
+win32:CONFIG(release, debug|release) {
+TARGET = STK
+}
+else:win32:CONFIG(debug, debug|release) {
+TARGET = STKd
+}
 
 TEMPLATE = lib
 CONFIG += staticlib
@@ -11,7 +15,6 @@ VERSION = 4.4.4
 DEFINES += __LITTLE_ENDIAN__ __WINDOWS_ASIO__ __WINDOWS_DS__ __WINDOWS_MM__
 DEFINES -= UNICODE
 INCLUDEPATH += include
-LIBS += dsound.lib winmm.lib Wsock32.lib
 win32 {
 QMAKE_CXXFLAGS += /wd4100 /wd4996 /wd4309 /wd4244
 }
