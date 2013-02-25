@@ -3,6 +3,7 @@
 // most of the following code was ported from https://github.com/bengal/opencv-hand-detection/blob/master/hand.c
 
 #include <QtCore/QDebug>
+#include <qmath.h>
 #include <cstdlib>
 #include "OpenCV.h"
 #include "util.h"
@@ -110,6 +111,7 @@ const QImage& OpenCV::getImage(void)
         return mFrame;
     // filter & threshold
     mImage = cvQueryFrame(mCamera);
+#if 1
     cvSmooth(mImage, mTempImage3, CV_GAUSSIAN, 11, 11, 0, 0);
     cvSmooth(mTempImage3, mTempImage3, CV_MEDIAN, 11, 11, 0, 0);
     cvCvtColor(mTempImage3, mTempImage3, CV_BGR2HSV);
@@ -135,23 +137,20 @@ const QImage& OpenCV::getImage(void)
     }
 
     // find convex hull
-    CvSeq* defects;
-    CvConvexityDefect* defectArray;
-    int i;
-    int x = 0, y = 0;
-    float dist = 0;
     mHull = NULL;
     if (!mContour)
         return mFrame;
     mHull = cvConvexHull2(mContour, mHullStorage, CV_CLOCKWISE, 0);
     if (mHull) {
         /* Get convexity defects of contour w.r.t. the convex hull */
-        defects = cvConvexityDefects(mContour, mHull, mDefectsStorage);
+        CvSeq* defects = cvConvexityDefects(mContour, mHull, mDefectsStorage);
         if (defects && defects->total) {
-            defectArray = (CvConvexityDefect*)calloc(defects->total, sizeof(CvConvexityDefect));
+            float dist = 0;
+            int x = 0, y = 0;
+            CvConvexityDefect* defectArray = (CvConvexityDefect*)calloc(defects->total, sizeof(CvConvexityDefect));
             cvCvtSeqToArray(defects, defectArray, CV_WHOLE_SEQ);
             /* Average depth points to get hand center */
-            for (i = 0; i < defects->total && i < NUM_DEFECTS; i++) {
+            for (int i = 0; i < defects->total && i < NUM_DEFECTS; i++) {
                 x += defectArray[i].depth_point->x;
                 y += defectArray[i].depth_point->y;
                 mDefects[i] = cvPoint(defectArray[i].depth_point->x, defectArray[i].depth_point->y);
@@ -161,12 +160,12 @@ const QImage& OpenCV::getImage(void)
             mNumDefects = defects->total;
             mHandCenter = cvPoint(x, y);
             /* Compute hand radius as mean of distances of defects' depth point to hand center */
-            for (i = 0; i < defects->total; i++) {
-                int d = (x - defectArray[i].depth_point->x) *
-                        (x - defectArray[i].depth_point->x) +
-                        (y - defectArray[i].depth_point->y) *
-                        (y - defectArray[i].depth_point->y);
-                dist += sqrt((float)d);
+            for (int i = 0; i < defects->total; i++) {
+                const int d = (x - defectArray[i].depth_point->x) *
+                              (x - defectArray[i].depth_point->x) +
+                              (y - defectArray[i].depth_point->y) *
+                              (y - defectArray[i].depth_point->y);
+                dist += qSqrt((float)d);
             }
             mHandRadius = int(dist / defects->total);
             free(defectArray);
@@ -174,25 +173,22 @@ const QImage& OpenCV::getImage(void)
     }
 
     // find fingers
-    int n;
     CvPoint max_point;
     int dist1 = 0, dist2 = 0;
     int finger_distance[NUM_FINGERS + 1];
-
     mNumFingers = 0;
     if (!mContour || !mHull)
         return mFrame;
 
-    n = mContour->total;
+    int n = mContour->total;
     CvPoint* points = (CvPoint*)calloc(n, sizeof(CvPoint));
     cvCvtSeqToArray(mContour, points, CV_WHOLE_SEQ);
 
     /* Fingers are detected as points where the distance to the center is a local maximum */
-    for (i = 0; i < n; ++i) {
-        int dist;
-        int cx = mHandCenter.x;
-        int cy = mHandCenter.y;
-        dist = (cx - points[i].x) * (cx - points[i].x) + (cy - points[i].y) * (cy - points[i].y);
+    for (int i = 0; i < n; ++i) {
+        const int cx = mHandCenter.x;
+        const int cy = mHandCenter.y;
+        const int dist = (cx - points[i].x) * (cx - points[i].x) + (cy - points[i].y) * (cy - points[i].y);
         if (dist < dist1 && dist1 > dist2 && max_point.x != 0 && max_point.y < cvGetSize(mImage).height - 10) {
             finger_distance[mNumFingers] = dist;
             mFingers[mNumFingers++] = max_point;
@@ -205,7 +201,8 @@ const QImage& OpenCV::getImage(void)
     }
     free(points);
 
-    convertIplImageToQImage(mThresholdImage, mFrame);
+#endif
+    convertIplImageToQImage(mTempImage3, mFrame);
     return mFrame;
 }
 
