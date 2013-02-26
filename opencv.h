@@ -7,6 +7,7 @@
 #include <QImage>
 #include <QVector>
 #include <QPoint>
+#include <QPainterPath>
 #include <QWaitCondition>
 #include <QMutex>
 #include <opencv/cv.h>
@@ -30,50 +31,29 @@ public:
     bool process(void);
     inline const QImage& frame(void) { return mFrame; }
 
-    QPoint handCenter(void) const { return QPoint(mHandCenter.x, mHandCenter.y); }
-    Fingers fingers(void) const
-    {
-        Fingers tips;
-        CvPoint* const cvFingers = mFingers;
-        const CvPoint* const cvFingersEnd = cvFingers + mNumFingers;
-        for (CvPoint* cvFingers = mFingers; cvFingers < cvFingersEnd; ++cvFingers) {
-            if (isCapturing()) {
-                tips.append(QPoint(cvFingers->x, cvFingers->y));
-                ++cvFingers;
-            }
+    QPainterPath hands(void) const {
+        QPainterPath path;
+        const int N = mHands? mHands->total : 0;
+        for( int i = 0; i < N; ++i) {
+            const CvRect* const r = (CvRect*)cvGetSeqElem(mHands, i);
+            path.addRect(mSize.width - r->x - r->width, r->y, r->width, r->height);
         }
-        return tips;
+        return path;
     }
-    int numFingers(void) const { return mNumFingers; }
-    int handRadius(void) const { return mHandRadius; }
-
-protected:
-    void run(void);
 
 private:
     void convertIplImageToQImage(const IplImage* iplImg, QImage& image);
 
 private:
+    CvSize mSize;
     CvCapture* mCamera;
     QImage mFrame;
     IplImage* mImage;
-    IplImage* mThresholdImage;
-    IplImage* mTempImage1;
-    IplImage* mTempImage3;
-    CvSeq* mContour;
-    CvSeq* mHull;
-    CvPoint mHandCenter;
-    CvPoint* mFingers;
-    CvPoint* mDefects;
-    CvMemStorage* mHullStorage;
-    CvMemStorage* mContourStorage;
-    CvMemStorage* mTempStorage;
-    CvMemStorage* mDefectsStorage;
-    IplConvKernel* mKernel;
-    int mNumFingers;
-    int mHandRadius;
-    int mNumDefects;
-    bool mAbort;
+    IplImage* mSmallImage;
+    IplImage* mGrayImage;
+    CvSeq* mHands;
+    CvHaarClassifierCascade* mCascade;
+    CvMemStorage* mStorage;
     QWaitCondition mCond;
     QMutex mMutex;
 };

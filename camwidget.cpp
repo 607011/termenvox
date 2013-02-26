@@ -44,11 +44,7 @@ void CamWidget::paintEvent(QPaintEvent*)
         painter.setBrush(Qt::transparent);
         painter.setPen(Qt::red);
         painter.setRenderHint(QPainter::Antialiasing);
-        const OpenCV::Fingers& fingers = mOpenCV.fingers();
-        for (OpenCV::Fingers::const_iterator i = fingers.constBegin(); i != fingers.constEnd(); ++i)
-            painter.drawEllipse(*i, 5, 5);
-        painter.setPen(Qt::green);
-        painter.drawEllipse(mOpenCV.handCenter(), mOpenCV.handRadius(), mOpenCV.handRadius());
+        painter.drawPath(mOpenCV.hands());
     }
 }
 
