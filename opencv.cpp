@@ -14,8 +14,9 @@
 
 
 
-OpenCV::OpenCV(void)
-    : mCamera(NULL)
+OpenCV::OpenCV(QObject* parent)
+    : QObject(parent)
+    , mCamera(NULL)
     , mImage(NULL)
     , mThresholdImage(NULL)
     , mTempImage1(NULL)
@@ -105,13 +106,13 @@ bool OpenCV::getImageSize(int& width, int& height) const
 }
 
 
-const QImage& OpenCV::getImage(void)
+bool OpenCV::process(void)
 {
     if (!isCapturing())
-        return mFrame;
+        return false;
     // filter & threshold
     mImage = cvQueryFrame(mCamera);
-#if 1
+#if 0
     cvSmooth(mImage, mTempImage3, CV_GAUSSIAN, 11, 11, 0, 0);
     cvSmooth(mTempImage3, mTempImage3, CV_MEDIAN, 11, 11, 0, 0);
     cvCvtColor(mTempImage3, mTempImage3, CV_BGR2HSV);
@@ -120,12 +121,13 @@ const QImage& OpenCV::getImage(void)
     cvSmooth(mThresholdImage, mThresholdImage, CV_GAUSSIAN, 3, 3, 0, 0);
 
     // find contour
-    double area, max_area = 0.0;
-    CvSeq *contours, *tmp, *contour = NULL;
     cvCopy(mThresholdImage, mTempImage1, NULL);
+    CvSeq *contours;
     cvFindContours(mTempImage1, mTempStorage, &contours, sizeof(CvContour), CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, cvPoint(0, 0));
-    for (tmp = contours; tmp; tmp = tmp->h_next) {
-        area = fabs(cvContourArea(tmp, CV_WHOLE_SEQ, 0));
+    float max_area = 0.0f;
+    CvSeq* contour = NULL;
+    for (CvSeq* tmp = contours; tmp; tmp = tmp->h_next) {
+        float area = fabs(cvContourArea(tmp, CV_WHOLE_SEQ, 0));
         if (area > max_area) {
             max_area = area;
             contour = tmp;
@@ -139,7 +141,7 @@ const QImage& OpenCV::getImage(void)
     // find convex hull
     mHull = NULL;
     if (!mContour)
-        return mFrame;
+        return false;
     mHull = cvConvexHull2(mContour, mHullStorage, CV_CLOCKWISE, 0);
     if (mHull) {
         /* Get convexity defects of contour w.r.t. the convex hull */
@@ -149,7 +151,7 @@ const QImage& OpenCV::getImage(void)
             int x = 0, y = 0;
             CvConvexityDefect* defectArray = (CvConvexityDefect*)calloc(defects->total, sizeof(CvConvexityDefect));
             cvCvtSeqToArray(defects, defectArray, CV_WHOLE_SEQ);
-            /* Average depth points to get hand center */
+            // Average depth points to get hand center
             for (int i = 0; i < defects->total && i < NUM_DEFECTS; i++) {
                 x += defectArray[i].depth_point->x;
                 y += defectArray[i].depth_point->y;
@@ -159,7 +161,7 @@ const QImage& OpenCV::getImage(void)
             y /= defects->total;
             mNumDefects = defects->total;
             mHandCenter = cvPoint(x, y);
-            /* Compute hand radius as mean of distances of defects' depth point to hand center */
+            // Compute hand radius as mean of distances of defects' depth point to hand center
             for (int i = 0; i < defects->total; i++) {
                 const int d = (x - defectArray[i].depth_point->x) *
                               (x - defectArray[i].depth_point->x) +
@@ -178,13 +180,13 @@ const QImage& OpenCV::getImage(void)
     int finger_distance[NUM_FINGERS + 1];
     mNumFingers = 0;
     if (!mContour || !mHull)
-        return mFrame;
+        return false;
 
     int n = mContour->total;
     CvPoint* points = (CvPoint*)calloc(n, sizeof(CvPoint));
     cvCvtSeqToArray(mContour, points, CV_WHOLE_SEQ);
 
-    /* Fingers are detected as points where the distance to the center is a local maximum */
+    // Fingers are detected as points where the distance to the center is a local maximum
     for (int i = 0; i < n; ++i) {
         const int cx = mHandCenter.x;
         const int cy = mHandCenter.y;
@@ -202,19 +204,19 @@ const QImage& OpenCV::getImage(void)
     free(points);
 
 #endif
-    convertIplImageToQImage(mTempImage3, mFrame);
-    return mFrame;
+    convertIplImageToQImage(mImage, mFrame);
+    return true;
 }
 
 
 void OpenCV::convertIplImageToQImage(const IplImage* iplImg, QImage& image)
 {
     const int w = iplImg->width;
-    int y = iplImg->height;
     char* src = iplImg->imageData +  iplImg->widthStep * y;
     switch (iplImg->nChannels) {
     case 1:
     {
+        int y = iplImg->height;
         while (y--) {
             QRgb* dst = (uint*)image.scanLine(y);
             const QRgb* const dstEnd = reinterpret_cast<QRgb*>(image.scanLine(y)) + w;
@@ -227,6 +229,7 @@ void OpenCV::convertIplImageToQImage(const IplImage* iplImg, QImage& image)
     }
     case 3:
     {
+        int y = iplImg->height;
         while (y--) {
             QRgb* dst = (uint*)image.scanLine(y);
             const QRgb* const dstEnd = reinterpret_cast<QRgb*>(image.scanLine(y)) + w;

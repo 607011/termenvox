@@ -1,6 +1,7 @@
 // Copyright (c) 2013 Oliver Lau <ola@ct.de>, Heise Zeitschriften Verlag. All rights reserved.
 
 #include <QtCore/QDebug>
+#include <QtConcurrent/QtConcurrent>
 #include <QPainter>
 #include <QImage>
 #include "camwidget.h"
@@ -63,7 +64,9 @@ void CamWidget::resizeEvent(QResizeEvent* e)
 void CamWidget::timerEvent(QTimerEvent*)
 {
     if (mOpenCV.isCapturing()) {
-        mImage = mOpenCV.getImage();
+        QFuture<void> imageFuture = QtConcurrent::run(&mOpenCV, &OpenCV::process);
+        imageFuture.waitForFinished();
+        mImage = mOpenCV.frame();
         update();
     }
 }

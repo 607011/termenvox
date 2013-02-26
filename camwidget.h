@@ -25,9 +25,9 @@ protected:
     void paintEvent(QPaintEvent*);
     void timerEvent(QTimerEvent*);
     void resizeEvent(QResizeEvent*);
-    
+
 signals:
-    
+
 private:
     void calcDestRect();
 

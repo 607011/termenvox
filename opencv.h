@@ -12,12 +12,12 @@
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
 
-class OpenCV : public QThread
+class OpenCV : public QObject
 {
     Q_OBJECT
 
 public:
-    OpenCV(void);
+    OpenCV(QObject* parent = NULL);
     ~OpenCV();
 
     typedef QVector<QPoint> Fingers;
@@ -27,7 +27,8 @@ public:
     void stopCapture(void);
     bool isCapturing() const { return (mCamera != NULL); }
     bool getImageSize(int& width, int& height) const;
-    const QImage& getImage(void);
+    bool process(void);
+    inline const QImage& frame(void) { return mFrame; }
 
     QPoint handCenter(void) const { return QPoint(mHandCenter.x, mHandCenter.y); }
     Fingers fingers(void) const

@@ -79,7 +79,6 @@ Theremin::Theremin(void)
     , mGlobalVolume(1.0)
     , mFrequency(440.0)
     , mInstrumentId(Silence)
-    , mDAC(RtAudio::WINDOWS_DS)
     , mError("")
 {
     Stk::setSampleRate(44100.0);
@@ -101,7 +100,7 @@ Theremin::Theremin(void)
     oparameters.deviceId = mDAC.getDefaultOutputDevice();
     oparameters.nChannels = 2;
     RtAudioFormat format = (sizeof(StkFloat) == 8)? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
-    unsigned int bufferFrames = RT_BUFFER_SIZE;
+    unsigned int bufferFrames = 2*RT_BUFFER_SIZE;
     try {
         mDAC.openStream(&oparameters, NULL, format, (unsigned int)Stk::sampleRate(), &bufferFrames, &tickCallback, (void*)this);
     }
