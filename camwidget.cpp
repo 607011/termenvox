@@ -42,21 +42,20 @@ void CamWidget::paintEvent(QPaintEvent*)
 {
     mScale = qMin(qreal(mDestRect.width()) / mImage.width(), qreal(mDestRect.height()) / mImage.height());
     QPainter painter(this);
-    if (mImage.isNull()) {
-        painter.fillRect(rect(), QBrush(QColor(50, 50, 50)));
-    }
-    else {
+    painter.fillRect(rect(), QBrush(QColor(50, 50, 50)));
+    if (!mImage.isNull()) {
         painter.drawImage(mDestRect, mImage);
         painter.setBrush(Qt::transparent);
         painter.setPen(QColor(90, 90, 90, 150));
         painter.drawRect(mDestRect.x(), mDestRect.y(), mDestRect.width()-1, mDestRect.height()-1);
         painter.setPen(Qt::black);
-        painter.drawText(QRectF(5, 5, 50, 20), QString("%1 fps").arg(mFPS, 0, 'g', 2));
-        mTime.restart();
-        painter.setPen(Qt::red);
-        painter.scale(mScale, mScale);
+        painter.drawText(QRectF(mDestRect.x()+5, mDestRect.y()+5, 50, 20), QString("%1 fps").arg(mFPS, 0, 'g', 2));
+        painter.setPen(QPen(QColor(245, 20, 20), 2));
+        painter.setRenderHint(QPainter::Antialiasing);
         painter.translate(mDestRect.topLeft());
+        painter.scale(mScale, mScale);
         painter.drawPath(mOpenCV.faces());
+        mTime.restart();
     }
 }
 
