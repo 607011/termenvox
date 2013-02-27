@@ -62,6 +62,7 @@ MainWindow::MainWindow(QWidget* parent)
     QObject::connect(ui->actionExit, SIGNAL(triggered()), SLOT(close()));
     QObject::connect(ui->actionAbout, SIGNAL(triggered()), SLOT(about()));
     QObject::connect(ui->actionAboutQt, SIGNAL(triggered()), SLOT(aboutQt()));
+    QObject::connect(mCamWidget->cv(), SIGNAL(objectsDetected()), SLOT(objectsDetected()));
 
     mEffects << makeEffectListItem(tr("Chorus Effect"), Theremin::ChorusEffect)
              << makeEffectListItem(tr("Echo Effect"), Theremin::EchoEffect)
@@ -106,6 +107,30 @@ void MainWindow::startStopCapture()
         mCamWidget->stopCapture();
         ui->camOnOffPushButton->setText(tr("Start"));
     }
+}
+
+
+void MainWindow::objectsDetected(void)
+{
+    const QVector<QRectF> objects = mCamWidget->cv()->detectedObjects();
+    const QSize& sz = mCamWidget->cv()->getImageSize();
+    const int w2 = sz.width() / 2;
+    QVector<QPointF> leftSide, rightSide;
+    for (QVector<QRectF>::const_iterator i = objects.constBegin(); i != objects.constEnd(); ++i) {
+        if (i->x() > w2)
+            rightSide.push_back(i->center());
+        else
+            leftSide.push_back(i->center());
+    }
+    QPointF left, right;
+    if (!leftSide.empty())
+        left = leftSide.first();
+    if (!rightSide.empty())
+        right = rightSide.first() - QPointF(w2, 0);
+    mThereminWidget->setVolume(left.y() / sz.height());
+    mThereminWidget->setFrequency1(right.x() / w2);
+    if (!left.isNull() && !right.isNull())
+        mTheremin.play();
 }
 
 

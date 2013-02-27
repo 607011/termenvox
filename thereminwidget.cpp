@@ -50,6 +50,31 @@ void ThereminWidget::setScaling(ThereminWidget::Scaling scaling)
 }
 
 
+void ThereminWidget::setFrequency1(qreal frequency)
+{
+    qDebug() << frequency;
+    mFrequency = widthToFrequency(frequency * width());
+    mTheremin.setFrequency(mFrequency);
+    update();
+}
+
+
+void ThereminWidget::setFrequency(qreal frequency)
+{
+    mFrequency = frequency;
+    mTheremin.setFrequency(mFrequency);
+    update();
+}
+
+
+void ThereminWidget::setVolume(qreal volume)
+{
+    mVolume = volume;
+    mTheremin.setVolume(mVolume);
+    update();
+}
+
+
 void ThereminWidget::setFrequencyRange(qreal minF, qreal maxF)
 {
     mMinF = minF;
@@ -173,16 +198,8 @@ void ThereminWidget::paintEvent(QPaintEvent*)
         p.drawText(QPointF(5, 15), tr("%1 Hz").arg(mFrequency, 0, 'g', 5));
         p.drawText(QPointF(5, 30), tr("%1%").arg(mVolume*100, 0, 'g', 3));
     }
-    if (mHold) {
-        p.setPen(Qt::red);
-        p.drawEllipse(QPointF(frequencyToWidth(mFrequency), volumeToHeight(mVolume)), 3, 3);
-    }
-}
-
-
-void ThereminWidget::wheelEvent(QWheelEvent* e)
-{
-    // ...
+    p.setPen(Qt::red);
+    p.drawEllipse(QPointF(frequencyToWidth(mFrequency), volumeToHeight(mVolume)), 3, 3);
 }
 
 
@@ -196,12 +213,9 @@ void ThereminWidget::mousePressEvent(QMouseEvent* e)
         break;
     case Qt::RightButton:
         mHold = true;
-        mFrequency = widthToFrequency(e->x());
-        mVolume = heightToVolume(e->y());
-        mTheremin.setFrequency(mFrequency);
-        mTheremin.setVolume(mVolume);
+        setFrequency(widthToFrequency(e->x()));
+        setVolume(heightToVolume(e->y()));
         mTheremin.play();
-        update();
         break;
     default:
         break;
@@ -224,10 +238,7 @@ void ThereminWidget::mouseReleaseEvent(QMouseEvent* e)
 void ThereminWidget::mouseMoveEvent(QMouseEvent* e)
 {
     if (!mHold) {
-        mFrequency = widthToFrequency(e->x());
-        mVolume = qreal(height() - e->y()) / height();
-        mTheremin.setFrequency(mFrequency);
-        mTheremin.setVolume(mVolume);
-        update();
+        setFrequency(widthToFrequency(e->x()));
+        setVolume(heightToVolume(e->y()));
     }
 }

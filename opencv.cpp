@@ -100,19 +100,21 @@ bool OpenCV::process(void)
     mObjects = cvHaarDetectObjects(mGrayImage, mCascade, mStorage, mScale, 2, CV_HAAR_DO_CANNY_PRUNING, cvSize(30, 30));
 #endif
     convertIplImageToQImage(mGrayImage, mFrame);
+    if (mObjects != NULL && mObjects->total > 0)
+        emit objectsDetected();
     return true;
 }
 
 
 QVector<QRectF> OpenCV::detectedObjects(void) const
 {
-    QVector<QRectF> objects;
+    QVector<QRectF> objects(mObjects->total);
     const int N = (mObjects)? mObjects->total : 0;
     for (int i = 0; i < N; ++i) {
         const CvRect* const r = (CvRect*)cvGetSeqElem(mObjects, i);
         const int x = mSize.width - r->x - r->width; // mirror along y-axis
         const int y = r->y;
-        objects.push_back(QRectF(x, y, r->width, r->height));
+        objects[i] = QRectF(x, y, r->width, r->height);
     }
     return objects;
 }

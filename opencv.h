@@ -8,9 +8,7 @@
 #include <QVector>
 #include <QRectF>
 #include <QPoint>
-#include <QPainterPath>
-#include <QWaitCondition>
-#include <QMutex>
+#include <QSize>
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
 
@@ -29,11 +27,19 @@ public:
 
     typedef QVector<QPoint> Fingers;
 
+signals:
+    void objectsDetected(void);
+
 public:
     bool startCapture(int width, int height, int fps, int cam = 0);
     void stopCapture(void);
     bool isCapturing() const { return (mCamera != NULL); }
     bool getImageSize(int& width, int& height) const;
+    QSize getImageSize(void) const {
+        if (mDownsizedImage == NULL)
+            return QSize();
+        return QSize(mDownsizedImage->width, mDownsizedImage->height);
+    }
     bool process(void);
     inline const QImage& frame(void) { return mFrame; }
 

@@ -22,6 +22,7 @@ public:
     ~CamWidget();
     void startCapture(void);
     void stopCapture(void);
+    const OpenCV* cv(void) const { return &mOpenCV; }
 
 protected:
     void paintEvent(QPaintEvent*);
