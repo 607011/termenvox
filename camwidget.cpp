@@ -57,8 +57,11 @@ void CamWidget::paintEvent(QPaintEvent*)
         const QVector<QRectF>& objects = mOpenCV.detectedObjects();
         int n = 0;
         for (QVector<QRectF>::const_iterator i = objects.constBegin(); i != objects.constEnd(); ++i) {
-            painter.setPen(QPen(colors[n++ % 5], 1.5));
+            painter.setPen(QPen(colors[n % 5], 1.5));
             painter.drawEllipse(i->center(), 3, 3);
+            painter.setPen(QPen(colors[n % 5], 0.5));
+            painter.drawRect(*i);
+            ++n;
         }
         painter.restore();
         painter.setPen(Qt::black);

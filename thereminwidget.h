@@ -33,6 +33,10 @@ public:
     void setFrequencyRange(qreal, qreal);
     void setScaling(Scaling);
 
+    void setFrequency1(qreal);
+    void setFrequency(qreal);
+    void setVolume(qreal);
+
     struct Pitch {
         qreal f;
         QString name;
@@ -43,9 +47,6 @@ protected:
     void mouseMoveEvent(QMouseEvent*);
     void mousePressEvent(QMouseEvent*);
     void mouseReleaseEvent(QMouseEvent*);
-    void wheelEvent(QWheelEvent*);
-
-signals:
 
 public slots:
     void setShowHzScale(bool enabled) { mShowHzScale = enabled; update(); }
