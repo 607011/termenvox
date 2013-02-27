@@ -8,11 +8,13 @@
 
 CamWidget::CamWidget(QWidget* parent)
     : QWidget(parent)
+    , mScale(1.0)
 {
     setMinimumSize(320, 240);
     setMaximumSize(1920, 1080);
     setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 }
+
 
 CamWidget::~CamWidget()
 {
@@ -35,6 +37,7 @@ void CamWidget::calcDestRect()
 
 void CamWidget::paintEvent(QPaintEvent*)
 {
+    mScale = qMin(qreal(mDestRect.width()) / mImage.width(), qreal(mDestRect.height()) / mImage.height());
     QPainter painter(this);
     if (mImage.isNull()) {
         painter.fillRect(rect(), QBrush(QColor(50, 50, 50)));
@@ -42,8 +45,11 @@ void CamWidget::paintEvent(QPaintEvent*)
     else {
         painter.drawImage(mDestRect, mImage);
         painter.setBrush(Qt::transparent);
+        painter.setPen(QColor(90, 90, 90, 150));
+        painter.drawRect(mDestRect.x(), mDestRect.y(), mDestRect.width()-1, mDestRect.height()-1);
         painter.setPen(Qt::red);
-        painter.setRenderHint(QPainter::Antialiasing);
+        painter.scale(mScale, mScale);
+        painter.translate(mDestRect.topLeft());
         painter.drawPath(mOpenCV.hands());
     }
 }
@@ -74,7 +80,7 @@ void CamWidget::startCapture()
     mOpenCV.startCapture(640, 480, fps);
     int width, height;
     while (!mOpenCV.getImageSize(width, height))
-        /* loop */;
+        /* wait */;
     mFrameAspectRatio = qreal(width) / height;
     calcDestRect();
     mCameraUpdateTimerId = startTimer(1000/fps);

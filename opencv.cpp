@@ -9,20 +9,16 @@
 #include "util.h"
 
 
-#define NUM_FINGERS	(5)
-#define NUM_DEFECTS	(8)
-
-
 OpenCV::OpenCV(QObject* parent)
     : QObject(parent)
     , mSize(cvSize(0, 0))
     , mCamera(NULL)
     , mImage(NULL)
-    , mSmallImage(NULL)
     , mGrayImage(NULL)
     , mHands(NULL)
     , mCascade(NULL)
     , mStorage(NULL)
+    , mScale(1.1)
 {
     mCascade = (CvHaarClassifierCascade*)cvLoad("xml/haarcascade_frontalface_alt.xml", 0, 0, 0);
 }
@@ -46,10 +42,10 @@ bool OpenCV::startCapture(int desiredWidth, int desiredHeight, int fps, int cam)
     if (getImageSize(desiredWidth, desiredHeight) == false)
         return false;
     mFrame = QImage(desiredWidth, desiredHeight, QImage::Format_ARGB32);
-    mImage = cvQueryFrame(mCamera);
+    while ((mImage = cvQueryFrame(mCamera)) == NULL)
+        ;
     mSize = cvGetSize(mImage);
     mGrayImage = cvCreateImage(mSize, 8, 1);
-    mSmallImage = cvCreateImage(cvSize(mSize.width/2, mSize.height/2), 8, 1);
     mStorage = cvCreateMemStorage();
     return true;
 }
@@ -65,7 +61,7 @@ void OpenCV::stopCapture(void)
 
 bool OpenCV::getImageSize(int& width, int& height) const
 {
-    if (!isCapturing())
+    if (!isCapturing() || mCascade == NULL)
         return false;
     const IplImage* cvimage = cvQueryFrame(mCamera);
     width = cvimage->width;
@@ -76,16 +72,26 @@ bool OpenCV::getImageSize(int& width, int& height) const
 
 bool OpenCV::process(void)
 {
-    if (!isCapturing())
+    if (!isCapturing() || mCascade == NULL)
         return false;
-    // filter & threshold
     mImage = cvQueryFrame(mCamera);
-    // cvResize(mImage, mSmallImage);
     cvCvtColor(mImage, mGrayImage, CV_BGR2GRAY);
     cvClearMemStorage(mStorage);
-    mHands = cvHaarDetectObjects(mGrayImage, mCascade, mStorage, 1.1, 2, 0, cvSize(30, 30));
-    convertIplImageToQImage(mGrayImage, mFrame);
+    mHands = cvHaarDetectObjects(mGrayImage, mCascade, mStorage, mScale, 2, CV_HAAR_SCALE_IMAGE, cvSize(30, 30));
+    convertIplImageToQImage(mImage, mFrame);
     return true;
+}
+
+
+QPainterPath OpenCV::hands(void) const
+{
+    QPainterPath path;
+    const int N = (mHands)? mHands->total : 0;
+    for (int i = 0; i < N; ++i) {
+        const CvRect* const r = (CvRect*)cvGetSeqElem(mHands, i);
+        path.addRect(mSize.width - r->x - r->width, r->y, r->width, r->height);
+    }
+    return path;
 }
 
 

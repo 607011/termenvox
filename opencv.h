@@ -31,15 +31,7 @@ public:
     bool process(void);
     inline const QImage& frame(void) { return mFrame; }
 
-    QPainterPath hands(void) const {
-        QPainterPath path;
-        const int N = mHands? mHands->total : 0;
-        for( int i = 0; i < N; ++i) {
-            const CvRect* const r = (CvRect*)cvGetSeqElem(mHands, i);
-            path.addRect(mSize.width - r->x - r->width, r->y, r->width, r->height);
-        }
-        return path;
-    }
+    QPainterPath hands(void) const;
 
 private:
     void convertIplImageToQImage(const IplImage* iplImg, QImage& image);
@@ -49,13 +41,11 @@ private:
     CvCapture* mCamera;
     QImage mFrame;
     IplImage* mImage;
-    IplImage* mSmallImage;
     IplImage* mGrayImage;
     CvSeq* mHands;
     CvHaarClassifierCascade* mCascade;
     CvMemStorage* mStorage;
-    QWaitCondition mCond;
-    QMutex mMutex;
+    qreal mScale;
 };
 
 #endif // __OPENCVSCENE_H_

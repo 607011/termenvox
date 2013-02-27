@@ -38,6 +38,7 @@ private:
     qreal mWindowAspectRatio;
     qreal mFrameAspectRatio;
     QRect mDestRect;
+    qreal mScale;
 };
 
 #endif // __CAMWIDGET_H_
