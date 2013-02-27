@@ -1,16 +1,15 @@
 // Copyright (c) 2013 Oliver Lau <ola@ct.de>, Heise Zeitschriften Verlag. All rights reserved.
 
-// most of the following code was ported from https://github.com/bengal/opencv-hand-detection/blob/master/hand.c
-
 #include <QtCore/QDebug>
 #include <qmath.h>
 #include <cstdlib>
-#include "OpenCV.h"
+#include "opencv.h"
 #include "util.h"
 
+
 const char* OpenCV::HaarClassifierFile = "xml/haarcascade_frontalface_alt.xml";
-// const char* OpenCV::HaarClassifierFile = "xml/haarcascade_frontalface_alt2.xml";
 // const char* OpenCV::HaarClassifierFile = "xml/haarcascade_frontalface_alt_tree.xml";
+// const char* OpenCV::HaarClassifierFile = "xml/haarcascade_frontalface_alt2.xml";
 
 
 OpenCV::OpenCV(QObject* parent)
@@ -47,7 +46,7 @@ bool OpenCV::startCapture(int desiredWidth, int desiredHeight, int fps, int cam)
     cvSetCaptureProperty(mCamera, CV_CAP_PROP_FPS, fps);
     if (getImageSize(desiredWidth, desiredHeight) == false)
         return false;
-    mFrame = QImage(desiredWidth, desiredHeight, QImage::Format_ARGB32);
+    mFrame = QImage(desiredWidth, desiredHeight, QImage::Format_ARGB32_Premultiplied);
     mImage = cvQueryFrame(mCamera);
     mSize = cvSize(mImage->width/2, mImage->height/2);
     mDownsizedImage = cvCreateImage(mSize, 8, 3);
