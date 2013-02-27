@@ -27,6 +27,7 @@ OpenCV::OpenCV(QObject* parent)
 OpenCV::~OpenCV()
 {
     stopCapture();
+    dealloc(mCascade, cvReleaseHaarClassifierCascade);
 }
 
 
@@ -35,15 +36,14 @@ bool OpenCV::startCapture(int desiredWidth, int desiredHeight, int fps, int cam)
     stopCapture();
     mCamera = cvCreateCameraCapture(cam);
     while (!isCapturing())
-        /* wait ... */;
+        /* wait */;
     cvSetCaptureProperty(mCamera, CV_CAP_PROP_FRAME_WIDTH, desiredWidth);
     cvSetCaptureProperty(mCamera, CV_CAP_PROP_FRAME_HEIGHT, desiredHeight);
     cvSetCaptureProperty(mCamera, CV_CAP_PROP_FPS, fps);
     if (getImageSize(desiredWidth, desiredHeight) == false)
         return false;
     mFrame = QImage(desiredWidth, desiredHeight, QImage::Format_ARGB32);
-    while ((mImage = cvQueryFrame(mCamera)) == NULL)
-        ;
+    mImage = cvQueryFrame(mCamera);
     mSize = cvGetSize(mImage);
     mGrayImage = cvCreateImage(mSize, 8, 1);
     mStorage = cvCreateMemStorage();
@@ -74,22 +74,24 @@ bool OpenCV::process(void)
 {
     if (!isCapturing() || mCascade == NULL)
         return false;
-    mImage = cvQueryFrame(mCamera);
+    while ((mImage = cvQueryFrame(mCamera)) == NULL)
+        ;
     cvCvtColor(mImage, mGrayImage, CV_BGR2GRAY);
+    cvEqualizeHist(mGrayImage, mGrayImage);
     cvClearMemStorage(mStorage);
-    mHands = cvHaarDetectObjects(mGrayImage, mCascade, mStorage, mScale, 2, CV_HAAR_SCALE_IMAGE, cvSize(30, 30));
+    mHands = cvHaarDetectObjects(mGrayImage, mCascade, mStorage, mScale, 2, 0, cvSize(30, 30));
     convertIplImageToQImage(mImage, mFrame);
     return true;
 }
 
 
-QPainterPath OpenCV::hands(void) const
+QPainterPath OpenCV::faces(void) const
 {
     QPainterPath path;
     const int N = (mHands)? mHands->total : 0;
     for (int i = 0; i < N; ++i) {
         const CvRect* const r = (CvRect*)cvGetSeqElem(mHands, i);
-        path.addRect(mSize.width - r->x - r->width, r->y, r->width, r->height);
+        path.addRect(mSize.width - r->x - r->width, r->y, r->width, r->height); // mirror along y-axis
     }
     return path;
 }

@@ -31,7 +31,7 @@ public:
     bool process(void);
     inline const QImage& frame(void) { return mFrame; }
 
-    QPainterPath hands(void) const;
+    QPainterPath faces(void) const;
 
 private:
     void convertIplImageToQImage(const IplImage* iplImg, QImage& image);

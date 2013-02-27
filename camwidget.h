@@ -3,14 +3,15 @@
 #ifndef __CAMWIDGET_H_
 #define __CAMWIDGET_H_
 
+#include "opencv.h"
+
 #include <QWidget>
 #include <QImage>
 #include <QRect>
 #include <QResizeEvent>
 #include <QPaintEvent>
 #include <QTimerEvent>
-
-#include "OpenCV.h"
+#include <QTime>
 
 class CamWidget : public QWidget
 {
@@ -32,6 +33,8 @@ private:
     void calcDestRect();
 
 private:
+    QTime mTime;
+    qreal mFPS;
     OpenCV mOpenCV;
     int mCameraUpdateTimerId;
     QImage mImage;

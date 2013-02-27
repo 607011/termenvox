@@ -35,3 +35,8 @@ http://www.andol.info/hci/895.htm
 http://www.andol.info/hci/2020.htm
 http://www.andol.info/hci/2059.htm
 
+Enhanced human computer interface through webcam image processing library
+https://code.google.com/p/ehci/source/browse/trunk/src/ehci.cpp
+
+Ultra Rapid Object Detection in Computer Vision Applications with Haar-like Wavelet Features
+http://www.codeproject.com/Articles/27125/Ultra-Rapid-Object-Detection-in-Computer-Vision-Ap
