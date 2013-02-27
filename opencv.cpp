@@ -6,10 +6,15 @@
 #include "opencv.h"
 #include "util.h"
 
-
+#if defined(DETECT_HANDS)
+const char* OpenCV::HaarClassifierFile = "xml/haarcascade-hand-1.xml";
+#elif defined(DETECT_PALMS)
+const char* OpenCV::HaarClassifierFile = "xml/palm.xml";
+#elif defined(DETECT_FISTS)
+const char* OpenCV::HaarClassifierFile = "xml/fist.xml";
+#elif defined(DETECT_FACES)
 const char* OpenCV::HaarClassifierFile = "xml/haarcascade_frontalface_alt.xml";
-// const char* OpenCV::HaarClassifierFile = "xml/haarcascade_frontalface_alt_tree.xml";
-// const char* OpenCV::HaarClassifierFile = "xml/haarcascade_frontalface_alt2.xml";
+#endif
 
 
 OpenCV::OpenCV(QObject* parent)
@@ -19,7 +24,7 @@ OpenCV::OpenCV(QObject* parent)
     , mImage(NULL)
     , mDownsizedImage(NULL)
     , mGrayImage(NULL)
-    , mHands(NULL)
+    , mObjects(NULL)
     , mCascade(NULL)
     , mStorage(NULL)
     , mScale(1.1)
@@ -85,24 +90,31 @@ bool OpenCV::process(void)
     cvResize(mImage, mDownsizedImage);
     cvCvtColor(mDownsizedImage, mGrayImage, CV_BGR2GRAY);
     cvClearMemStorage(mStorage);
-    mHands = cvHaarDetectObjects(mGrayImage, mCascade, mStorage, mScale, 2, CV_HAAR_DO_CANNY_PRUNING, cvSize(30, 30));
+#if defined(DETECT_HANDS)
+    mObjects = cvHaarDetectObjects(mGrayImage, mCascade, mStorage, mScale, 2, CV_HAAR_DO_CANNY_PRUNING, cvSize(100, 100));
+#elif defined(DETECT_PALMS)
+    mObjects = cvHaarDetectObjects(mGrayImage, mCascade, mStorage, mScale, 2, CV_HAAR_DO_CANNY_PRUNING, cvSize(20, 20));
+#elif defined(DETECT_FISTS)
+    mObjects = cvHaarDetectObjects(mGrayImage, mCascade, mStorage, mScale, 2, CV_HAAR_DO_CANNY_PRUNING, cvSize(24, 24));
+#elif defined(DETECT_FACES)
+    mObjects = cvHaarDetectObjects(mGrayImage, mCascade, mStorage, mScale, 2, CV_HAAR_DO_CANNY_PRUNING, cvSize(30, 30));
+#endif
     convertIplImageToQImage(mGrayImage, mFrame);
     return true;
 }
 
 
-QPainterPath OpenCV::faces(void) const
+QVector<QRectF> OpenCV::detectedObjects(void) const
 {
-    QPainterPath path;
-    const int N = (mHands)? mHands->total : 0;
+    QVector<QRectF> objects;
+    const int N = (mObjects)? mObjects->total : 0;
     for (int i = 0; i < N; ++i) {
-        const CvRect* const r = (CvRect*)cvGetSeqElem(mHands, i);
+        const CvRect* const r = (CvRect*)cvGetSeqElem(mObjects, i);
         const int x = mSize.width - r->x - r->width; // mirror along y-axis
         const int y = r->y;
-        path.addRect(x, y, r->width, r->height);
-        path.addEllipse(QPointF(x + 0.5 * r->width, y + 0.5 * r->height), 1.5, 1.5);
+        objects.push_back(QRectF(x, y, r->width, r->height));
     }
-    return path;
+    return objects;
 }
 
 

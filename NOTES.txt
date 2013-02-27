@@ -23,6 +23,12 @@ http://www.youtube.com/watch?v=MJEbIMOfAMg
 http://www.youtube.com/watch?v=79PYEhQ5Njk
 
 
+Literatur
+=========
+Pedram Azad, Tilo Gockel, Rüdiger Dillmann, Gesichtskontrolle, Biometrie per Webcam selbstgemacht, c't 13/08, S. 168
+
+
+
 Wiimote
 =======
 http://www.codeproject.com/articles/56630/writing-a-sensor-driver-for-the-wiimote-on-windows
@@ -34,6 +40,11 @@ OpenCV - Hand Detection
 http://www.andol.info/hci/895.htm
 http://www.andol.info/hci/2020.htm
 http://www.andol.info/hci/2059.htm
+
+
+Hand detection through Haartraining: A hands-on approach
+http://gigadom.wordpress.com/2011/10/12/hand-detection-through-haartraining-a-hands-on-approach/
+
 
 Enhanced human computer interface through webcam image processing library
 https://code.google.com/p/ehci/source/browse/trunk/src/ehci.cpp

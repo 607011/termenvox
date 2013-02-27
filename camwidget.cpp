@@ -2,7 +2,7 @@
 
 #include <QtCore/QDebug>
 #include <QtConcurrent/QtConcurrent>
-#include <QRectF>
+#include <QPointF>
 #include <QString>
 #include <QPainter>
 #include <QImage>
@@ -41,6 +41,7 @@ void CamWidget::calcDestRect()
 
 void CamWidget::paintEvent(QPaintEvent*)
 {
+    static const QColor colors[5] = { QColor(255, 120, 10), QColor(10, 255, 10), QColor(10, 10, 255), QColor(255, 120, 10), QColor(10, 255, 255) };
     mScale = qMin(qreal(mDestRect.width()) / mImage.width(), qreal(mDestRect.height()) / mImage.height());
     QPainter painter(this);
     painter.fillRect(rect(), QBrush(QColor(50, 50, 50)));
@@ -49,13 +50,19 @@ void CamWidget::paintEvent(QPaintEvent*)
         painter.setBrush(Qt::transparent);
         painter.setPen(QColor(90, 90, 90, 150));
         painter.drawRect(mDestRect.x(), mDestRect.y(), mDestRect.width()-1, mDestRect.height()-1);
-        painter.setPen(Qt::black);
-        painter.drawText(QRectF(mDestRect.x()+5, mDestRect.y()+5, 50, 20), QString("%1 fps").arg(mFPS, 0, 'g', 2));
-        painter.setPen(QPen(QColor(250, 120, 10), 2));
+        painter.save();
         painter.setRenderHint(QPainter::Antialiasing);
         painter.translate(mDestRect.topLeft());
         painter.scale(mScale, mScale);
-        painter.drawPath(mOpenCV.faces());
+        const QVector<QRectF>& objects = mOpenCV.detectedObjects();
+        int n = 0;
+        for (QVector<QRectF>::const_iterator i = objects.constBegin(); i != objects.constEnd(); ++i) {
+            painter.setPen(QPen(colors[n++ % 5], 1.5));
+            painter.drawEllipse(i->center(), 3, 3);
+        }
+        painter.restore();
+        painter.setPen(Qt::black);
+        painter.drawText(QRectF(mDestRect.x()+5, mDestRect.y()+5, 50, 20), QString("%1 fps").arg(mFPS, 0, 'g', 2));
         mTime.restart();
     }
 }
@@ -96,14 +103,14 @@ void CamWidget::timerEvent(QTimerEvent*)
 
 void CamWidget::startCapture()
 {
-    const int fps = 30;
+    static const int fps = 30;
     mOpenCV.startCapture(640, 480, fps);
     int width, height;
     while (!mOpenCV.getImageSize(width, height))
         /* wait */;
     mFrameAspectRatio = qreal(width) / height;
     calcDestRect();
-    mCameraUpdateTimerId = startTimer(1000/fps);
+    mCameraUpdateTimerId = startTimer(1000 / fps);
 }
 
 

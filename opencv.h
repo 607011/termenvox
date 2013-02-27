@@ -6,12 +6,18 @@
 #include <QThread>
 #include <QImage>
 #include <QVector>
+#include <QRectF>
 #include <QPoint>
 #include <QPainterPath>
 #include <QWaitCondition>
 #include <QMutex>
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
+
+// #define DETECT_HANDS
+// #define DETECT_FISTS
+#define DETECT_PALMS
+// #define DETECT_FACES
 
 class OpenCV : public QObject
 {
@@ -31,7 +37,7 @@ public:
     bool process(void);
     inline const QImage& frame(void) { return mFrame; }
 
-    QPainterPath faces(void) const;
+    QVector<QRectF> detectedObjects(void) const;
 
 private:
     void convertIplImageToQImage(const IplImage* iplImg, QImage& image);
@@ -44,7 +50,7 @@ private:
     IplImage* mImage;
     IplImage* mDownsizedImage;
     IplImage* mGrayImage;
-    CvSeq* mHands;
+    CvSeq* mObjects;
     CvHaarClassifierCascade* mCascade;
     CvMemStorage* mStorage;
     qreal mScale;
