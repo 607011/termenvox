@@ -8,19 +8,24 @@
 #include "OpenCV.h"
 #include "util.h"
 
+const char* OpenCV::HaarClassifierFile = "xml/haarcascade_frontalface_alt.xml";
+// const char* OpenCV::HaarClassifierFile = "xml/haarcascade_frontalface_alt2.xml";
+// const char* OpenCV::HaarClassifierFile = "xml/haarcascade_frontalface_alt_tree.xml";
+
 
 OpenCV::OpenCV(QObject* parent)
     : QObject(parent)
     , mSize(cvSize(0, 0))
     , mCamera(NULL)
     , mImage(NULL)
+    , mDownsizedImage(NULL)
     , mGrayImage(NULL)
     , mHands(NULL)
     , mCascade(NULL)
     , mStorage(NULL)
     , mScale(1.1)
 {
-    mCascade = (CvHaarClassifierCascade*)cvLoad("xml/haarcascade_frontalface_alt.xml", 0, 0, 0);
+    mCascade = (CvHaarClassifierCascade*)cvLoad(HaarClassifierFile, 0, 0, 0);
 }
 
 
@@ -44,7 +49,8 @@ bool OpenCV::startCapture(int desiredWidth, int desiredHeight, int fps, int cam)
         return false;
     mFrame = QImage(desiredWidth, desiredHeight, QImage::Format_ARGB32);
     mImage = cvQueryFrame(mCamera);
-    mSize = cvGetSize(mImage);
+    mSize = cvSize(mImage->width/2, mImage->height/2);
+    mDownsizedImage = cvCreateImage(mSize, 8, 3);
     mGrayImage = cvCreateImage(mSize, 8, 1);
     mStorage = cvCreateMemStorage();
     return true;
@@ -54,6 +60,7 @@ bool OpenCV::startCapture(int desiredWidth, int desiredHeight, int fps, int cam)
 void OpenCV::stopCapture(void)
 {
     dealloc(mCamera, cvReleaseCapture);
+    dealloc(mDownsizedImage, cvReleaseImage);
     dealloc(mGrayImage, cvReleaseImage);
     dealloc(mStorage, cvReleaseMemStorage);
 }
@@ -64,8 +71,8 @@ bool OpenCV::getImageSize(int& width, int& height) const
     if (!isCapturing() || mCascade == NULL)
         return false;
     const IplImage* cvimage = cvQueryFrame(mCamera);
-    width = cvimage->width;
-    height = cvimage->height;
+    width = cvimage->width/2;
+    height = cvimage->height/2;
     return true;
 }
 
@@ -76,11 +83,11 @@ bool OpenCV::process(void)
         return false;
     while ((mImage = cvQueryFrame(mCamera)) == NULL)
         ;
-    cvCvtColor(mImage, mGrayImage, CV_BGR2GRAY);
-    cvEqualizeHist(mGrayImage, mGrayImage);
+    cvResize(mImage, mDownsizedImage);
+    cvCvtColor(mDownsizedImage, mGrayImage, CV_BGR2GRAY);
     cvClearMemStorage(mStorage);
-    mHands = cvHaarDetectObjects(mGrayImage, mCascade, mStorage, mScale, 2, 0, cvSize(30, 30));
-    convertIplImageToQImage(mImage, mFrame);
+    mHands = cvHaarDetectObjects(mGrayImage, mCascade, mStorage, mScale, 2, CV_HAAR_DO_CANNY_PRUNING, cvSize(30, 30));
+    convertIplImageToQImage(mGrayImage, mFrame);
     return true;
 }
 
@@ -91,7 +98,10 @@ QPainterPath OpenCV::faces(void) const
     const int N = (mHands)? mHands->total : 0;
     for (int i = 0; i < N; ++i) {
         const CvRect* const r = (CvRect*)cvGetSeqElem(mHands, i);
-        path.addRect(mSize.width - r->x - r->width, r->y, r->width, r->height); // mirror along y-axis
+        const int x = mSize.width - r->x - r->width; // mirror along y-axis
+        const int y = r->y;
+        path.addRect(x, y, r->width, r->height);
+        path.addEllipse(QPointF(x + 0.5 * r->width, y + 0.5 * r->height), 1.5, 1.5);
     }
     return path;
 }

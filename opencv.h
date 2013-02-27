@@ -35,12 +35,14 @@ public:
 
 private:
     void convertIplImageToQImage(const IplImage* iplImg, QImage& image);
+    static const char* HaarClassifierFile;
 
 private:
     CvSize mSize;
     CvCapture* mCamera;
     QImage mFrame;
     IplImage* mImage;
+    IplImage* mDownsizedImage;
     IplImage* mGrayImage;
     CvSeq* mHands;
     CvHaarClassifierCascade* mCascade;

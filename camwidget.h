@@ -6,6 +6,7 @@
 #include "opencv.h"
 
 #include <QWidget>
+#include <QVector>
 #include <QImage>
 #include <QRect>
 #include <QResizeEvent>
@@ -33,6 +34,9 @@ private:
     void calcDestRect();
 
 private:
+    static const int MaxNumTimeSamples = 5;
+    QVector<int> mTimeSamples;
+    int mTimeSampleIndex;
     QTime mTime;
     qreal mFPS;
     OpenCV mOpenCV;

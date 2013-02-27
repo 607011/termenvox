@@ -10,6 +10,7 @@
 
 CamWidget::CamWidget(QWidget* parent)
     : QWidget(parent)
+    , mTimeSampleIndex(0)
     , mFPS(0.0)
     , mScale(1.0)
 {
@@ -50,7 +51,7 @@ void CamWidget::paintEvent(QPaintEvent*)
         painter.drawRect(mDestRect.x(), mDestRect.y(), mDestRect.width()-1, mDestRect.height()-1);
         painter.setPen(Qt::black);
         painter.drawText(QRectF(mDestRect.x()+5, mDestRect.y()+5, 50, 20), QString("%1 fps").arg(mFPS, 0, 'g', 2));
-        painter.setPen(QPen(QColor(245, 20, 20), 2));
+        painter.setPen(QPen(QColor(250, 120, 10), 2));
         painter.setRenderHint(QPainter::Antialiasing);
         painter.translate(mDestRect.topLeft());
         painter.scale(mScale, mScale);
@@ -75,8 +76,19 @@ void CamWidget::timerEvent(QTimerEvent*)
         imageFuture.waitForFinished();
         mImage = mOpenCV.frame();
         const int elapsed = mTime.elapsed();
-        if (elapsed > 0)
-            mFPS = 1000.0 / elapsed;
+        if (elapsed > 0) {
+            if (mTimeSampleIndex > MaxNumTimeSamples)
+                mTimeSampleIndex = 0;
+            if (mTimeSamples.size() < MaxNumTimeSamples)
+                mTimeSamples.push_back(elapsed);
+            else
+                mTimeSamples[mTimeSampleIndex] = elapsed;
+            ++mTimeSampleIndex;
+            int elapsedSum = 0;
+            for (int i = 0; i < mTimeSamples.size(); ++i)
+                elapsedSum += mTimeSamples[i];
+            mFPS = 1000.0 / elapsedSum * mTimeSamples.size();
+        }
         update();
     }
 }
