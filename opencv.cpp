@@ -86,7 +86,7 @@ bool OpenCV::process(void)
     if (!isCapturing() || mCascade == NULL)
         return false;
     while ((mImage = cvQueryFrame(mCamera)) == NULL)
-        ;
+        /* wait */;
     cvResize(mImage, mDownsizedImage);
     cvCvtColor(mDownsizedImage, mGrayImage, CV_BGR2GRAY);
     cvClearMemStorage(mStorage);

@@ -122,14 +122,14 @@ void MainWindow::objectsDetected(void)
         else
             leftSide.push_back(i->center());
     }
-    QPointF left, right;
+    qreal left = -1, right = -1;
     if (!leftSide.empty())
-        left = leftSide.first();
+        left = leftSide.first().y();
     if (!rightSide.empty())
-        right = rightSide.first() - QPointF(w2, 0);
-    mThereminWidget->setVolume(left.y() / sz.height());
-    mThereminWidget->setFrequency1(right.x() / w2);
-    if (!left.isNull() && !right.isNull())
+        right = rightSide.first().x() - w2;
+    mThereminWidget->setVolume(left / sz.height());
+    mThereminWidget->setFrequency1(right / w2);
+    if (left > 0 && right > 0)
         mTheremin.play();
     else
         mTheremin.stop();

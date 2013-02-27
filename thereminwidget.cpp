@@ -52,7 +52,6 @@ void ThereminWidget::setScaling(ThereminWidget::Scaling scaling)
 
 void ThereminWidget::setFrequency1(qreal frequency)
 {
-    qDebug() << frequency;
     mFrequency = widthToFrequency(frequency * width());
     mTheremin.setFrequency(mFrequency);
     update();

@@ -65,7 +65,7 @@ void CamWidget::paintEvent(QPaintEvent*)
         }
         painter.restore();
         painter.setPen(Qt::black);
-        painter.drawText(QRectF(mDestRect.x()+5, mDestRect.y()+5, 50, 20), QString("%1 fps").arg(mFPS, 0, 'g', 2));
+        painter.drawText(QRectF(mDestRect.x()+5, mDestRect.y()+5, 50, 20), Qt::AlignRight, QString("%1 fps").arg(mFPS, 0, 'g', 2));
         mTime.restart();
     }
 }
