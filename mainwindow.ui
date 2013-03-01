@@ -1222,7 +1222,7 @@
       </widget>
       <widget class="QWidget" name="tabCam">
        <attribute name="title">
-        <string>Cam</string>
+        <string>OpenCV Camera</string>
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <property name="leftMargin">

@@ -52,6 +52,8 @@ void ThereminWidget::setScaling(ThereminWidget::Scaling scaling)
 
 void ThereminWidget::setFrequency1(qreal frequency)
 {
+    if (frequency < 0)
+        return;
     mFrequency = widthToFrequency(frequency * width());
     mTheremin.setFrequency(mFrequency);
     update();
@@ -60,6 +62,8 @@ void ThereminWidget::setFrequency1(qreal frequency)
 
 void ThereminWidget::setFrequency(qreal frequency)
 {
+    if (frequency < 0)
+        return;
     mFrequency = frequency;
     mTheremin.setFrequency(mFrequency);
     update();
@@ -68,6 +72,8 @@ void ThereminWidget::setFrequency(qreal frequency)
 
 void ThereminWidget::setVolume(qreal volume)
 {
+    if (volume < 0)
+        return;
     mVolume = volume;
     mTheremin.setVolume(mVolume);
     update();

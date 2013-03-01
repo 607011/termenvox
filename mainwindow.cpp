@@ -124,7 +124,7 @@ void MainWindow::objectsDetected(void)
     }
     qreal left = -1, right = -1;
     if (!leftSide.empty())
-        left = leftSide.first().y();
+        left = sz.height() - leftSide.first().y();
     if (!rightSide.empty())
         right = rightSide.first().x() - w2;
     mThereminWidget->setVolume(left / sz.height());
