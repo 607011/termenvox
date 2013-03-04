@@ -18,7 +18,9 @@ SOURCES += main.cpp \
     thereminwidget.cpp \
     theremin.cpp \
     camwidget.cpp \
-    opencv.cpp
+    opencv.cpp \
+    leapwidget.cpp \
+    leaplistener.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -27,21 +29,26 @@ HEADERS += \
     main.h \
     camwidget.h \
     opencv.h \
-    util.h
+    util.h \
+    leapwidget.h \
+    leaplistener.h
 
 FORMS += mainwindow.ui
 
 DEFINES += __WINDOWS_ASIO__ __WINDOWS_DS__ __LITTLE_ENDIAN__ __WINDOWS_MM__
 
 INCLUDEPATH += $$PWD/STK/include \
-    C:/Developer/OpenCV-2.4.4-beta/build/include
+    C:/Developer/OpenCV-2.4.4-beta/build/include \
+    C:/Developer/LeapSDK/include
 
 DEPENDPATH += $$PWD/STK/include \
     C:/Developer/OpenCV-2.4.4-beta/build/include
 
 LIBS += winmm.lib dsound.lib Wsock32.lib Ole32.lib Advapi32.lib \
     /L"C:/Developer/OpenCV-2.4.4-beta/build/x86/vc10/lib" \
-    opencv_core244.lib opencv_highgui244.lib opencv_imgproc244.lib opencv_objdetect244.lib opencv_haartraining_engine.lib
+    /L"C:/Developer/LeapSDK/lib/x86" \
+    opencv_core244.lib opencv_highgui244.lib opencv_imgproc244.lib opencv_objdetect244.lib opencv_haartraining_engine.lib \
+    leap.lib
 
 win32:CONFIG(release, debug|release): LIBS += "$$PWD/STK/lib/STK.lib"
 else:win32:CONFIG(debug, debug|release): LIBS += "$$PWD/STK/lib/STKd.lib"

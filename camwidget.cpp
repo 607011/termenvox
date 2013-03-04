@@ -119,6 +119,8 @@ void CamWidget::startCapture()
 
 void CamWidget::stopCapture()
 {
-    killTimer(mCameraUpdateTimerId);
-    mOpenCV.stopCapture();
+    if (mCameraUpdateTimerId != 0) {
+        killTimer(mCameraUpdateTimerId);
+        mOpenCV.stopCapture();
+    }
 }

@@ -11,6 +11,7 @@
 #include "theremin.h"
 
 
+
 QListWidgetItem* makeEffectListItem(const QString&, Theremin::Postprocessing);
 
 
@@ -20,7 +21,9 @@ MainWindow::MainWindow(QWidget* parent)
     , mThereminWidget(new ThereminWidget)
     , mTheremin(mThereminWidget->theremin())
     , mCamWidget(new CamWidget)
+    , mLeapWidget(new LeapWidget)
 {
+
     QSettings::setDefaultFormat(QSettings::NativeFormat);
 
     ui->setupUi(this);
@@ -28,6 +31,7 @@ MainWindow::MainWindow(QWidget* parent)
 
     ui->horizontalLayoutMouse->addWidget(mThereminWidget);
     ui->horizontalLayoutCam->insertWidget(1, mCamWidget);
+    ui->horizontalLayoutLeap->addWidget(mLeapWidget);
 
     ui->minFLineEdit->setValidator(new QIntValidator(ui->minFDial->minimum(), ui->minFDial->maximum()));
     ui->maxFLineEdit->setValidator(new QIntValidator(ui->maxFDial->minimum(), ui->maxFDial->maximum()));
@@ -53,8 +57,12 @@ MainWindow::MainWindow(QWidget* parent)
     QObject::connect(ui->jcRevDecayDial, SIGNAL(valueChanged(int)), SLOT(jcRevChanged(int)));
     QObject::connect(ui->prcRevDecayDial, SIGNAL(valueChanged(int)), SLOT(prcRevChanged(int)));
     QObject::connect(ui->echoDial, SIGNAL(valueChanged(int)), SLOT(echoChanged(int)));
-    QObject::connect(ui->onOffPushButton, SIGNAL(clicked()), SLOT(resetTheremin()));
+    QObject::connect(ui->thereminResetPushButton, SIGNAL(clicked()), SLOT(resetTheremin()));
+    QObject::connect(ui->thereminResetPushButton, SIGNAL(clicked()), SLOT(resetTheremin()));
     QObject::connect(ui->camOnOffPushButton, SIGNAL(clicked()), SLOT(startStopCapture()));
+    QObject::connect(ui->leapOnOffPushButton, SIGNAL(clicked()), SLOT(startStopLeapMotionSensor()));
+    QObject::connect(ui->xMaxSlider, SIGNAL(valueChanged(int)), SLOT(xMaxChanged(int)));
+    QObject::connect(ui->yMaxSlider, SIGNAL(valueChanged(int)), SLOT(yMaxChanged(int)));
     QObject::connect(ui->actionHzScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowHzScale(bool)));
     QObject::connect(ui->actionToneScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowToneScale(bool)));
     QObject::connect(ui->actionVolumeScale, SIGNAL(toggled(bool)), mThereminWidget, SLOT(setShowLoudnessScale(bool)));
@@ -63,6 +71,8 @@ MainWindow::MainWindow(QWidget* parent)
     QObject::connect(ui->actionAbout, SIGNAL(triggered()), SLOT(about()));
     QObject::connect(ui->actionAboutQt, SIGNAL(triggered()), SLOT(aboutQt()));
     QObject::connect(mCamWidget->cv(), SIGNAL(objectsDetected()), SLOT(objectsDetected()));
+
+    QObject::connect(mLeapWidget, SIGNAL(handsDetected(Leap::Hand,Leap::Hand)), SLOT(setHands(Leap::Hand,Leap::Hand)));
 
     mEffects << makeEffectListItem(tr("Chorus Effect"), Theremin::ChorusEffect)
              << makeEffectListItem(tr("Echo Effect"), Theremin::EchoEffect)
@@ -74,8 +84,8 @@ MainWindow::MainWindow(QWidget* parent)
              << makeEffectListItem(tr("FreeVerb Effect"), Theremin::FreeVerbEffect)
              << makeEffectListItem(tr("Low Pass Filter"), Theremin::LowPassFilter)
              << makeEffectListItem(tr("High Pass Filter"), Theremin::HighPassFilter);
-    restoreAppSettings();
 
+    restoreAppSettings();
 }
 
 
@@ -110,6 +120,19 @@ void MainWindow::startStopCapture()
 }
 
 
+void MainWindow::startStopLeapMotionSensor()
+{
+    if (ui->leapOnOffPushButton->text() == tr("Start")) {
+        mLeapWidget->startSensor();
+        ui->leapOnOffPushButton->setText(tr("Stop"));
+    }
+    else {
+        mLeapWidget->stopSensor();
+        ui->leapOnOffPushButton->setText(tr("Start"));
+    }
+}
+
+
 void MainWindow::objectsDetected(void)
 {
     const QVector<QRectF> objects = mCamWidget->cv()->detectedObjects();
@@ -133,6 +156,33 @@ void MainWindow::objectsDetected(void)
         mTheremin.play();
     else
         mTheremin.stop();
+}
+
+
+void MainWindow::setHands(const Leap::Hand &left, const Leap::Hand &right)
+{
+    const qreal volume = qreal(left.palmPosition().y) / ui->yMaxSlider->value();
+    const qreal freq1 = qreal(right.palmPosition().x) / ui->xMaxSlider->value();
+    mThereminWidget->setVolume(volume);
+    mThereminWidget->setFrequency1(freq1);
+    if (volume > 0 && freq1 > 0)
+        mTheremin.play();
+    else
+        mTheremin.stop();
+}
+
+
+void MainWindow::xMaxChanged(int x)
+{
+    ui->xMaxLineEdit->setText(QString("%1").arg(x));
+    mLeapWidget->setMaxOffsetX(x);
+}
+
+
+void MainWindow::yMaxChanged(int y)
+{
+    ui->yMaxLineEdit->setText(QString("%1").arg(y));
+    mLeapWidget->setMaxOffsetY(y);
 }
 
 

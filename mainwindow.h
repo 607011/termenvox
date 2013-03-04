@@ -6,14 +6,18 @@
 #include <QMainWindow>
 #include <QListWidgetItem>
 #include <QVector>
+#include <Leap.h>
 #include "main.h"
 #include "thereminwidget.h"
 #include "theremin.h"
 #include "camwidget.h"
+#include "leapwidget.h"
+
 
 namespace Ui {
 class MainWindow;
 }
+
 
 
 class MainWindow : public QMainWindow
@@ -30,7 +34,11 @@ protected:
 private slots:
     void resetTheremin(void);
     void startStopCapture(void);
+    void startStopLeapMotionSensor(void);
     void objectsDetected(void);
+    void setHands(const Leap::Hand &left, const Leap::Hand &right);
+    void xMaxChanged(int);
+    void yMaxChanged(int);
     void instrumentChanged(int);
     void effectsOrderChanged(void);
     void resetSettings(void);
@@ -66,6 +74,7 @@ private:
     Theremin& mTheremin;
     QVector<QListWidgetItem*> mEffects;
     CamWidget* mCamWidget;
+    LeapWidget* mLeapWidget;
 };
 
 
