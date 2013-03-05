@@ -161,14 +161,16 @@ void MainWindow::objectsDetected(void)
 
 void MainWindow::setHands(const Leap::Hand &left, const Leap::Hand &right)
 {
-    const qreal volume = qreal(left.palmPosition().y) / ui->yMaxSlider->value();
-    const qreal freq1 = qreal(right.palmPosition().x) / ui->xMaxSlider->value();
-    mThereminWidget->setVolume(volume);
-    mThereminWidget->setFrequency1(freq1);
-    if (volume > 0 && freq1 > 0)
-        mTheremin.play();
-    else
-        mTheremin.stop();
+    if (!left.fingers().empty() && !right.fingers().empty()) {
+        const qreal volume = qreal(left.fingers()[0].tipPosition().y) / ui->yMaxSlider->value();
+        const qreal freq1 = qreal(right.fingers()[0].tipPosition().x) / ui->xMaxSlider->value();
+        mThereminWidget->setVolume(volume);
+        mThereminWidget->setFrequency1(freq1);
+        if (volume > 0 && freq1 > 0)
+            mTheremin.play();
+        else
+            mTheremin.stop();
+    }
 }
 
 
