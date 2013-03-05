@@ -211,6 +211,7 @@ void MainWindow::restoreAppSettings(void)
     mThereminWidget->setShowLoudnessScale(ui->actionVolumeScale->isChecked());
     ui->minFDial->setValue(settings.value("MainWindow/minF", 10).toInt());
     ui->maxFDial->setValue(settings.value("MainWindow/maxF", 4000).toInt());
+    ui->tabWidget->setCurrentIndex(settings.value("MainWindow/tabId", 0).toInt());
     ui->lowPassDial->setValue(settings.value("Filters/LowPass", -1).toInt());
     lowPassFreqChanged(ui->lowPassDial->value());
     ui->highPassDial->setValue(settings.value("Filters/HighPass", -1).toInt());
@@ -232,6 +233,10 @@ void MainWindow::restoreAppSettings(void)
     pitShiftChanged(ui->pitShiftDial->value());
     ui->lentPitShiftDial->setValue(settings.value("Effects/LentPitShift", 0).toInt());
     pitShiftChanged(ui->lentPitShiftDial->value());
+    ui->xMaxSlider->setValue(settings.value("Leap/xMax", 400).toInt());
+    xMaxChanged(ui->xMaxSlider->value());
+    ui->yMaxSlider->setValue(settings.value("Leap/yMax", 500).toInt());
+    yMaxChanged(ui->yMaxSlider->value());
 
     // Restore effect order. If none given, set a default.
     QVector<Theremin::Postprocessing> effectId;
@@ -283,6 +288,7 @@ void MainWindow::saveAppSettings(void)
     settings.setValue("MainWindow/volumeScale", ui->actionVolumeScale->isChecked());
     settings.setValue("MainWindow/minF", ui->minFDial->value());
     settings.setValue("MainWindow/maxF", ui->maxFDial->value());
+    settings.setValue("MainWindow/tabId", ui->tabWidget->currentIndex());
     settings.setValue("Filters/LowPass", ui->lowPassDial->value());
     settings.setValue("Filters/HighPass", ui->highPassDial->value());
     settings.setValue("Effects/Echo", ui->echoDial->value());
@@ -294,6 +300,8 @@ void MainWindow::saveAppSettings(void)
     settings.setValue("Effects/PRCRev", ui->prcRevDecayDial->value());
     settings.setValue("Effects/PitShift", ui->pitShiftDial->value());
     settings.setValue("Effects/LentPitShift", ui->lentPitShiftDial->value());
+    settings.setValue("Leap/xMax", ui->xMaxSlider->value());
+    settings.setValue("Leap/yMax", ui->yMaxSlider->value());
 
     // save effect order
     QList<QVariant> effectId;
