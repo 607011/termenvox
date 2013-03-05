@@ -383,8 +383,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>178</width>
-         <height>251</height>
+         <width>113</width>
+         <height>94</height>
         </rect>
        </property>
        <attribute name="label">
@@ -512,8 +512,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>178</width>
-         <height>251</height>
+         <width>172</width>
+         <height>202</height>
         </rect>
        </property>
        <attribute name="label">
@@ -795,8 +795,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>178</width>
-         <height>251</height>
+         <width>107</width>
+         <height>94</height>
         </rect>
        </property>
        <attribute name="label">
@@ -924,8 +924,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>178</width>
-         <height>251</height>
+         <width>98</width>
+         <height>91</height>
         </rect>
        </property>
        <attribute name="label">
@@ -952,8 +952,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>178</width>
-         <height>251</height>
+         <width>171</width>
+         <height>122</height>
         </rect>
        </property>
        <attribute name="label">
@@ -1258,10 +1258,28 @@
             </property>
             <item>
              <widget class="QPushButton" name="leapOnOffPushButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="maximumSize">
                <size>
-                <width>70</width>
+                <width>16777215</width>
                 <height>16777215</height>
+               </size>
+              </property>
+              <property name="sizeIncrement">
+               <size>
+                <width>1</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="baseSize">
+               <size>
+                <width>50</width>
+                <height>0</height>
                </size>
               </property>
               <property name="text">
@@ -1453,10 +1471,28 @@
             </property>
             <item>
              <widget class="QPushButton" name="camOnOffPushButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="maximumSize">
                <size>
-                <width>70</width>
+                <width>16777215</width>
                 <height>16777215</height>
+               </size>
+              </property>
+              <property name="sizeIncrement">
+               <size>
+                <width>1</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="baseSize">
+               <size>
+                <width>50</width>
+                <height>0</height>
                </size>
               </property>
               <property name="text">

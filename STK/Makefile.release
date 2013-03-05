@@ -1,6 +1,6 @@
 OUTFILE       = STK.lib
 OUTDIR        = lib\x86\vc10
-OBJDIR        = $(OBJDIR)\release
+OBJDIR        = $(OUTDIR)\release
 DEBUGFLAGS    = /DNDEBUG
 CC            = cl
 CXX           = cl

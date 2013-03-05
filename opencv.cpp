@@ -67,6 +67,7 @@ void OpenCV::stopCapture(void)
     dealloc(mDownsizedImage, cvReleaseImage);
     dealloc(mGrayImage, cvReleaseImage);
     dealloc(mStorage, cvReleaseMemStorage);
+    mObjects = NULL;
 }
 
 
@@ -108,6 +109,8 @@ bool OpenCV::process(void)
 
 QVector<QRectF> OpenCV::detectedObjects(void) const
 {
+    if (!isCapturing() || mCascade == NULL || mObjects == NULL)
+        return QVector<QRectF>();
     QVector<QRectF> objects(mObjects->total);
     const int N = (mObjects)? mObjects->total : 0;
     for (int i = 0; i < N; ++i) {

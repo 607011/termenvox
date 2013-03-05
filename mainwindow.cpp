@@ -171,6 +171,9 @@ void MainWindow::setHands(const Leap::Hand &left, const Leap::Hand &right)
         else
             mTheremin.stop();
     }
+    else {
+        mTheremin.stop();
+    }
 }
 
 

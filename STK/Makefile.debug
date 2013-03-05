@@ -1,6 +1,6 @@
 OUTFILE       = STKd.lib
 OUTDIR        = lib\x86\vc10
-OBJDIR        = $(OBJDIR)\debug
+OBJDIR        = $(OUTDIR)\debug
 DEBUGFLAGS    = /D_DEBUG /DDEBUG
 CC            = cl
 CXX           = cl
@@ -10,8 +10,7 @@ DEFINES       = /DWIN32 \
 	/D__WINDOWS_DS__ \
 	/D__WINDOWS_MM__ \
 	/DVERSION=4.4.4
-CXXFLAGS      = /nologo /EHsc /MDd /O2 /W2 /wd4100 /wd4996 /wd4309 /wd4244 /w34100 /w34189 $(DEFINES) $(DEBUGFLAGS)
-# CXXFLAGS      = /nologo /EHsc /MD /Od /Zi /Gm /W2 /wd4100 /wd4996 /wd4309 /wd4244 /w34100 /w34189 $(DEFINES) $(DEBUGFLAGS)
+CXXFLAGS      = /nologo /EHsc /MDd /Od /Zi /Gm /W2 /wd4100 /wd4996 /wd4309 /wd4244 /w34100 /w34189 $(DEFINES) $(DEBUGFLAGS)
 INCPATH       = -Iinclude
 LINKER        = lib
 LFLAGS        = /nologo

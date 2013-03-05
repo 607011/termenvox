@@ -13,6 +13,7 @@ CamWidget::CamWidget(QWidget* parent)
     , mTimeSampleIndex(0)
     , mFPS(0.0)
     , mScale(1.0)
+    , mIsProcessing(false)
 {
     setMinimumSize(320, 240);
     setMaximumSize(1920, 1080);
@@ -81,13 +82,14 @@ void CamWidget::resizeEvent(QResizeEvent* e)
 
 void CamWidget::timerEvent(QTimerEvent*)
 {
-    if (mOpenCV.isCapturing()) {
+    if (mOpenCV.isCapturing() && !mIsProcessing) {
+        mIsProcessing = true;
         QFuture<void> imageFuture = QtConcurrent::run(&mOpenCV, &OpenCV::process);
         imageFuture.waitForFinished();
         mImage = mOpenCV.frame();
         const int elapsed = mTime.elapsed();
         if (elapsed > 0) {
-            if (mTimeSampleIndex > MaxNumTimeSamples)
+            if (mTimeSampleIndex >= MaxNumTimeSamples)
                 mTimeSampleIndex = 0;
             if (mTimeSamples.size() < MaxNumTimeSamples)
                 mTimeSamples.push_back(elapsed);
@@ -100,6 +102,7 @@ void CamWidget::timerEvent(QTimerEvent*)
             mFPS = 1000.0 / elapsedSum * mTimeSamples.size();
         }
         update();
+        mIsProcessing = false;
     }
 }
 
