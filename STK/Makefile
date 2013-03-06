@@ -1,0 +1,992 @@
+WARNFLAGS     = /wd4100 /wd4996 /wd4309 /wd4244 /w34100 /w34189
+RELEASEFLAGS  = /MD /O2 /EHsc /W2
+DEBUGFLAGS    = /MDd /Od /EHsc /Zi /Gm /W2
+CC            = cl
+CXX           = cl
+DEFINES       = /DWIN32 \
+	/D__LITTLE_ENDIAN__ \
+	/D__WINDOWS_ASIO__ \
+	/D__WINDOWS_DS__ \
+	/D__WINDOWS_MM__ \
+	/DVERSION=4.4.4
+INCPATH       = -Iinclude
+LINKER        = lib
+LFLAGS        = /nologo
+OUTPATH       = $(OUTDIR)\$(OUTFILE)
+
+all:
+  @echo Bitte mit "nmake target" aufrufen, wobei "target" eine folgender Optionen ist:
+  @echo  x86-debug-vc9
+  @echo  x86-release-vc9
+  @echo  x86-debug-vc10
+  @echo  x86-release-vc10
+  @echo  x86-debug-vc11
+  @echo  x86-release-vc11
+
+mrproper:
+	DEL /S /Q *.obj
+	DEL /S /Q *.lib
+
+clean:
+	DEL /S /Q *.obj
+
+x86-debug-vc9: 
+	nmake /nologo /f Makefile CXXFLAGS="/nologo $(DEBUGFLAGS) $(WARNFLAGS) $(DEFINES) /D_DEBUG /DDEBUG" OUTDIR="lib\x86\vc9\debug" OUTFILE="STKd.lib" configured
+
+x86-release-vc9:
+	nmake /nologo /f Makefile CXXFLAGS="/nologo $(RELEASEFLAGS) $(WARNFLAGS) $(DEFINES) /DNDEBUG" OUTDIR="lib\x86\vc9\release" OUTFILE="STK.lib" configured
+
+x86-debug-vc10: 
+	nmake /nologo /f Makefile CXXFLAGS="/nologo $(DEBUGFLAGS) $(WARNFLAGS) $(DEFINES) /D_DEBUG /DDEBUG" OUTDIR="lib\x86\vc10\debug" OUTFILE="STKd.lib" configured
+
+x86-release-vc10:
+	nmake /nologo /f Makefile CXXFLAGS="/nologo $(RELEASEFLAGS) $(WARNFLAGS) $(DEFINES) /DNDEBUG" OUTDIR="lib\x86\vc10\release" OUTFILE="STK.lib" configured
+
+x86-debug-vc11: 
+	nmake /nologo /f Makefile CXXFLAGS="/nologo $(DEBUGFLAGS) $(WARNFLAGS) $(DEFINES) /D_DEBUG /DDEBUG" OUTDIR="lib\x86\vc11\debug" OUTFILE="STKd.lib" configured
+
+x86-release-vc11:
+	nmake /nologo /f Makefile CXXFLAGS="/nologo $(RELEASEFLAGS) $(WARNFLAGS) $(DEFINES) /DNDEBUG" OUTDIR="lib\x86\vc11\release" OUTFILE="STK.lib" configured
+
+configured: $(OUTPATH)
+
+SOURCES = Stk.cpp \
+	Wurley.cpp \
+	Whistle.cpp \
+	VoicForm.cpp \
+	Voicer.cpp \
+	UdpSocket.cpp \
+	TwoZero.cpp \
+	TwoPole.cpp \
+	Twang.cpp \
+	TubeBell.cpp \
+	Thread.cpp \
+	TcpServer.cpp \
+	TcpClient.cpp \
+	TapDelay.cpp \
+	StifKarp.cpp \
+	Sphere.cpp \
+	Socket.cpp \
+	Skini.cpp \
+	Sitar.cpp \
+	SingWave.cpp \
+	SineWave.cpp \
+	Simple.cpp \
+	Shakers.cpp \
+	Saxofony.cpp \
+	Sampler.cpp \
+	RtWvOut.cpp \
+	RtWvIn.cpp \
+	RtMidi.cpp \
+	RtAudio.cpp \
+	Rhodey.cpp \
+	Resonate.cpp \
+	PRCRev.cpp \
+	PoleZero.cpp \
+	Plucked.cpp \
+	PitShift.cpp \
+	Phonemes.cpp \
+	PercFlut.cpp \
+	OneZero.cpp \
+	OnePole.cpp \
+	NRev.cpp \
+	Noise.cpp \
+	Mutex.cpp \
+	Moog.cpp \
+	Modulate.cpp \
+	ModalBar.cpp \
+	Modal.cpp \
+	MidiFileIn.cpp \
+	Messager.cpp \
+	Mesh2D.cpp \
+	Mandolin.cpp \
+	LentPitShift.cpp \
+	JCRev.cpp \
+	InetWvOut.cpp \
+	InetWvIn.cpp \
+	Iir.cpp \
+	HevyMetl.cpp \
+	Guitar.cpp \
+	Granulate.cpp \
+	FreeVerb.cpp \
+	FormSwep.cpp \
+	FMVoices.cpp \
+	FM.cpp \
+	Flute.cpp \
+	Fir.cpp \
+	FileWvOut.cpp \
+	FileWvIn.cpp \
+	FileWrite.cpp \
+	FileRead.cpp \
+	FileLoop.cpp \
+	Envelope.cpp \
+	Echo.cpp \
+	Drummer.cpp \
+	DelayL.cpp \
+	DelayA.cpp \
+	Delay.cpp \
+	Clarinet.cpp \
+	Chorus.cpp \
+	Brass.cpp \
+	Bowed.cpp \
+	BlowHole.cpp \
+	BlowBotl.cpp \
+	BlitSquare.cpp \
+	BlitSaw.cpp \
+	Blit.cpp \
+	BiQuad.cpp \
+	BeeThree.cpp \
+	BandedWG.cpp \
+	Asymp.cpp \
+	ADSR.cpp \
+	asio/iasiothiscallresolver.cpp \
+	asio/asiolist.cpp \
+	asio/asiodrivers.cpp \
+	asio/asio.cpp
+
+OBJECTS = $(OUTDIR)\Stk.obj \
+	$(OUTDIR)\Wurley.obj \
+	$(OUTDIR)\Whistle.obj \
+	$(OUTDIR)\VoicForm.obj \
+	$(OUTDIR)\Voicer.obj \
+	$(OUTDIR)\UdpSocket.obj \
+	$(OUTDIR)\TwoZero.obj \
+	$(OUTDIR)\TwoPole.obj \
+	$(OUTDIR)\Twang.obj \
+	$(OUTDIR)\TubeBell.obj \
+	$(OUTDIR)\Thread.obj \
+	$(OUTDIR)\TcpServer.obj \
+	$(OUTDIR)\TcpClient.obj \
+	$(OUTDIR)\TapDelay.obj \
+	$(OUTDIR)\StifKarp.obj \
+	$(OUTDIR)\Sphere.obj \
+	$(OUTDIR)\Socket.obj \
+	$(OUTDIR)\Skini.obj \
+	$(OUTDIR)\Sitar.obj \
+	$(OUTDIR)\SingWave.obj \
+	$(OUTDIR)\SineWave.obj \
+	$(OUTDIR)\Simple.obj \
+	$(OUTDIR)\Shakers.obj \
+	$(OUTDIR)\Saxofony.obj \
+	$(OUTDIR)\Sampler.obj \
+	$(OUTDIR)\RtWvOut.obj \
+	$(OUTDIR)\RtWvIn.obj \
+	$(OUTDIR)\RtMidi.obj \
+	$(OUTDIR)\RtAudio.obj \
+	$(OUTDIR)\Rhodey.obj \
+	$(OUTDIR)\Resonate.obj \
+	$(OUTDIR)\PRCRev.obj \
+	$(OUTDIR)\PoleZero.obj \
+	$(OUTDIR)\Plucked.obj \
+	$(OUTDIR)\PitShift.obj \
+	$(OUTDIR)\Phonemes.obj \
+	$(OUTDIR)\PercFlut.obj \
+	$(OUTDIR)\OneZero.obj \
+	$(OUTDIR)\OnePole.obj \
+	$(OUTDIR)\NRev.obj \
+	$(OUTDIR)\Noise.obj \
+	$(OUTDIR)\Mutex.obj \
+	$(OUTDIR)\Moog.obj \
+	$(OUTDIR)\Modulate.obj \
+	$(OUTDIR)\ModalBar.obj \
+	$(OUTDIR)\Modal.obj \
+	$(OUTDIR)\MidiFileIn.obj \
+	$(OUTDIR)\Messager.obj \
+	$(OUTDIR)\Mesh2D.obj \
+	$(OUTDIR)\Mandolin.obj \
+	$(OUTDIR)\LentPitShift.obj \
+	$(OUTDIR)\JCRev.obj \
+	$(OUTDIR)\InetWvOut.obj \
+	$(OUTDIR)\InetWvIn.obj \
+	$(OUTDIR)\Iir.obj \
+	$(OUTDIR)\HevyMetl.obj \
+	$(OUTDIR)\Guitar.obj \
+	$(OUTDIR)\Granulate.obj \
+	$(OUTDIR)\FreeVerb.obj \
+	$(OUTDIR)\FormSwep.obj \
+	$(OUTDIR)\FMVoices.obj \
+	$(OUTDIR)\FM.obj \
+	$(OUTDIR)\Flute.obj \
+	$(OUTDIR)\Fir.obj \
+	$(OUTDIR)\FileWvOut.obj \
+	$(OUTDIR)\FileWvIn.obj \
+	$(OUTDIR)\FileWrite.obj \
+	$(OUTDIR)\FileRead.obj \
+	$(OUTDIR)\FileLoop.obj \
+	$(OUTDIR)\Envelope.obj \
+	$(OUTDIR)\Echo.obj \
+	$(OUTDIR)\Drummer.obj \
+	$(OUTDIR)\DelayL.obj \
+	$(OUTDIR)\DelayA.obj \
+	$(OUTDIR)\Delay.obj \
+	$(OUTDIR)\Clarinet.obj \
+	$(OUTDIR)\Chorus.obj \
+	$(OUTDIR)\Brass.obj \
+	$(OUTDIR)\Bowed.obj \
+	$(OUTDIR)\BlowHole.obj \
+	$(OUTDIR)\BlowBotl.obj \
+	$(OUTDIR)\BlitSquare.obj \
+	$(OUTDIR)\BlitSaw.obj \
+	$(OUTDIR)\Blit.obj \
+	$(OUTDIR)\BiQuad.obj \
+	$(OUTDIR)\BeeThree.obj \
+	$(OUTDIR)\BandedWG.obj \
+	$(OUTDIR)\Asymp.obj \
+	$(OUTDIR)\ADSR.obj \
+	$(OUTDIR)\iasiothiscallresolver.obj \
+	$(OUTDIR)\asiolist.obj \
+	$(OUTDIR)\asiodrivers.obj \
+	$(OUTDIR)\asio.obj
+
+$(OUTDIR)\Stk.obj: Stk.cpp include\Stk.h
+
+$(OUTDIR)\Wurley.obj: Wurley.cpp include\Wurley.h \
+	include\FM.h \
+	include\Instrmnt.h \
+	include\Stk.h \
+	include\ADSR.h \
+	include\Generator.h \
+	include\FileLoop.h \
+	include\FileWvIn.h \
+	include\WvIn.h \
+	include\FileRead.h \
+	include\SineWave.h \
+	include\TwoZero.h \
+	include\Filter.h
+
+$(OUTDIR)\Whistle.obj: Whistle.cpp include\Whistle.h \
+	include\Instrmnt.h \
+	include\Stk.h \
+	include\Sphere.h \
+	include\Vector3D.h \
+	include\Noise.h \
+	include\Generator.h \
+	include\SineWave.h \
+	include\OnePole.h \
+	include\Filter.h \
+	include\Envelope.h \
+	SKINI.msg
+
+$(OUTDIR)\VoicForm.obj: VoicForm.cpp include\VoicForm.h \
+	include\Instrmnt.h \
+	include\Stk.h \
+	include\Envelope.h \
+	include\Generator.h \
+	include\Noise.h \
+	include\SingWave.h \
+	include\FileLoop.h \
+	include\FileWvIn.h \
+	include\WvIn.h \
+	include\FileRead.h \
+	include\Modulate.h \
+	include\SineWave.h \
+	include\OnePole.h \
+	include\Filter.h \
+	include\FormSwep.h \
+	include\OneZero.h \
+	include\Phonemes.h \
+	SKINI.msg
+
+$(OUTDIR)\Voicer.obj: Voicer.cpp include\Voicer.h \
+	include\Instrmnt.h \
+	include\Stk.h
+
+$(OUTDIR)\UdpSocket.obj: UdpSocket.cpp include\UdpSocket.h \
+	include\Socket.h \
+	include\Stk.h
+
+$(OUTDIR)\TwoZero.obj: TwoZero.cpp include\TwoZero.h \
+	include\Filter.h \
+	include\Stk.h
+
+$(OUTDIR)\TwoPole.obj: TwoPole.cpp include\TwoPole.h \
+	include\Filter.h \
+	include\Stk.h
+
+$(OUTDIR)\Twang.obj: Twang.cpp include\Twang.h \
+	include\Stk.h \
+	include\DelayA.h \
+	include\Filter.h \
+	include\DelayL.h \
+	include\Fir.h
+
+$(OUTDIR)\TubeBell.obj: TubeBell.cpp include\TubeBell.h \
+	include\FM.h \
+	include\Instrmnt.h \
+	include\Stk.h \
+	include\ADSR.h \
+	include\Generator.h \
+	include\FileLoop.h \
+	include\FileWvIn.h \
+	include\WvIn.h \
+	include\FileRead.h \
+	include\SineWave.h \
+	include\TwoZero.h \
+	include\Filter.h
+
+$(OUTDIR)\Thread.obj: Thread.cpp include\Thread.h \
+	include\Stk.h
+
+$(OUTDIR)\TcpServer.obj: TcpServer.cpp include\TcpServer.h \
+	include\Socket.h \
+	include\Stk.h
+
+$(OUTDIR)\TcpClient.obj: TcpClient.cpp include\TcpClient.h \
+	include\Socket.h \
+	include\Stk.h
+
+$(OUTDIR)\TapDelay.obj: TapDelay.cpp include\TapDelay.h \
+	include\Filter.h \
+	include\Stk.h
+
+$(OUTDIR)\StifKarp.obj: StifKarp.cpp include\StifKarp.h \
+	include\Instrmnt.h \
+	include\Stk.h \
+	include\DelayL.h \
+	include\Filter.h \
+	include\DelayA.h \
+	include\OneZero.h \
+	include\Noise.h \
+	include\Generator.h \
+	include\BiQuad.h \
+	SKINI.msg
+
+$(OUTDIR)\Sphere.obj: Sphere.cpp include\Sphere.h \
+	include\Stk.h \
+	include\Vector3D.h
+
+$(OUTDIR)\Socket.obj: Socket.cpp include\Socket.h \
+	include\Stk.h
+
+$(OUTDIR)\Skini.obj: Skini.cpp include\Skini.h \
+	include\Stk.h \
+	SKINI.tbl \
+	SKINI.msg
+
+$(OUTDIR)\Sitar.obj: Sitar.cpp include\Sitar.h \
+	include\Instrmnt.h \
+	include\Stk.h \
+	include\DelayA.h \
+	include\Filter.h \
+	include\OneZero.h \
+	include\Noise.h \
+	include\Generator.h \
+	include\ADSR.h
+
+$(OUTDIR)\SingWave.obj: SingWave.cpp include\SingWave.h \
+	include\FileLoop.h \
+	include\FileWvIn.h \
+	include\WvIn.h \
+	include\Stk.h \
+	include\FileRead.h \
+	include\Modulate.h \
+	include\Generator.h \
+	include\SineWave.h \
+	include\Noise.h \
+	include\OnePole.h \
+	include\Filter.h \
+	include\Envelope.h
+
+$(OUTDIR)\SineWave.obj: SineWave.cpp include\SineWave.h \
+	include\Generator.h \
+	include\Stk.h
+
+$(OUTDIR)\Simple.obj: Simple.cpp include\Simple.h \
+	include\Instrmnt.h \
+	include\Stk.h \
+	include\ADSR.h \
+	include\Generator.h \
+	include\FileLoop.h \
+	include\FileWvIn.h \
+	include\WvIn.h \
+	include\FileRead.h \
+	include\OnePole.h \
+	include\Filter.h \
+	include\BiQuad.h \
+	include\Noise.h \
+	SKINI.msg
+
+$(OUTDIR)\Shakers.obj: Shakers.cpp include\Shakers.h \
+	include\Instrmnt.h \
+	include\Stk.h \
+	SKINI.msg
+
+$(OUTDIR)\Saxofony.obj: Saxofony.cpp include\Saxofony.h \
+	include\Instrmnt.h \
+	include\Stk.h \
+	include\DelayL.h \
+	include\Filter.h \
+	include\ReedTable.h \
+	include\Function.h \
+	include\OneZero.h \
+	include\Envelope.h \
+	include\Generator.h \
+	include\Noise.h \
+	include\SineWave.h \
+	SKINI.msg
+
+$(OUTDIR)\Sampler.obj: Sampler.cpp include\Sampler.h \
+	include\Instrmnt.h \
+	include\Stk.h \
+	include\ADSR.h \
+	include\Generator.h \
+	include\FileLoop.h \
+	include\FileWvIn.h \
+	include\WvIn.h \
+	include\FileRead.h \
+	include\OnePole.h \
+	include\Filter.h
+
+$(OUTDIR)\RtWvOut.obj: RtWvOut.cpp include\RtWvOut.h \
+	include\WvOut.h \
+	include\Stk.h \
+	include\RtAudio.h \
+	include\RtError.h \
+	include\Mutex.h
+
+$(OUTDIR)\RtWvIn.obj: RtWvIn.cpp include\RtWvIn.h \
+	include\WvIn.h \
+	include\Stk.h \
+	include\RtAudio.h \
+	include\RtError.h \
+	include\Mutex.h
+
+$(OUTDIR)\RtMidi.obj: RtMidi.cpp include\RtMidi.h \
+	include\RtError.h
+
+$(OUTDIR)\RtAudio.obj: RtAudio.cpp include\RtAudio.h \
+	include\RtError.h \
+	include\asiosys.h \
+	include\asio.h \
+	include\iasiothiscallresolver.h \
+	include\iasiodrv.h \
+	include\asiodrivers.h \
+	include\ginclude.h \
+	include\asiolist.h \
+	include\dsound.h \
+	include\soundcard.h
+
+$(OUTDIR)\Rhodey.obj: Rhodey.cpp include\Rhodey.h \
+	include\FM.h \
+	include\Instrmnt.h \
+	include\Stk.h \
+	include\ADSR.h \
+	include\Generator.h \
+	include\FileLoop.h \
+	include\FileWvIn.h \
+	include\WvIn.h \
+	include\FileRead.h \
+	include\SineWave.h \
+	include\TwoZero.h \
+	include\Filter.h
+
+$(OUTDIR)\Resonate.obj: Resonate.cpp include\Resonate.h \
+	include\Instrmnt.h \
+	include\Stk.h \
+	include\ADSR.h \
+	include\Generator.h \
+	include\BiQuad.h \
+	include\Filter.h \
+	include\Noise.h \
+	SKINI.msg
+
+$(OUTDIR)\PRCRev.obj: PRCRev.cpp include\PRCRev.h \
+	include\Effect.h \
+	include\Stk.h \
+	include\Delay.h \
+	include\Filter.h
+
+$(OUTDIR)\PoleZero.obj: PoleZero.cpp include\PoleZero.h \
+	include\Filter.h \
+	include\Stk.h
+
+$(OUTDIR)\Plucked.obj: Plucked.cpp include\Plucked.h \
+	include\Instrmnt.h \
+	include\Stk.h \
+	include\DelayA.h \
+	include\Filter.h \
+	include\OneZero.h \
+	include\OnePole.h \
+	include\Noise.h \
+	include\Generator.h
+
+$(OUTDIR)\PitShift.obj: PitShift.cpp include\PitShift.h \
+	include\Effect.h \
+	include\Stk.h \
+	include\DelayL.h \
+	include\Filter.h
+
+$(OUTDIR)\Phonemes.obj: Phonemes.cpp include\Phonemes.h \
+	include\Stk.h
+
+$(OUTDIR)\PercFlut.obj: PercFlut.cpp include\PercFlut.h \
+	include\FM.h \
+	include\Instrmnt.h \
+	include\Stk.h \
+	include\ADSR.h \
+	include\Generator.h \
+	include\FileLoop.h \
+	include\FileWvIn.h \
+	include\WvIn.h \
+	include\FileRead.h \
+	include\SineWave.h \
+	include\TwoZero.h \
+	include\Filter.h
+
+$(OUTDIR)\OneZero.obj: OneZero.cpp include\OneZero.h \
+	include\Filter.h \
+	include\Stk.h
+
+$(OUTDIR)\OnePole.obj: OnePole.cpp include\OnePole.h \
+	include\Filter.h \
+	include\Stk.h
+
+$(OUTDIR)\NRev.obj: NRev.cpp include\NRev.h \
+	include\Effect.h \
+	include\Stk.h \
+	include\Delay.h \
+	include\Filter.h
+
+$(OUTDIR)\Noise.obj: Noise.cpp include\Noise.h \
+	include\Generator.h \
+	include\Stk.h
+
+$(OUTDIR)\Mutex.obj: Mutex.cpp include\Mutex.h \
+	include\Stk.h
+
+$(OUTDIR)\Moog.obj: Moog.cpp include\Moog.h \
+	include\Sampler.h \
+	include\Instrmnt.h \
+	include\Stk.h \
+	include\ADSR.h \
+	include\Generator.h \
+	include\FileLoop.h \
+	include\FileWvIn.h \
+	include\WvIn.h \
+	include\FileRead.h \
+	include\OnePole.h \
+	include\Filter.h \
+	include\FormSwep.h \
+	SKINI.msg
+
+$(OUTDIR)\Modulate.obj: Modulate.cpp include\Modulate.h \
+	include\Generator.h \
+	include\Stk.h \
+	include\SineWave.h \
+	include\Noise.h \
+	include\OnePole.h \
+	include\Filter.h
+
+$(OUTDIR)\ModalBar.obj: ModalBar.cpp include\ModalBar.h \
+	include\Modal.h \
+	include\Instrmnt.h \
+	include\Stk.h \
+	include\Envelope.h \
+	include\Generator.h \
+	include\FileLoop.h \
+	include\FileWvIn.h \
+	include\WvIn.h \
+	include\FileRead.h \
+	include\SineWave.h \
+	include\BiQuad.h \
+	include\Filter.h \
+	include\OnePole.h \
+	SKINI.msg
+
+$(OUTDIR)\Modal.obj: Modal.cpp include\Modal.h \
+	include\Instrmnt.h \
+	include\Stk.h \
+	include\Envelope.h \
+	include\Generator.h \
+	include\FileLoop.h \
+	include\FileWvIn.h \
+	include\WvIn.h \
+	include\FileRead.h \
+	include\SineWave.h \
+	include\BiQuad.h \
+	include\Filter.h \
+	include\OnePole.h
+
+$(OUTDIR)\MidiFileIn.obj: MidiFileIn.cpp include\MidiFileIn.h \
+	include\Stk.h
+
+$(OUTDIR)\Messager.obj: Messager.cpp include\Messager.h \
+	include\Stk.h \
+	include\Skini.h \
+	include\Mutex.h \
+	include\Thread.h \
+	include\TcpServer.h \
+	include\Socket.h \
+	include\RtMidi.h \
+	include\RtError.h \
+	SKINI.msg
+
+$(OUTDIR)\Mesh2D.obj: Mesh2D.cpp include\Mesh2D.h \
+	include\Instrmnt.h \
+	include\Stk.h \
+	include\OnePole.h \
+	include\Filter.h \
+	SKINI.msg
+
+$(OUTDIR)\Mandolin.obj: Mandolin.cpp include\Mandolin.h \
+	include\Instrmnt.h \
+	include\Stk.h \
+	include\Twang.h \
+	include\DelayA.h \
+	include\Filter.h \
+	include\DelayL.h \
+	include\Fir.h \
+	include\FileWvIn.h \
+	include\WvIn.h \
+	include\FileRead.h \
+	SKINI.msg
+
+$(OUTDIR)\LentPitShift.obj: LentPitShift.cpp include\LentPitShift.h \
+	include\Effect.h \
+	include\Stk.h \
+	include\Delay.h \
+	include\Filter.h
+
+$(OUTDIR)\JCRev.obj: JCRev.cpp include\JCRev.h \
+	include\Effect.h \
+	include\Stk.h \
+	include\Delay.h \
+	include\Filter.h \
+	include\OnePole.h
+
+$(OUTDIR)\InetWvOut.obj: InetWvOut.cpp include\InetWvOut.h \
+	include\WvOut.h \
+	include\Stk.h \
+	include\Socket.h \
+	include\TcpClient.h \
+	include\UdpSocket.h
+
+$(OUTDIR)\InetWvIn.obj: InetWvIn.cpp include\InetWvIn.h \
+	include\WvIn.h \
+	include\Stk.h \
+	include\TcpServer.h \
+	include\Socket.h \
+	include\UdpSocket.h \
+	include\Thread.h \
+	include\Mutex.h
+
+$(OUTDIR)\Iir.obj: Iir.cpp include\Iir.h \
+	include\Filter.h \
+	include\Stk.h
+
+$(OUTDIR)\HevyMetl.obj: HevyMetl.cpp include\HevyMetl.h \
+	include\FM.h \
+	include\Instrmnt.h \
+	include\Stk.h \
+	include\ADSR.h \
+	include\Generator.h \
+	include\FileLoop.h \
+	include\FileWvIn.h \
+	include\WvIn.h \
+	include\FileRead.h \
+	include\SineWave.h \
+	include\TwoZero.h \
+	include\Filter.h
+
+$(OUTDIR)\Guitar.obj: Guitar.cpp include\Guitar.h \
+	include\Stk.h \
+	include\Twang.h \
+	include\DelayA.h \
+	include\Filter.h \
+	include\DelayL.h \
+	include\Fir.h \
+	include\OnePole.h \
+	include\OneZero.h \
+	include\FileWvIn.h \
+	include\WvIn.h \
+	include\FileRead.h \
+	include\Noise.h \
+	include\Generator.h \
+	SKINI.msg
+
+$(OUTDIR)\Granulate.obj: Granulate.cpp include\Granulate.h \
+	include\Generator.h \
+	include\Stk.h \
+	include\Envelope.h \
+	include\Noise.h \
+	include\FileRead.h
+
+$(OUTDIR)\FreeVerb.obj: FreeVerb.cpp include\FreeVerb.h \
+	include\Effect.h \
+	include\Stk.h \
+	include\Delay.h \
+	include\Filter.h \
+	include\OnePole.h
+
+$(OUTDIR)\FormSwep.obj: FormSwep.cpp include\FormSwep.h \
+	include\Filter.h \
+	include\Stk.h
+
+$(OUTDIR)\FMVoices.obj: FMVoices.cpp include\FMVoices.h \
+	include\FM.h \
+	include\Instrmnt.h \
+	include\Stk.h \
+	include\ADSR.h \
+	include\Generator.h \
+	include\FileLoop.h \
+	include\FileWvIn.h \
+	include\WvIn.h \
+	include\FileRead.h \
+	include\SineWave.h \
+	include\TwoZero.h \
+	include\Filter.h \
+	SKINI.msg \
+	include\Phonemes.h
+
+$(OUTDIR)\FM.obj: FM.cpp include\FM.h \
+	include\Instrmnt.h \
+	include\Stk.h \
+	include\ADSR.h \
+	include\Generator.h \
+	include\FileLoop.h \
+	include\FileWvIn.h \
+	include\WvIn.h \
+	include\FileRead.h \
+	include\SineWave.h \
+	include\TwoZero.h \
+	include\Filter.h \
+	SKINI.msg
+
+$(OUTDIR)\Flute.obj: Flute.cpp include\Flute.h \
+	include\Instrmnt.h \
+	include\Stk.h \
+	include\JetTable.h \
+	include\Function.h \
+	include\DelayL.h \
+	include\Filter.h \
+	include\OnePole.h \
+	include\PoleZero.h \
+	include\Noise.h \
+	include\Generator.h \
+	include\ADSR.h \
+	include\SineWave.h \
+	SKINI.msg
+
+$(OUTDIR)\Fir.obj: Fir.cpp include\Fir.h \
+	include\Filter.h \
+	include\Stk.h
+
+$(OUTDIR)\FileWvOut.obj: FileWvOut.cpp include\FileWvOut.h \
+	include\WvOut.h \
+	include\Stk.h \
+	include\FileWrite.h
+
+$(OUTDIR)\FileWvIn.obj: FileWvIn.cpp include\FileWvIn.h \
+	include\WvIn.h \
+	include\Stk.h \
+	include\FileRead.h
+
+$(OUTDIR)\FileWrite.obj: FileWrite.cpp include\FileWrite.h \
+	include\Stk.h
+
+$(OUTDIR)\FileRead.obj: FileRead.cpp include\FileRead.h \
+	include\Stk.h
+
+$(OUTDIR)\FileLoop.obj: FileLoop.cpp include\FileLoop.h \
+	include\FileWvIn.h \
+	include\WvIn.h \
+	include\Stk.h \
+	include\FileRead.h
+
+$(OUTDIR)\Envelope.obj: Envelope.cpp include\Envelope.h \
+	include\Generator.h \
+	include\Stk.h
+
+$(OUTDIR)\Echo.obj: Echo.cpp include\Echo.h \
+	include\Effect.h \
+	include\Stk.h \
+	include\Delay.h \
+	include\Filter.h
+
+$(OUTDIR)\Drummer.obj: Drummer.cpp include\Drummer.h \
+	include\Instrmnt.h \
+	include\Stk.h \
+	include\FileWvIn.h \
+	include\WvIn.h \
+	include\FileRead.h \
+	include\OnePole.h \
+	include\Filter.h
+
+$(OUTDIR)\DelayL.obj: DelayL.cpp include\DelayL.h \
+	include\Filter.h \
+	include\Stk.h
+
+$(OUTDIR)\DelayA.obj: DelayA.cpp include\DelayA.h \
+	include\Filter.h \
+	include\Stk.h
+
+$(OUTDIR)\Delay.obj: Delay.cpp include\Delay.h \
+	include\Filter.h \
+	include\Stk.h
+
+$(OUTDIR)\Clarinet.obj: Clarinet.cpp include\Clarinet.h \
+	include\Instrmnt.h \
+	include\Stk.h \
+	include\DelayL.h \
+	include\Filter.h \
+	include\ReedTable.h \
+	include\Function.h \
+	include\OneZero.h \
+	include\Envelope.h \
+	include\Generator.h \
+	include\Noise.h \
+	include\SineWave.h \
+	SKINI.msg
+
+$(OUTDIR)\Chorus.obj: Chorus.cpp include\Chorus.h \
+	include\Effect.h \
+	include\Stk.h \
+	include\DelayL.h \
+	include\Filter.h \
+	include\SineWave.h \
+	include\Generator.h
+
+$(OUTDIR)\Brass.obj: Brass.cpp include\Brass.h \
+	include\Instrmnt.h \
+	include\Stk.h \
+	include\DelayA.h \
+	include\Filter.h \
+	include\BiQuad.h \
+	include\PoleZero.h \
+	include\ADSR.h \
+	include\Generator.h \
+	include\SineWave.h \
+	SKINI.msg
+
+$(OUTDIR)\Bowed.obj: Bowed.cpp include\Bowed.h \
+	include\Instrmnt.h \
+	include\Stk.h \
+	include\DelayL.h \
+	include\Filter.h \
+	include\BowTable.h \
+	include\Function.h \
+	include\OnePole.h \
+	include\BiQuad.h \
+	include\SineWave.h \
+	include\Generator.h \
+	include\ADSR.h \
+	SKINI.msg
+
+$(OUTDIR)\BlowHole.obj: BlowHole.cpp include\BlowHole.h \
+	include\Instrmnt.h \
+	include\Stk.h \
+	include\DelayL.h \
+	include\Filter.h \
+	include\ReedTable.h \
+	include\Function.h \
+	include\OneZero.h \
+	include\PoleZero.h \
+	include\Envelope.h \
+	include\Generator.h \
+	include\Noise.h \
+	include\SineWave.h \
+	SKINI.msg
+
+$(OUTDIR)\BlowBotl.obj: BlowBotl.cpp include\BlowBotl.h \
+	include\Instrmnt.h \
+	include\Stk.h \
+	include\JetTable.h \
+	include\Function.h \
+	include\BiQuad.h \
+	include\Filter.h \
+	include\PoleZero.h \
+	include\Noise.h \
+	include\Generator.h \
+	include\ADSR.h \
+	include\SineWave.h \
+	SKINI.msg
+
+$(OUTDIR)\BlitSquare.obj: BlitSquare.cpp include\BlitSquare.h \
+	include\Generator.h \
+	include\Stk.h
+
+$(OUTDIR)\BlitSaw.obj: BlitSaw.cpp include\BlitSaw.h \
+	include\Generator.h \
+	include\Stk.h
+
+$(OUTDIR)\Blit.obj: Blit.cpp include\Blit.h \
+	include\Generator.h \
+	include\Stk.h
+
+$(OUTDIR)\BiQuad.obj: BiQuad.cpp include\BiQuad.h \
+	include\Filter.h \
+	include\Stk.h
+
+$(OUTDIR)\BeeThree.obj: BeeThree.cpp include\BeeThree.h \
+	include\FM.h \
+	include\Instrmnt.h \
+	include\Stk.h \
+	include\ADSR.h \
+	include\Generator.h \
+	include\FileLoop.h \
+	include\FileWvIn.h \
+	include\WvIn.h \
+	include\FileRead.h \
+	include\SineWave.h \
+	include\TwoZero.h \
+	include\Filter.h
+
+$(OUTDIR)\BandedWG.obj: BandedWG.cpp include\BandedWG.h \
+	include\Instrmnt.h \
+	include\Stk.h \
+	include\DelayL.h \
+	include\Filter.h \
+	include\BowTable.h \
+	include\Function.h \
+	include\ADSR.h \
+	include\Generator.h \
+	include\BiQuad.h \
+	SKINI.msg
+
+$(OUTDIR)\Asymp.obj: Asymp.cpp include\Asymp.h \
+	include\Generator.h \
+	include\Stk.h
+
+$(OUTDIR)\ADSR.obj: ADSR.cpp include\ADSR.h \
+	include\Generator.h \
+	include\Stk.h
+
+$(OUTDIR)\iasiothiscallresolver.obj: asio\iasiothiscallresolver.cpp include\iasiothiscallresolver.h \
+	include\iasiodrv.h \
+	include\asiosys.h \
+	include\asio.h
+
+$(OUTDIR)\asiolist.obj: asio\asiolist.cpp include\iasiodrv.h \
+	include\asiosys.h \
+	include\asio.h \
+	include\asiolist.h
+
+$(OUTDIR)\asiodrivers.obj: asio\asiodrivers.cpp include\asiodrivers.h \
+	include\ginclude.h \
+	include\asiolist.h \
+	include\iasiodrv.h \
+	include\asiosys.h \
+	include\asio.h
+
+$(OUTDIR)\asio.obj: asio\asio.cpp include\asiosys.h \
+	include\asio.h \
+	include\asiodrvr.h \
+	include\iasiodrv.h \
+	include\asiodrivers.h \
+	include\ginclude.h \
+	include\asiolist.h
+
+$(OUTPATH): $(OBJECTS)
+	$(LINKER) $(LFLAGS) /out:$(OUTPATH) $(OBJECTS)
+
+.SUFFIXES: .c .cpp .cc .cxx
+
+{asio}.cpp{$(OUTDIR)\}.obj::
+	$(CXX) /c $(CXXFLAGS) $(INCPATH) /Fo$(OUTDIR)\ @<<
+	$<
+<<
+
+{.}.cpp{$(OUTDIR)\}.obj::
+	$(CXX) /c $(CXXFLAGS) $(INCPATH) /Fo$(OUTDIR)\ @<<
+	$<
+<<
