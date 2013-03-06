@@ -30,23 +30,29 @@ mrproper:
 clean:
 	DEL /S /Q *.obj
 
-x86-debug-vc9: 
-	nmake /nologo /f Makefile CXXFLAGS="/nologo $(DEBUGFLAGS) $(WARNFLAGS) $(DEFINES) /D_DEBUG /DDEBUG" OUTDIR="lib\x86\vc9\debug" OUTFILE="STKd.lib" configured
+x86-debug-vc9:
+	IF NOT EXIST lib\$* MKDIR lib\$*
+	nmake /nologo /f Makefile CXXFLAGS="/nologo $(DEBUGFLAGS) $(WARNFLAGS) $(DEFINES) /D_DEBUG /DDEBUG" OUTDIR="lib\$*" OUTFILE="STKd.lib" configured
 
 x86-release-vc9:
-	nmake /nologo /f Makefile CXXFLAGS="/nologo $(RELEASEFLAGS) $(WARNFLAGS) $(DEFINES) /DNDEBUG" OUTDIR="lib\x86\vc9\release" OUTFILE="STK.lib" configured
+	IF NOT EXIST lib\$* MKDIR lib\$*
+	nmake /nologo /f Makefile CXXFLAGS="/nologo $(RELEASEFLAGS) $(WARNFLAGS) $(DEFINES) /DNDEBUG" OUTDIR="lib\$*" OUTFILE="STK.lib" configured
 
 x86-debug-vc10: 
-	nmake /nologo /f Makefile CXXFLAGS="/nologo $(DEBUGFLAGS) $(WARNFLAGS) $(DEFINES) /D_DEBUG /DDEBUG" OUTDIR="lib\x86\vc10\debug" OUTFILE="STKd.lib" configured
+	IF NOT EXIST lib\$* MKDIR lib\$*
+	nmake /nologo /f Makefile CXXFLAGS="/nologo $(DEBUGFLAGS) $(WARNFLAGS) $(DEFINES) /D_DEBUG /DDEBUG" OUTDIR="lib\$*" OUTFILE="STKd.lib" configured
 
 x86-release-vc10:
-	nmake /nologo /f Makefile CXXFLAGS="/nologo $(RELEASEFLAGS) $(WARNFLAGS) $(DEFINES) /DNDEBUG" OUTDIR="lib\x86\vc10\release" OUTFILE="STK.lib" configured
+	IF NOT EXIST lib\$* MKDIR lib\$*
+	nmake /nologo /f Makefile CXXFLAGS="/nologo $(RELEASEFLAGS) $(WARNFLAGS) $(DEFINES) /DNDEBUG" OUTDIR="lib\$*" OUTFILE="STK.lib" configured
 
 x86-debug-vc11: 
-	nmake /nologo /f Makefile CXXFLAGS="/nologo $(DEBUGFLAGS) $(WARNFLAGS) $(DEFINES) /D_DEBUG /DDEBUG" OUTDIR="lib\x86\vc11\debug" OUTFILE="STKd.lib" configured
+	IF NOT EXIST lib\$* MKDIR lib\$*
+	nmake /nologo /f Makefile CXXFLAGS="/nologo $(DEBUGFLAGS) $(WARNFLAGS) $(DEFINES) /D_DEBUG /DDEBUG" OUTDIR="lib\$*" OUTFILE="STKd.lib" configured
 
 x86-release-vc11:
-	nmake /nologo /f Makefile CXXFLAGS="/nologo $(RELEASEFLAGS) $(WARNFLAGS) $(DEFINES) /DNDEBUG" OUTDIR="lib\x86\vc11\release" OUTFILE="STK.lib" configured
+	IF NOT EXIST lib\$* MKDIR lib\$*
+	nmake /nologo /f Makefile CXXFLAGS="/nologo $(RELEASEFLAGS) $(WARNFLAGS) $(DEFINES) /DNDEBUG" OUTDIR="lib\$*" OUTFILE="STK.lib" configured
 
 configured: $(OUTPATH)
 
