@@ -26,4 +26,5 @@ signals:
 
 Q_DECLARE_METATYPE(Leap::Hand)
 
+
 #endif // __LEAPLISTENER_H_

@@ -2,13 +2,26 @@
 
 #include "leaplistener.h"
 
+#include <QtCore/QDebug>
+#include <qmath.h>
 
 void LeapListener::onInit(const Leap::Controller&) {
     emit initialized();
 }
 
 
-void LeapListener::onConnect(const Leap::Controller&) {
+void LeapListener::onConnect(const Leap::Controller& controller) {
+    qDebug() << "Connected Leap Motion devices";
+    const Leap::DeviceList& devices = controller.devices();
+    for (Leap::DeviceList::const_iterator d = devices.begin(); d != devices.end(); ++d) {
+        const Leap::Device& device = *d;
+        qDebug() << "  "
+                 << "horizontalViewAngle =" << (device.horizontalViewAngle() / M_PI * 180) << "°"
+                 << ","
+                 << "verticalViewAngle =" << (device.verticalViewAngle() / M_PI * 180) << "°"
+                 << ","
+                 << "range =" << device.range() << "mm";
+    }
     emit connected();
 }
 

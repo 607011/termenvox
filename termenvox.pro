@@ -39,20 +39,28 @@ FORMS += mainwindow.ui
 DEFINES += __WINDOWS_ASIO__ __WINDOWS_DS__ __LITTLE_ENDIAN__ __WINDOWS_MM__
 
 INCLUDEPATH += $$PWD/STK/include \
-    C:/Developer/OpenCV-2.4.4-beta/build/include \
-    C:/Developer/LeapSDK/include
+    D:/Developer/opencv/build/include \
+    D:/Developer/LeapSDK/include
 
 LIBS += winmm.lib dsound.lib wsock32.lib ole32.lib advapi32.lib
 
 win32:CONFIG(release, debug|release): {
-LIBS += "$$PWD/STK/lib/x86/vc10/STK.lib" \
-    opencv_core244.lib opencv_highgui244.lib opencv_imgproc244.lib opencv_objdetect244.lib opencv_haartraining_engine.lib \
-    Leap.lib
+LIBS += "$$PWD/STK/lib/x86/vc11/STK.lib" \
+    x86/vc11/lib/opencv_core245.lib \
+    x86/vc11/lib/opencv_highgui245.lib \
+    x86/vc11/lib/opencv_imgproc245.lib \
+    x86/vc11/lib/opencv_objdetect245.lib \
+    x86/vc11/lib/opencv_haartraining_engine.lib \
+    x86/Leap.lib
 }
 else:win32:CONFIG(debug, debug|release): {
-LIBS += "$$PWD/STK/lib/x86/vc10/STKd.lib" \
-    opencv_core244d.lib opencv_highgui244d.lib opencv_imgproc244d.lib opencv_objdetect244d.lib opencv_haartraining_engined.lib \
-    Leapd.lib
+LIBS += "$$PWD/STK/lib/x86/vc11/STKd.lib" \
+    x86/vc11/lib/opencv_core245d.lib \
+    x86/vc11/lib/opencv_highgui245d.lib \
+    x86/vc11/lib/opencv_imgproc245d.lib \
+    x86/vc11/lib/opencv_objdetect245d.lib \
+    x86/vc11/lib/opencv_haartraining_engined.lib \
+    x86/Leapd.lib
 }
 
 OTHER_FILES += NOTES.txt \

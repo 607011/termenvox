@@ -6,13 +6,13 @@
 #include "opencv.h"
 
 #include <QWidget>
-#include <QVector>
-#include <QImage>
-#include <QRect>
 #include <QResizeEvent>
 #include <QPaintEvent>
 #include <QTimerEvent>
 #include <QTime>
+#include <QScopedPointer>
+
+class CamWidgetPrivate;
 
 class CamWidget : public QWidget
 {
@@ -22,7 +22,7 @@ public:
     ~CamWidget();
     void startCapture(void);
     void stopCapture(void);
-    const OpenCV* cv(void) const { return &mOpenCV; }
+    const OpenCV* cv(void) const;
 
 protected:
     void paintEvent(QPaintEvent*);
@@ -35,19 +35,12 @@ private:
     void calcDestRect();
 
 private:
+    QScopedPointer<CamWidgetPrivate> d_ptr;
+    Q_DECLARE_PRIVATE(CamWidget)
+    Q_DISABLE_COPY(CamWidget)
+
+private:
     static const int MaxNumTimeSamples = 5;
-    QVector<int> mTimeSamples;
-    int mTimeSampleIndex;
-    QTime mTime;
-    qreal mFPS;
-    OpenCV mOpenCV;
-    int mCameraUpdateTimerId;
-    QImage mImage;
-    qreal mWindowAspectRatio;
-    qreal mFrameAspectRatio;
-    QRect mDestRect;
-    qreal mScale;
-    bool mIsProcessing;
 };
 
 #endif // __CAMWIDGET_H_

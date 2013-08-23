@@ -8,16 +8,13 @@
 #include <QVector>
 #include <Leap.h>
 #include "main.h"
-#include "thereminwidget.h"
-#include "theremin.h"
-#include "camwidget.h"
-#include "leapwidget.h"
 
 
 namespace Ui {
 class MainWindow;
 }
 
+class MainWindowPrivate;
 
 
 class MainWindow : public QMainWindow
@@ -63,18 +60,16 @@ private slots:
     void about(void);
     void aboutQt(void);
 
-private:
+private: // methods
     void saveAppSettings(void);
     void restoreAppSettings(void);
 
-
-private:
+private: // variables
     Ui::MainWindow* ui;
-    ThereminWidget* mThereminWidget;
-    Theremin& mTheremin;
-    QVector<QListWidgetItem*> mEffects;
-    CamWidget* mCamWidget;
-    LeapWidget* mLeapWidget;
+
+    QScopedPointer<MainWindowPrivate> d_ptr;
+    Q_DECLARE_PRIVATE(MainWindow)
+    Q_DISABLE_COPY(MainWindow)
 };
 
 

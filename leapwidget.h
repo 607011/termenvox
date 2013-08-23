@@ -6,7 +6,10 @@
 #include <QWidget>
 #include <QPainter>
 #include <QPointF>
+#include <QScopedPointer>
 #include "leaplistener.h"
+
+class LeapWidgetPrivate;
 
 class LeapWidget : public QWidget
 {
@@ -31,13 +34,9 @@ public slots:
     void setMaxOffsetY(int);
 
 private:
-    Leap::Controller* mController;
-    LeapListener mListener;
-    Leap::Hand mL;
-    Leap::Hand mR;
-    qreal mHalfWidth;
-    qreal mMaxOffsetX;
-    qreal mMaxOffsetY;
+    QScopedPointer<LeapWidgetPrivate> d_ptr;
+    Q_DECLARE_PRIVATE(LeapWidget)
+    Q_DISABLE_COPY(LeapWidget)
 
 private:
     QPointF posToPoint(const Leap::Vector&) const;
