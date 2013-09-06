@@ -37,7 +37,7 @@ void LeapListener::onExit(const Leap::Controller&) {
 
 
 void LeapListener::onFrame(const Leap::Controller& controller) {
-    const Leap::Frame frame = controller.frame();
+    const Leap::Frame& frame = controller.frame();
     if (frame.hands().count() > 0) {
         const Leap::Hand& hand1 = frame.hands()[0];
         if (frame.hands().count() > 1) {

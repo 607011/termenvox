@@ -45,25 +45,25 @@ LeapWidget::~LeapWidget()
 }
 
 
-QPointF LeapWidget::posToPoint(const Leap::Vector& pos) const
+QPointF LeapWidget::posToPoint(const Leap::Vector &pos) const
 {
-    return QPointF(d_ptr->halfWidth + d_ptr->halfWidth * pos.x / d_ptr->maxOffsetX, height() - height() * (qreal(pos.y) / d_ptr->maxOffsetY));
+    return QPointF(d_ptr->halfWidth * (1 + pos.x / d_ptr->maxOffsetX), height() * (1 - pos.y / d_ptr->maxOffsetY));
 }
 
 
-void LeapWidget::paintFingers(QPainter& p, const FingerList& fingers)
+void LeapWidget::paintFingers(QPainter &p, const FingerList &fingers)
 {
     if (!fingers.empty()) {
         Leap::Vector avgPos;
-        p.setPen(QColor(255, 140, 0));
+        p.setPen(QPen(QColor(255, 140, 0), 2));
         for (int i = 0; i < fingers.count(); ++i) {
             const Leap::Vector& tip = fingers[i].tipPosition();
-            p.drawEllipse(posToPoint(tip), 1.5, 1.5);
+            p.drawEllipse(posToPoint(tip), 4, 4);
             avgPos += fingers[i].tipPosition();
         }
         avgPos /= (float)fingers.count();
-        p.setPen(Qt::yellow);
-        p.drawEllipse(posToPoint(avgPos), 2.5, 2.5);
+        p.setPen(QPen(QColor(230, 41, 173), 2));
+        p.drawEllipse(posToPoint(avgPos), 6, 6);
     }
 }
 
@@ -75,18 +75,18 @@ void LeapWidget::paintEvent(QPaintEvent*)
         p.fillRect(rect(), QBrush(QColor(30, 20, 20)));
         return;
     }
-    p.fillRect(rect(), QBrush(QColor(40, 50, 40)));
-    p.setPen(Qt::gray);
+    p.fillRect(rect(), QBrush(QColor(230, 230, 230)));
+    p.setPen(Qt::black);
     p.drawText(QRect(5,  5, 60, 15), Qt::AlignLeft | Qt::AlignTop, QString("x: %1").arg(d->leftHand.palmPosition().x, 0, 'g', 4));
     p.drawText(QRect(5, 20, 60, 15), Qt::AlignLeft | Qt::AlignTop, QString("y: %1").arg(d->leftHand.palmPosition().y, 0, 'g', 4));
     p.drawText(QRect(width()-65,  5, 60, 15), Qt::AlignLeft | Qt::AlignTop, QString("x: %1").arg(d->rightHand.palmPosition().x, 0, 'g', 4));
     p.drawText(QRect(width()-65, 20, 60, 15), Qt::AlignLeft | Qt::AlignTop, QString("y: %1").arg(d->rightHand.palmPosition().y, 0, 'g', 4));
     p.setRenderHint(QPainter::Antialiasing);
     p.setBrush(Qt::transparent);
-    p.setPen(Qt::red);
-    p.drawEllipse(posToPoint(d->leftHand.palmPosition()), 7, 7);
-    p.setPen(Qt::green);
-    p.drawEllipse(posToPoint(d->rightHand.palmPosition()), 7, 7);
+    p.setPen(QPen(QColor(204, 29, 52), 4));
+    p.drawEllipse(posToPoint(d->leftHand.palmPosition()), 13, 13);
+    p.setPen(QPen(QColor(29, 204, 43), 4));
+    p.drawEllipse(posToPoint(d->rightHand.palmPosition()), 13, 13);
     paintFingers(p, d->leftHand.fingers());
     paintFingers(p, d->rightHand.fingers());
 }

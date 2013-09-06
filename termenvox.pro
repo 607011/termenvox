@@ -45,7 +45,7 @@ INCLUDEPATH += $$PWD/STK/include \
 LIBS += winmm.lib dsound.lib wsock32.lib ole32.lib advapi32.lib
 
 win32:CONFIG(release, debug|release): {
-LIBS += "$$PWD/STK/lib/x86/vc11/STK.lib" \
+LIBS += "$$PWD/STK/release/STK.lib" \
     x86/vc11/lib/opencv_core245.lib \
     x86/vc11/lib/opencv_highgui245.lib \
     x86/vc11/lib/opencv_imgproc245.lib \
@@ -54,7 +54,7 @@ LIBS += "$$PWD/STK/lib/x86/vc11/STK.lib" \
     x86/Leap.lib
 }
 else:win32:CONFIG(debug, debug|release): {
-LIBS += "$$PWD/STK/lib/x86/vc11/STKd.lib" \
+LIBS += "$$PWD/STK/debug/STKd.lib" \
     x86/vc11/lib/opencv_core245d.lib \
     x86/vc11/lib/opencv_highgui245d.lib \
     x86/vc11/lib/opencv_imgproc245d.lib \

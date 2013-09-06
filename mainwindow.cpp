@@ -7,6 +7,7 @@
 #include <QStringList>
 #include <QModelIndex>
 #include <QScopedPointer>
+#include <qmath.h>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "theremin.h"
@@ -155,8 +156,8 @@ void MainWindow::startStopLeapMotionSensor()
 void MainWindow::objectsDetected(void)
 {
     Q_D(MainWindow);
-    const QVector<QRectF> objects = d->camWidget->cv()->detectedObjects();
-    const QSize& sz = d->camWidget->cv()->getImageSize();
+    const QVector<QRectF> &objects = d->camWidget->cv()->detectedObjects();
+    const QSize &sz = d->camWidget->cv()->getImageSize();
     const int w2 = sz.width() / 2;
     QVector<QPointF> leftSide, rightSide;
     for (QVector<QRectF>::const_iterator i = objects.constBegin(); i != objects.constEnd(); ++i) {
@@ -183,8 +184,11 @@ void MainWindow::setHands(const Leap::Hand &left, const Leap::Hand &right)
 {
     Q_D(MainWindow);
     if (!left.fingers().empty() && !right.fingers().empty()) {
-        const qreal volume = qreal(left.fingers()[0].tipPosition().y) / ui->yMaxSlider->value();
-        const qreal freq1 = qreal(right.fingers()[0].tipPosition().x) / ui->xMaxSlider->value();
+        const Leap::Finger &lIndex = left.fingers()[0];
+        const Leap::Finger &rIndex = right.fingers()[0];
+        const Leap::Vector &rPos = rIndex.stabilizedTipPosition();
+        qreal volume = lIndex.stabilizedTipPosition().y / ui->yMaxSlider->value();
+        qreal freq1 = 1.0 - rPos.distanceTo(Leap::Vector(ui->xMaxSlider->value(), rPos.y, 6.5)) / ui->xMaxSlider->value();
         d->thereminWidget->setVolume(volume);
         d->thereminWidget->setFrequency1(freq1);
         if (volume > 0 && freq1 > 0)

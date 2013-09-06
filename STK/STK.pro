@@ -2,6 +2,10 @@
 
 QT -= gui
 
+win32 {
+QMAKE_CXXFLAGS += /wd4100 /wd4996 /wd4309 /wd4244
+}
+
 win32:CONFIG(release, debug|release) {
 TARGET = STK
 }
@@ -15,9 +19,6 @@ VERSION = 4.4.4
 DEFINES += __LITTLE_ENDIAN__ __WINDOWS_ASIO__ __WINDOWS_DS__ __WINDOWS_MM__
 DEFINES -= UNICODE
 INCLUDEPATH += include
-win32 {
-QMAKE_CXXFLAGS += /wd4100 /wd4996 /wd4309 /wd4244
-}
 
 SOURCES += Stk.cpp \
     Wurley.cpp \
